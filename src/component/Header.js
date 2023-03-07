@@ -3,7 +3,6 @@ import styled from "styled-components";
 import theme from "../styles/Theme";
 
 const Headers = styled.header`
-  border: 2px solid red;
   width: 100%;
   height: 4rem;
   display: flex;
