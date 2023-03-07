@@ -1,0 +1,31 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+import "./App.css";
+import Header from "./component/Header";
+import Nav from "./component/nav";
+import Login from "./page/Login";
+import Main from "./page/Main";
+import Signup from "./page/Signup";
+import GlobalStyle from "./styles/GlobalStyle";
+import theme from "./styles/Theme";
+
+function App() {
+  return (
+    <>
+      <GlobalStyle />
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Header />
+          <Nav />
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </>
+  );
+}
+
+export default App;
