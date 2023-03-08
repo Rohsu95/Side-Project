@@ -6,7 +6,6 @@ import theme from "../../styles/Theme";
 const Container = styled.div``;
 
 const Sign = styled.div`
-  /* border: 2px solid blue; */
   text-align: center;
   margin-bottom: 2rem;
   .signup {
@@ -18,7 +17,6 @@ const SignupLink = styled(Link)`
   color: ${theme.colors.main};
 `;
 const FormContainer = styled.div`
-  /* border: 2px solid red; */
   display: flex;
   justify-content: center;
   span {
@@ -29,14 +27,19 @@ const FormContainer = styled.div`
   }
 
   .Input {
-    /* width: 300px;
-    height: 50px; */
-    padding: 0.75rem 1.5rem;
+    /* border: 2px solid red; */
+    /* width: 150%; */
+    /* padding: 0.75rem 8rem; */
+    width: 30rem;
+    height: 3.25rem;
+    padding: 0 0.75rem;
     font-size: 1.25rem;
-    /* margin-bottom: 1.25rem; */
     display: block;
     border-radius: 5px;
     border: 1px solid ${theme.colors.gray_03};
+    @media ${theme.media.height} {
+      width: 20rem;
+    }
   }
   button {
     border: 0;
@@ -76,7 +79,11 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <input
             {...register("email", {
-              required: "20자 이하의 email을 입력해 주세요",
+              required: "12자 이상 20자 이하의 email을 입력해 주세요",
+              minLength: {
+                value: 12,
+                message: "12자 이상의 email 입력해 주세요",
+              },
               maxLength: {
                 value: 20,
                 message: "20자 이하의 email을 입력해 주세요",
