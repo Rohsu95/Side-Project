@@ -22,7 +22,16 @@ const sizes = {
   phone: "480px",
   small: "360px",
 };
-
+const fontSizes = {
+  fs0: "0.5rem",
+  fs1: "1rem",
+  fs15: "1.5rem", // 본문 내용
+  fs2: "2rem",
+  fs25: "2.5rem", // 제목
+  fs3: "3rem",
+  fs35: "3.5rem",
+  fs4: "4rem",
+};
 const media = {
   desktop: `screen and (max-width: ${sizes.desktop})`,
   laptop: `screen and (max-width : ${sizes.laptop})`,
@@ -35,6 +44,7 @@ const media = {
 const theme = {
   colors,
   media,
+  fontSizes,
 };
 
 export default theme;
