@@ -3,9 +3,9 @@ import { ThemeProvider } from "styled-components";
 import "./App.css";
 import Header from "./component/Header";
 import Nav from "./component/nav";
-import Login from "./page/Login";
+import Login from "./page/Login/Login";
 import Main from "./page/Main";
-import Signup from "./page/Signup";
+import Signup from "./page/SignUp/Signup";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/Theme";
 

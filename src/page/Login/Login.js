@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import theme from "../styles/Theme";
+import theme from "../../styles/Theme";
 const Container = styled.div``;
 
 const Sign = styled.div`
@@ -21,7 +21,11 @@ const FormContainer = styled.div`
   /* border: 2px solid red; */
   display: flex;
   justify-content: center;
-  .form {
+  span {
+    font-size: 0.75rem;
+    display: block;
+    margin-bottom: 1.25rem;
+    color: red;
   }
 
   .Input {
@@ -29,7 +33,7 @@ const FormContainer = styled.div`
     height: 50px; */
     padding: 0.75rem 1.5rem;
     font-size: 1.25rem;
-    margin-bottom: 1.25rem;
+    /* margin-bottom: 1.25rem; */
     display: block;
     border-radius: 5px;
     border: 1px solid ${theme.colors.gray_03};
@@ -40,6 +44,7 @@ const FormContainer = styled.div`
     float: right;
     height: 2.75rem;
     border-radius: 5px;
+    cursor: pointer;
     font-size: ${theme.fontSizes.fs1};
     color: ${theme.colors.white};
     background-color: ${theme.colors.main};
@@ -50,13 +55,13 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { error },
+    formState: { errors },
   } = useForm();
   const onSubmit = (data) => {
     console.log(data);
   };
-  const onError = (error) => {
-    console.log(error);
+  const onError = (errors) => {
+    console.log(errors);
   };
 
   return (
@@ -70,9 +75,6 @@ const Login = () => {
       <FormContainer>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <input
-            type="email"
-            className="Input"
-            placeholder="Email"
             {...register("email", {
               required: "20자 이하의 email을 입력해 주세요",
               maxLength: {
@@ -80,8 +82,12 @@ const Login = () => {
                 message: "20자 이하의 email을 입력해 주세요",
               },
             })}
+            type="email"
+            className="Input"
+            placeholder="Email"
           />
-          <span>{error?.email.message}</span>
+          <span>{errors?.email?.message}</span>
+
           <input
             className="Input"
             placeholder="Password"
@@ -98,8 +104,7 @@ const Login = () => {
               },
             })}
           />
-
-          <span>{error?.password?.message}</span>
+          <span>{errors?.password?.message}</span>
           <button>Sign in</button>
         </form>
       </FormContainer>
