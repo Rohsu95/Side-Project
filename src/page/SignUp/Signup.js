@@ -1,7 +1,9 @@
+import axios from "axios";
 import { useForm } from "react-hook-form";
-import { Link, useSubmit } from "react-router-dom";
+import { Link, useNavigate, useSubmit } from "react-router-dom";
 import styled from "styled-components";
 import theme from "../../styles/Theme";
+
 const Container = styled.div``;
 const SignupLink = styled(Link)`
   text-decoration: none;
@@ -55,9 +57,21 @@ const Signup = () => {
     setError,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
-    console.log(data);
+    axios
+      .post("http://localhost:1337/api/logins", { data })
+
+      .then((res) => {
+        navigate("/login");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+  // 포스트맨에는 다 찍히는데 여기서 안된다 아마 내 코드 문제인듯 하다
   const onError = (errors) => {
     console.log(errors);
   };
