@@ -38,7 +38,16 @@ const Main = () => {
         <h1 className="Container">conduit</h1>
         <p className="Span">A place to share your knowledge.</p>
       </MainImg>
-      <div>메인</div>
+      <div>
+        <ul>
+          <li>
+            <button>Your Feed</button>
+          </li>
+          <li>
+            <button>Global Feed</button>
+          </li>
+        </ul>
+      </div>
       <div>메인</div>
     </MainContainer>
   );
