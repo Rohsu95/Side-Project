@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -60,8 +61,21 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  // 쿠키 토큰 쓰는 법으로 넣어보기
+  // 메인 화면 먼저 만들고 로그인 시 헤더 바꾸고 뉴 포스트 후 셋팅 ㄱ
+  // 저녁에 먼저 메인 때 로그인 시 토큰 찍히는지 확인 하고 하자
   const onSubmit = (data) => {
-    console.log(data);
+    axios
+      // .post("http://localhost:1337/api/logins", {
+      .post("http://localhost:1337/auth/local", {
+        data,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const onError = (errors) => {
     console.log(errors);

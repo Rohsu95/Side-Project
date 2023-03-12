@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "logins",
+  "collectionName": "signups",
   "info": {
-    "singularName": "login",
-    "pluralName": "logins",
-    "displayName": "login",
+    "singularName": "signup",
+    "pluralName": "signups",
+    "displayName": "signup",
     "description": ""
   },
   "options": {

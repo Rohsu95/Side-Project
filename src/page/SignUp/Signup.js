@@ -61,7 +61,13 @@ const Signup = () => {
 
   const onSubmit = (data) => {
     axios
-      .post("http://localhost:1337/api/logins", { data })
+      .post(
+        "http://localhost:1337/api/signups",
+        { data },
+        {
+          // headers: { "Content-Type": "application/json" }, 안보내도 콘솔에 찍힘
+        }
+      )
 
       .then((res) => {
         navigate("/login");
@@ -71,7 +77,7 @@ const Signup = () => {
         console.log(err);
       });
   };
-  // 포스트맨에는 다 찍히는데 여기서 안된다 아마 내 코드 문제인듯 하다
+
   const onError = (errors) => {
     console.log(errors);
   };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import theme from "../styles/Theme";
 
@@ -40,7 +40,7 @@ const HeaderUl = styled.ul`
     }
   }
   .focused {
-    background-color: ${theme.colors.main};
+    color: ${theme.colors.main};
   }
   @media ${theme.media.height} {
     white-space: nowrap;
@@ -49,18 +49,47 @@ const HeaderUl = styled.ul`
 `;
 const Header = () => {
   const [head, setHead] = useState(0);
-  // 초기값은 인덱스로 준다
-  // 0이면 홈 1이면 로그인 2이면 회원가입
-  // 삼항 연산자로 각각의 버튼에 값을 지정해서 상항 연산자 사용해보자
-  const onClick = (index) => {
+  const navigate = useNavigate();
+  const [headTest, setHeadTest] = useState(true);
+  const headerMenu = [
+    { name: "Home" },
+    { name: "Sign in" },
+    { name: "Sign up" },
+    // slice로 나누는거 찾아보고 안되면 그냥 변수 2개로 두고 맵 2개 쓰기
+    // { name: "Post" },
+    // { name: "setting" },
+    // { name: "shtngur?" },
+  ];
+  const headCurrent = (index) => {
     setHead(index);
+    if (index === 0) {
+      navigate("/");
+    } else if (index === 1) {
+      navigate("/login");
+    } else if (index === 2) {
+      navigate("/signup");
+    }
   };
 
   return (
     <Headers>
       <HeaderConduit href="/">conduit</HeaderConduit>
       <HeaderUl>
-        <li>
+        {headerMenu.map((el, index) => {
+          return (
+            <button
+              key={index}
+              className={head === index ? "Head-item focused" : "Head-item"}
+              onClick={() => headCurrent(index)}
+            >
+              {el.name}
+
+              {/* {headTest ? el.name.slice(0, 3) : el.name.slice(3)} */}
+              {/* 이렇게 하니 이름에 슬라이스가 걸린다  */}
+            </button>
+          );
+        })}
+        {/* <li>
           <Link to="/">
             <button
               onClick={onClick}
@@ -87,7 +116,7 @@ const Header = () => {
           <Link to="/signup">
             <button className="Head-item">Sign up</button>
           </Link>
-        </li>
+        </li> */}
       </HeaderUl>
     </Headers>
   );
