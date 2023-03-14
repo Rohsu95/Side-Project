@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "editors",
+  "info": {
+    "singularName": "editor",
+    "pluralName": "editors",
+    "displayName": "editor"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "content": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "article": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    }
+  }
+}

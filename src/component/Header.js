@@ -35,6 +35,7 @@ const HeaderUl = styled.ul`
     border: none;
     background-color: white;
     cursor: pointer;
+    margin-right: 1rem;
     &:hover {
       color: ${theme.colors.title};
     }
@@ -50,7 +51,7 @@ const HeaderUl = styled.ul`
 const Header = () => {
   const [head, setHead] = useState(0);
   const navigate = useNavigate();
-  const [headTest, setHeadTest] = useState(true);
+  // const [headTest, setHeadTest] = useState(true);
   const headerMenu = [
     { name: "Home" },
     { name: "Sign in" },

@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
 import theme from "../../styles/Theme";
@@ -5,6 +6,7 @@ import theme from "../../styles/Theme";
 const EditorContainer = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: 1rem;
 
   input {
     width: 60vw;
@@ -13,6 +15,7 @@ const EditorContainer = styled.div`
     border-radius: 5px;
     padding-left: 1rem;
     border: 1px solid ${theme.colors.gray_01};
+    outline: none;
   }
 `;
 const TitleInput = styled.input`
@@ -67,28 +70,39 @@ const Editor = () => {
   const [enter, setEnter] = useState(false);
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
-  const [input, setInput] = useState({
-    title: "",
-    content: "",
-    article: "",
-    // tags: "",
-  });
+  // const [input, setInput] = useState({
+  //   title: "",
+  //   content: "",
+  //   article: "",
+  // });
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [article, setArticle] = useState("");
 
-  const { title, content, article } = input;
+  // const { title, content, article } = input;
   const TagsChange = (e) => {
     setTags(e.target.value);
   };
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setInput({
-      ...input,
-      [name]: value,
-    });
+  const onTitle = (e) => {
+    // const { name, value } = e.target;
+    // setInput({
+    //   ...input,
+    //   [name]: value,
+    // });
+    setTitle(e.target.value);
   };
-  console.log(input);
+  const onAreticle = (e) => {
+    setArticle(e.target.value);
+  };
+  const onContent = (e) => {
+    setContent(e.target.value);
+  };
 
   console.log("복사", tagsList);
+  console.log(title);
+  console.log(content);
+  console.log(article);
 
   const onKeyPress = (e) => {
     if (e.target.value.length !== 0 && e.key === "Enter") {
@@ -105,6 +119,34 @@ const Editor = () => {
   const onDelete = (id) => {
     setTagsList((tagsList) => tagsList.filter((el) => el.id !== id));
   };
+  // let datas = JSON.stringify(input);
+  // console.log(datas);
+
+  // console.log(tagsitem);
+  const onClick = async (data) => {
+    let tagsitem = JSON.stringify(tagsList);
+    // let tagsitem = String(tagsList);
+    try {
+      const response = await axios.post(
+        "http://localhost:1337/api/editors",
+        {
+          // data,
+          title: title,
+          content: content,
+          article: article,
+          tagsitem: tagsitem,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // 연락 오면 물어보고 안되면 그냥 세팅 페이지랑 디테일 페이지 만들자
+  // 나중에 페이지 이동시 로딩 문구 만들기
   return (
     <EditorContainer>
       <div>
@@ -112,21 +154,21 @@ const Editor = () => {
           type="text"
           name="title"
           value={title}
-          onChange={onChange}
+          onChange={onTitle}
           placeholder="Article Title"
         />
         <ContentInput
           type="text"
           name="content"
           value={content}
-          onChange={onChange}
+          onChange={onContent}
           placeholder="What's this article about"
         />
         <ArticleArea
           type="text"
           name="article"
           value={article}
-          onChange={onChange}
+          onChange={onAreticle}
           placeholder="Write your article (in markdown)"
         />
         <TagInput
@@ -145,7 +187,7 @@ const Editor = () => {
             </TagSpan>
           ))}
         </TagDiv>
-        <EditorBtn>Publish Article</EditorBtn>
+        <EditorBtn onClick={onClick}>Publish Article</EditorBtn>
       </div>
     </EditorContainer>
   );

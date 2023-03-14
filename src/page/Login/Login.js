@@ -4,13 +4,18 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import theme from "../../styles/Theme";
-const Container = styled.div``;
+const Container = styled.div`
+  margin-top: 2rem;
+`;
 
 const Sign = styled.div`
   text-align: center;
   margin-bottom: 2rem;
   .signup {
     display: inline;
+  }
+  h1 {
+    margin-bottom: 1rem;
   }
 `;
 const SignupLink = styled(Link)`

@@ -3,12 +3,14 @@ import { ThemeProvider } from "styled-components";
 import "./App.css";
 import Header from "./component/Header";
 import Nav from "./component/nav";
-import Main from "./Main/Main";
+import Mypage from "./page/Mypage/Mypage";
+import Main from "./page/Main/Main";
 import Editor from "./page/Editor/editor";
 import Login from "./page/Login/Login";
 import Signup from "./page/SignUp/Signup";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/Theme";
+import Detail from "./page/Detail/Detail";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/editor" element={<Editor />} />
+            <Route path="/mypage" element={<Mypage />} />
+            <Route path="/detail" element={<Detail />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
