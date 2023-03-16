@@ -24,6 +24,7 @@ const sizes = {
 };
 const fontSizes = {
   fs0: "0.5rem",
+  fs07: "0.75rem",
   fs1: "1rem",
   fs15: "1.5rem", // 본문 내용
   fs2: "2rem",

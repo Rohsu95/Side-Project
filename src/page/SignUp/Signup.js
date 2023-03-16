@@ -1,8 +1,12 @@
+import axios from "axios";
 import { useForm } from "react-hook-form";
-import { Link, useSubmit } from "react-router-dom";
+import { Link, useNavigate, useSubmit } from "react-router-dom";
 import styled from "styled-components";
 import theme from "../../styles/Theme";
-const Container = styled.div``;
+
+const Container = styled.div`
+  margin-top: 2rem;
+`;
 const SignupLink = styled(Link)`
   text-decoration: none;
   color: ${theme.colors.main};
@@ -12,6 +16,9 @@ const Sign = styled.div`
   margin-bottom: 2rem;
   .signup {
     display: inline;
+  }
+  h1 {
+    margin-bottom: 1rem;
   }
 `;
 const FormContainer = styled.div`
@@ -55,9 +62,27 @@ const Signup = () => {
     setError,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
-    console.log(data);
+    axios
+      .post(
+        "http://localhost:1337/api/signups",
+        { data },
+        {
+          // headers: { "Content-Type": "application/json" }, 안보내도 콘솔에 찍힘
+        }
+      )
+
+      .then((res) => {
+        navigate("/login");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
   const onError = (errors) => {
     console.log(errors);
   };
