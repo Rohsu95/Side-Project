@@ -71,8 +71,8 @@ const Login = () => {
   // 저녁에 먼저 메인 때 로그인 시 토큰 찍히는지 확인 하고 하자
   const onSubmit = (data) => {
     axios
-      // .post("http://localhost:1337/api/logins", {
-      .post("http://localhost:1337/auth/local", {
+      .post("http://localhost:1337/api/logins", {
+        // .post("http://localhost:1337/auth/local", {
         data,
       })
       .then((res) => {

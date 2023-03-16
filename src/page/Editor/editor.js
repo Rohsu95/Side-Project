@@ -70,39 +70,37 @@ const Editor = () => {
   const [enter, setEnter] = useState(false);
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
-  // const [input, setInput] = useState({
-  //   title: "",
-  //   content: "",
-  //   article: "",
-  // });
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [article, setArticle] = useState("");
+  const [input, setInput] = useState({
+    title: "",
+    content: "",
+    article: "",
+  });
+  // const [title, setTitle] = useState("");
+  // const [content, setContent] = useState("");
+  // const [article, setArticle] = useState("");
 
-  // const { title, content, article } = input;
+  const { title, content, article } = input;
   const TagsChange = (e) => {
     setTags(e.target.value);
   };
 
   const onTitle = (e) => {
-    // const { name, value } = e.target;
-    // setInput({
-    //   ...input,
-    //   [name]: value,
-    // });
-    setTitle(e.target.value);
+    const { name, value } = e.target;
+    setInput({
+      ...input,
+      [name]: value,
+    });
+    // setTitle(e.target.value);
   };
-  const onAreticle = (e) => {
-    setArticle(e.target.value);
-  };
-  const onContent = (e) => {
-    setContent(e.target.value);
-  };
+  // const onAreticle = (e) => {
+  //   setArticle(e.target.value);
+  // };
+  // const onContent = (e) => {
+  //   setContent(e.target.value);
+  // };
 
-  console.log("복사", tagsList);
-  console.log(title);
-  console.log(content);
-  console.log(article);
+  // console.log(input);
+  // console.log("복사", tagsList);
 
   const onKeyPress = (e) => {
     if (e.target.value.length !== 0 && e.key === "Enter") {
@@ -119,22 +117,20 @@ const Editor = () => {
   const onDelete = (id) => {
     setTagsList((tagsList) => tagsList.filter((el) => el.id !== id));
   };
-  // let datas = JSON.stringify(input);
-  // console.log(datas);
 
-  // console.log(tagsitem);
-  const onClick = async (data) => {
+  const onClick = async () => {
     let tagsitem = JSON.stringify(tagsList);
     // let tagsitem = String(tagsList);
     try {
       const response = await axios.post(
         "http://localhost:1337/api/editors",
         {
-          // data,
-          title: title,
-          content: content,
-          article: article,
-          tagsitem: tagsitem,
+          data: {
+            title: title,
+            content: content,
+            article: article,
+            tags: tagsitem,
+          },
         },
         {
           headers: { "Content-Type": "application/json" },
@@ -142,11 +138,10 @@ const Editor = () => {
       );
       console.log(response);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
-  // 연락 오면 물어보고 안되면 그냥 세팅 페이지랑 디테일 페이지 만들자
-  // 나중에 페이지 이동시 로딩 문구 만들기
+  // 메인 프젝에 통신 네트워크에서 여기 처럼 배열에 문자열 드가는지 확인 해보고 통신 제발 성공 하자
   return (
     <EditorContainer>
       <div>
@@ -161,14 +156,14 @@ const Editor = () => {
           type="text"
           name="content"
           value={content}
-          onChange={onContent}
+          onChange={onTitle}
           placeholder="What's this article about"
         />
         <ArticleArea
           type="text"
           name="article"
           value={article}
-          onChange={onAreticle}
+          onChange={onTitle}
           placeholder="Write your article (in markdown)"
         />
         <TagInput

@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "editors",
+  "collectionName": "details",
   "info": {
-    "singularName": "editor",
-    "pluralName": "editors",
-    "displayName": "editor",
+    "singularName": "detail",
+    "pluralName": "details",
+    "displayName": "Detail",
     "description": ""
   },
   "options": {
@@ -12,18 +12,22 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "comment": {
+      "type": "string"
+    },
     "title": {
       "type": "string",
-      "required": true,
-      "unique": false
+      "unique": true,
+      "required": true
     },
     "content": {
       "type": "string",
-      "unique": false,
+      "unique": true,
       "required": true
     },
     "article": {
       "type": "string",
+      "unique": true,
       "required": true
     },
     "tags": {

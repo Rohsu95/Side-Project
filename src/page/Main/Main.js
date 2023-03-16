@@ -95,7 +95,6 @@ const Info = styled.div`
   justify-content: space-between;
   .info {
     display: flex;
-
     flex-direction: column;
   }
   .Like {
