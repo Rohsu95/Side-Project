@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import theme from "../../styles/Theme";
 const Container = styled.div`
@@ -59,8 +59,10 @@ const FormContainer = styled.div`
     background-color: ${theme.colors.main};
   }
 `;
-
+// 유저에 정보가 들어가야해
+//
 const Login = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -69,17 +71,20 @@ const Login = () => {
   // 쿠키 토큰 쓰는 법으로 넣어보기
   // 메인 화면 먼저 만들고 로그인 시 헤더 바꾸고 뉴 포스트 후 셋팅 ㄱ
   // 저녁에 먼저 메인 때 로그인 시 토큰 찍히는지 확인 하고 하자
-  const onSubmit = (data) => {
-    axios
-      .post("http://localhost:1337/api/logins", {
-        // .post("http://localhost:1337/auth/local", {
-        data,
+  // http://localhost:1337/api/auth/local/register
+  const onSubmit = async (data) => {
+    await axios
+      .post("http://localhost:1337/api/auth/local", {
+        identifier: data.identifier,
+        password: data.password,
       })
       .then((res) => {
         console.log(res);
+        navigate("/");
       })
       .catch((err) => {
         console.log(err);
+        console.log(data);
       });
   };
   const onError = (errors) => {
@@ -97,7 +102,7 @@ const Login = () => {
       <FormContainer>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <input
-            {...register("email", {
+            {...register("identifier", {
               required: "12자 이상 20자 이하의 email을 입력해 주세요",
               minLength: {
                 value: 12,
@@ -112,7 +117,7 @@ const Login = () => {
             className="Input"
             placeholder="Email"
           />
-          <span>{errors?.email?.message}</span>
+          <span>{errors?.identifier?.message}</span>
 
           <input
             className="Input"

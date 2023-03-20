@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import theme from "../../styles/Theme";
 
@@ -22,10 +23,10 @@ const TitleInput = styled.input`
   font-size: 1.25rem;
   height: 4.5vh;
 `;
-const ContentInput = styled.input`
+const ArticleInput = styled.input`
   height: 3vh;
 `;
-const ArticleArea = styled.textarea`
+const ContentArea = styled.textarea`
   width: 60vw;
   height: 15vh;
   margin-top: 1rem;
@@ -78,7 +79,7 @@ const Editor = () => {
   // const [title, setTitle] = useState("");
   // const [content, setContent] = useState("");
   // const [article, setArticle] = useState("");
-
+  const navigate = useNavigate();
   const { title, content, article } = input;
   const TagsChange = (e) => {
     setTags(e.target.value);
@@ -117,19 +118,21 @@ const Editor = () => {
   const onDelete = (id) => {
     setTagsList((tagsList) => tagsList.filter((el) => el.id !== id));
   };
-
+  // 만약 1개만 쓴다면 네임하고 다 들어가있고 그럼 이펙에서만 조절?
   const onClick = async () => {
-    let tagsitem = JSON.stringify(tagsList);
-    // let tagsitem = String(tagsList);
+    // let tagsitem = JSON.stringify(tagsList);
+    let tagsitem = String(tagsList);
     try {
       const response = await axios.post(
-        "http://localhost:1337/api/editors",
+        "http://localhost:1337/api/reals",
         {
           data: {
+            // reals: {
             title: title,
             content: content,
             article: article,
             tags: tagsitem,
+            // },
           },
         },
         {
@@ -137,6 +140,7 @@ const Editor = () => {
         }
       );
       console.log(response);
+      // navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -152,17 +156,17 @@ const Editor = () => {
           onChange={onTitle}
           placeholder="Article Title"
         />
-        <ContentInput
-          type="text"
-          name="content"
-          value={content}
-          onChange={onTitle}
-          placeholder="What's this article about"
-        />
-        <ArticleArea
+        <ArticleInput
           type="text"
           name="article"
           value={article}
+          onChange={onTitle}
+          placeholder="What's this article about"
+        />
+        <ContentArea
+          type="text"
+          name="content"
+          value={content}
           onChange={onTitle}
           placeholder="Write your article (in markdown)"
         />
