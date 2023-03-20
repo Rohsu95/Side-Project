@@ -67,8 +67,13 @@ const Signup = () => {
   const onSubmit = (data) => {
     axios
       .post(
-        "http://localhost:1337/api/signups",
-        { data },
+        "http://localhost:1337/api/auth/local/register",
+        {
+          // data,
+          email: data.email,
+          password: data.password,
+          username: data.username,
+        },
         {
           // headers: { "Content-Type": "application/json" }, 안보내도 콘솔에 찍힘
         }
@@ -80,6 +85,7 @@ const Signup = () => {
       })
       .catch((err) => {
         console.log(err);
+        console.log(data.email);
       });
   };
 
