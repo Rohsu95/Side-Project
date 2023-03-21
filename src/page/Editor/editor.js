@@ -124,7 +124,7 @@ const Editor = () => {
     let tagsitem = String(tagsList);
     try {
       const response = await axios.post(
-        "http://localhost:1337/api/reals",
+        "http://localhost:1337/api/reals?populate=*",
         {
           data: {
             // reals: {

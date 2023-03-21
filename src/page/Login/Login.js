@@ -1,5 +1,6 @@
 import axios from "axios";
 import React from "react";
+import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -63,6 +64,7 @@ const FormContainer = styled.div`
 //
 const Login = () => {
   const navigate = useNavigate();
+  const cookie = new Cookies();
   const {
     register,
     handleSubmit,
@@ -79,6 +81,8 @@ const Login = () => {
         password: data.password,
       })
       .then((res) => {
+        const token = res.data.jwt;
+        cookie.set("token", token);
         console.log(res);
         navigate("/");
       })
@@ -90,7 +94,7 @@ const Login = () => {
   const onError = (errors) => {
     console.log(errors);
   };
-
+  // 현재 상황 회원가입 완료 된거 같고 로그인은 통신 연결 했고 토큰 받아야 하며 글 쓰기에서 아직 이메일이 저장이 안됌 ㅅㅂ ㄴㅌ
   return (
     <Container>
       <Sign>
