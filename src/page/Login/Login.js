@@ -70,10 +70,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  // 쿠키 토큰 쓰는 법으로 넣어보기
-  // 메인 화면 먼저 만들고 로그인 시 헤더 바꾸고 뉴 포스트 후 셋팅 ㄱ
-  // 저녁에 먼저 메인 때 로그인 시 토큰 찍히는지 확인 하고 하자
-  // http://localhost:1337/api/auth/local/register
+
   const onSubmit = async (data) => {
     await axios
       .post("http://localhost:1337/api/auth/local", {
@@ -83,6 +80,11 @@ const Login = () => {
       .then((res) => {
         const token = res.data.jwt;
         cookie.set("token", token);
+        const userEmail = res.data.user.email;
+        const userName = res.data.user.username;
+        localStorage.setItem("userEmail", userEmail);
+        localStorage.setItem("username", userName);
+        localStorage.setItem("token", token);
         console.log(res);
         navigate("/");
       })

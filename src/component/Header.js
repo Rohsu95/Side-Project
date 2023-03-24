@@ -97,7 +97,7 @@ const Header = () => {
     } else if (index === 1) {
       navigate("/editor");
     } else if (index === 2) {
-      navigate("/");
+      navigate("/setting");
     } else if (index === 3) {
       navigate("/mypage");
     }

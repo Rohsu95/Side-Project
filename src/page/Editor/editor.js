@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getCookie } from "../../Cookies";
 import theme from "../../styles/Theme";
 
 const EditorContainer = styled.div`
@@ -120,26 +121,27 @@ const Editor = () => {
   };
   // 만약 1개만 쓴다면 네임하고 다 들어가있고 그럼 이펙에서만 조절?
   const onClick = async () => {
-    // let tagsitem = JSON.stringify(tagsList);
     let tagsitem = String(tagsList);
+    const jwtToken = getCookie("token") || localStorage.getItem("token");
     try {
       const response = await axios.post(
         "http://localhost:1337/api/reals?populate=*",
         {
           data: {
-            // reals: {
             title: title,
             content: content,
             article: article,
             tags: tagsitem,
-            // },
           },
         },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
         }
       );
       console.log(response);
+      console.log(jwtToken);
       // navigate("/");
     } catch (error) {
       console.log(error);
