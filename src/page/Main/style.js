@@ -1,16 +1,18 @@
 import styled from "styled-components";
 import theme from "../../styles/Theme";
 
+export const MainContainer = styled.div``;
+
 export const MainImg = styled.div`
   height: 11rem;
-  background-color: ${theme.colors.content};
+  background-color: ${theme.colors.main};
   text-align: center;
   padding: 1rem;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
     rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 
-  .Containers {
-    /* color: ${theme.colors.white}; */
+  .Container {
+    color: ${theme.colors.white};
     font-weight: 700;
     font-size: ${theme.fontSizes.fs25};
     margin-top: 1.5rem;
@@ -19,33 +21,13 @@ export const MainImg = styled.div`
       padding: 0.55rem;
     }
   }
-  .Spans {
-    /* color: ${theme.colors.black}; */
+  .Span {
+    color: ${theme.colors.white};
     font-size: ${theme.fontSizes.fs15};
     margin-top: 1rem;
     @media ${theme.media.height} {
       font-size: ${theme.fontSizes.fs1};
       padding: 0.55rem;
-    }
-  }
-`;
-export const Edit = styled.div`
-  float: right;
-  margin-right: 3rem;
-  .EditA {
-    display: flex;
-    padding: 0.25rem 0.5rem;
-    border-radius: 5px;
-    align-items: center;
-    text-decoration: none;
-    color: ${theme.colors.gray_02};
-    border: 2px solid ${theme.colors.gray_03};
-    &:hover {
-      color: ${theme.colors.gray_04};
-      border: 2px solid ${theme.colors.gray_04};
-    }
-    @media ${theme.media.height} {
-      font-size: ${theme.fontSizes.fs0};
     }
   }
 `;
@@ -133,18 +115,12 @@ export const MapTime = styled.span`
 `;
 export const MapLike = styled.button`
   /* width: 6.5vw; */
-  padding: 0 0.5rem;
+  padding: 0 0.25rem;
   height: 2.5vh;
   border-radius: 5px;
   border: 1px solid ${theme.colors.main};
   background-color: white;
 
-  svg {
-    margin-right: 0.25rem;
-  }
-  &:hover {
-    background-color: ${theme.colors.main};
-  }
   @media ${theme.media.height} {
     font-size: ${theme.fontSizes.fs0};
   }

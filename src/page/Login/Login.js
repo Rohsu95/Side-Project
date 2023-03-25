@@ -3,63 +3,7 @@ import React from "react";
 import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import theme from "../../styles/Theme";
-const Container = styled.div`
-  margin-top: 2rem;
-`;
-
-const Sign = styled.div`
-  text-align: center;
-  margin-bottom: 2rem;
-  .signup {
-    display: inline;
-  }
-  h1 {
-    margin-bottom: 1rem;
-  }
-`;
-const SignupLink = styled(Link)`
-  text-decoration: none;
-  color: ${theme.colors.main};
-`;
-const FormContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  span {
-    font-size: 0.75rem;
-    display: block;
-    margin-bottom: 1.25rem;
-    color: red;
-  }
-
-  .Input {
-    /* border: 2px solid red; */
-    /* width: 150%; */
-    /* padding: 0.75rem 8rem; */
-    width: 30rem;
-    height: 3.25rem;
-    padding: 0 0.75rem;
-    font-size: 1.25rem;
-    display: block;
-    border-radius: 5px;
-    border: 1px solid ${theme.colors.gray_03};
-    @media ${theme.media.height} {
-      width: 20rem;
-    }
-  }
-  button {
-    border: 0;
-    width: 6rem;
-    float: right;
-    height: 2.75rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: ${theme.fontSizes.fs1};
-    color: ${theme.colors.white};
-    background-color: ${theme.colors.main};
-  }
-`;
+import * as s from "./style";
 // 유저에 정보가 들어가야해
 //
 const Login = () => {
@@ -98,14 +42,14 @@ const Login = () => {
   };
   // 현재 상황 회원가입 완료 된거 같고 로그인은 통신 연결 했고 토큰 받아야 하며 글 쓰기에서 아직 이메일이 저장이 안됌 ㅅㅂ ㄴㅌ
   return (
-    <Container>
-      <Sign>
+    <s.Container>
+      <s.Sign>
         <h1>Sign In</h1>
-        <SignupLink to="/signup">
+        <s.SignupLink to="/signup">
           <p className="signup">Need an account?</p>
-        </SignupLink>
-      </Sign>
-      <FormContainer>
+        </s.SignupLink>
+      </s.Sign>
+      <s.FormContainer>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <input
             {...register("identifier", {
@@ -144,8 +88,8 @@ const Login = () => {
           <span>{errors?.password?.message}</span>
           <button>Sign in</button>
         </form>
-      </FormContainer>
-    </Container>
+      </s.FormContainer>
+    </s.Container>
   );
 };
 export default Login;

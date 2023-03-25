@@ -1,60 +1,8 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useSubmit } from "react-router-dom";
-import styled from "styled-components";
-import theme from "../../styles/Theme";
+import * as s from "./style";
 
-const Container = styled.div`
-  margin-top: 2rem;
-`;
-const SignupLink = styled(Link)`
-  text-decoration: none;
-  color: ${theme.colors.main};
-`;
-const Sign = styled.div`
-  text-align: center;
-  margin-bottom: 2rem;
-  .signup {
-    display: inline;
-  }
-  h1 {
-    margin-bottom: 1rem;
-  }
-`;
-const FormContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  span {
-    font-size: 0.75rem;
-    display: block;
-    margin-bottom: 1.25rem;
-    color: red;
-  }
-
-  .Input {
-    width: 30rem;
-    height: 3.25rem;
-    padding: 0 0.75rem;
-    font-size: 1.25rem;
-    display: block;
-    border-radius: 5px;
-    border: 1px solid ${theme.colors.gray_03};
-    @media ${theme.media.height} {
-      width: 20rem;
-    }
-  }
-  button {
-    border: 0;
-    width: 6rem;
-    float: right;
-    height: 2.75rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: ${theme.fontSizes.fs1};
-    color: ${theme.colors.white};
-    background-color: ${theme.colors.main};
-  }
-`;
 const Signup = () => {
   const {
     register,
@@ -93,14 +41,14 @@ const Signup = () => {
     console.log(errors);
   };
   return (
-    <Container>
-      <Sign>
+    <s.Container>
+      <s.Sign>
         <h1>Sign up</h1>
-        <SignupLink to="/login">
+        <s.SignupLink to="/login">
           <p className="signup">Have an account?</p>
-        </SignupLink>
-      </Sign>
-      <FormContainer>
+        </s.SignupLink>
+      </s.Sign>
+      <s.FormContainer>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <input
             type="text"
@@ -161,8 +109,8 @@ const Signup = () => {
             Sign up
           </button>
         </form>
-      </FormContainer>
-    </Container>
+      </s.FormContainer>
+    </s.Container>
   );
 };
 export default Signup;
