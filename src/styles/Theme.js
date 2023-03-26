@@ -24,6 +24,7 @@ const sizes = {
   small: "360px",
 };
 const fontSizes = {
+  fs02: "0.25rem",
   fs0: "0.5rem",
   fs07: "0.75rem",
   fs1: "1rem",

@@ -1,8 +1,9 @@
 import axios from "axios";
+import { useState } from "react";
 
 const url = `http://localhost:1337/api`;
 
-export const getWrite = async (token) => {
+export const getUser = async (token) => {
   try {
     const res = await axios({
       url: `${url}/users/me`,
@@ -10,6 +11,22 @@ export const getWrite = async (token) => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    // console.log("login", res.data);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getWrite = async (token) => {
+  try {
+    const res = await axios({
+      url: `${url}/reals`,
+      method: "get",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // console.log("real정보", res.data);
     return res.data;
   } catch (err) {
     console.log(err);
