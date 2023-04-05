@@ -86,7 +86,12 @@ export const MainUl = styled.ul`
 `;
 export const MainMap = styled.div`
   margin: 2rem 3rem 0 3rem;
+  /* border-bottom: 2px solid ${theme.colors.gray_03}; */
+`;
+
+export const MainBorder = styled.div`
   border-bottom: 2px solid ${theme.colors.gray_03};
+  margin-bottom: 1rem;
 `;
 export const MapPicture = styled.a`
   display: flex;
@@ -132,7 +137,7 @@ export const MapTime = styled.span`
   color: ${theme.colors.content};
 `;
 export const MapLike = styled.button`
-  /* width: 6.5vw; */
+  cursor: pointer;
   padding: 0 0.5rem;
   height: 2.5vh;
   border-radius: 5px;
@@ -141,6 +146,10 @@ export const MapLike = styled.button`
 
   svg {
     margin-right: 0.25rem;
+
+    @media ${theme.media.height} {
+      font-size: ${theme.fontSizes.fs07};
+    }
   }
   &:hover {
     background-color: ${theme.colors.main};

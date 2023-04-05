@@ -66,9 +66,14 @@ export const MainUl = styled.ul`
     }
   }
 `;
+
+export const MainBorder = styled.div`
+  border-bottom: 2px solid ${theme.colors.gray_03};
+  margin-bottom: 1rem;
+`;
+
 export const MainMap = styled.div`
   margin: 2rem 3rem 0 3rem;
-  border-bottom: 2px solid ${theme.colors.gray_03};
 `;
 export const MapPicture = styled.a`
   display: flex;
@@ -114,13 +119,24 @@ export const MapTime = styled.span`
   color: ${theme.colors.content};
 `;
 export const MapLike = styled.button`
-  /* width: 6.5vw; */
-  padding: 0 0.25rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
   height: 2.5vh;
   border-radius: 5px;
   border: 1px solid ${theme.colors.main};
   background-color: white;
 
+  &:hover {
+    background-color: ${theme.colors.main};
+  }
+
+  svg {
+    margin-right: 0.25rem;
+
+    @media ${theme.media.height} {
+      font-size: ${theme.fontSizes.fs07};
+    }
+  }
   @media ${theme.media.height} {
     font-size: ${theme.fontSizes.fs0};
   }
@@ -158,4 +174,9 @@ export const MapUl = styled.ul`
     border-radius: 20px;
     margin-left: 0.5rem;
   }
+`;
+export const Loading = styled.div`
+  margin-left: 3rem;
+  margin-top: 1rem;
+  font-size: ${theme.fontSizes.fs15};
 `;

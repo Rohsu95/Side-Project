@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import imgs from "../../profile.jpg";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
 import * as s from "./style";
-// 현재 상태값을 넣어줬다
-// 클릭 시 담아줘야 한다
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteWrite, getUser, getWrite } from "../../api/userAPI";
+import { Cookies } from "react-cookie";
+
 const Detail = () => {
   const [commentInput, setCommentInput] = useState("");
   const [commentInputCopy, setCommentInputCopy] = useState([]);
+  const [your, setYour] = useState([]);
+  const navigate = useNavigate();
+  const cookie = new Cookies();
+  const Token = cookie.get("token");
+  const { id } = useParams();
   const onCommentChange = (e) => {
     setCommentInput(e.target.value);
   };
@@ -17,13 +24,46 @@ const Detail = () => {
   };
   console.log(commentInput);
   console.log("copy", commentInputCopy);
+
+  const DeleteClick = async () => {
+    if (!window.confirm("정말 삭제 하시겠습니까?")) {
+      alert("취소했습니다.");
+    } else {
+      await deleteWrite(Token, id);
+      navigate("/");
+    }
+  };
+  useEffect(() => {
+    async function getUserData() {
+      try {
+        const local = localStorage.getItem("token");
+        if (local) {
+          const userInfo = await getUser(local);
+          const writeInfo = await getWrite(local);
+
+          const userData = {
+            userInfo,
+            writeInfo,
+          };
+          setYour([userData]);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getUserData();
+  }, []);
+  console.log(your);
   return (
     <s.Container>
       <s.DetailContainer>
         <div className="info">
           <h1>
-            If we quantify the alarm, we can get to the FTP pixel through the
-            online SSL interface!
+            {your[0] &&
+              your[0].writeInfo &&
+              your[0].writeInfo.data &&
+              your[0].writeInfo.data.attributes &&
+              your[0].writeInfo.data.attributes.title}
           </h1>
           <s.DetailInfo>
             <div className="detailLine">
@@ -31,7 +71,9 @@ const Detail = () => {
                 <s.DetailImg src={imgs} alt="이미지" />
               </s.DetailA>
               <div className="name">
-                <s.DetailName href="/mypage">shtngur</s.DetailName>
+                <s.DetailName href="/mypage">
+                  {your[0]?.userInfo?.username}
+                </s.DetailName>
                 <s.DetailDate>mon 03 2023</s.DetailDate>
               </div>
               <s.InfoBtn
@@ -40,6 +82,7 @@ const Detail = () => {
                 hover="#282A3A"
                 hover_color="white"
                 margin="0.5rem"
+                onClick={() => navigate("/setting")}
               >
                 <CiEdit />
                 Edit Article
@@ -49,6 +92,7 @@ const Detail = () => {
                 color="#A86464"
                 hover="#A84448"
                 hover_color="white"
+                onClick={DeleteClick}
               >
                 <RiDeleteBinLine />
                 Delete Article

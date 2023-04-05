@@ -1,4 +1,6 @@
 import axios from "axios";
+import { authService } from "fBase";
+import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React from "react";
 import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
@@ -16,26 +18,40 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    await axios
-      .post("http://localhost:1337/api/auth/local", {
-        identifier: data.identifier,
-        password: data.password,
-      })
-      .then((res) => {
-        const token = res.data.jwt;
-        cookie.set("token", token);
-        const userEmail = res.data.user.email;
-        const userName = res.data.user.username;
-        localStorage.setItem("userEmail", userEmail);
-        localStorage.setItem("username", userName);
-        localStorage.setItem("token", token);
-        console.log(res);
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log(data);
-      });
+    try {
+      const { user } = await signInWithEmailAndPassword(
+        authService,
+        data.email,
+        data.password
+      );
+
+      console.log("user", user);
+      const token = user.refreshToken;
+      cookie.set("token", token);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+    //   await axios
+    //     .post("http://localhost:1337/api/auth/local", {
+    //       identifier: data.identifier,
+    //       password: data.password,
+    //     })
+    //     .then((res) => {
+    //       const token = res.data.jwt;
+    //       cookie.set("token", token);
+    //       const userEmail = res.data.user.email;
+    //       const userName = res.data.user.username;
+    //       localStorage.setItem("userEmail", userEmail);
+    //       localStorage.setItem("username", userName);
+    //       localStorage.setItem("token", token);
+    //       console.log(res);
+    //       navigate("/");
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       console.log(data);
+    //     });
   };
   const onError = (errors) => {
     console.log(errors);
@@ -52,7 +68,7 @@ const Login = () => {
       <s.FormContainer>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <input
-            {...register("identifier", {
+            {...register("email", {
               required: "12자 이상 20자 이하의 email을 입력해 주세요",
               minLength: {
                 value: 12,
@@ -67,7 +83,7 @@ const Login = () => {
             className="Input"
             placeholder="Email"
           />
-          <span>{errors?.identifier?.message}</span>
+          <span>{errors?.email?.message}</span>
 
           <input
             className="Input"

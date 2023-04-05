@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2023-03-26T13:35:07.502Z"
+    "x-generation-date": "2023-03-28T12:44:46.806Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -6984,6 +6984,9 @@
               },
               "tags": {
                 "type": "string"
+              },
+              "like": {
+                "type": "integer"
               }
             }
           }
@@ -7541,6 +7544,9 @@
                                           "tags": {
                                             "type": "string"
                                           },
+                                          "like": {
+                                            "type": "integer"
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -7654,6 +7660,9 @@
               },
               "tags": {
                 "type": "string"
+              },
+              "like": {
+                "type": "integer"
               },
               "createdAt": {
                 "type": "string",
@@ -8257,6 +8266,9 @@
                                           "tags": {
                                             "type": "string"
                                           },
+                                          "like": {
+                                            "type": "integer"
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -8370,6 +8382,9 @@
               },
               "tags": {
                 "type": "string"
+              },
+              "like": {
+                "type": "integer"
               },
               "createdAt": {
                 "type": "string",
@@ -9006,6 +9021,9 @@
                                           "tags": {
                                             "type": "string"
                                           },
+                                          "like": {
+                                            "type": "integer"
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -9119,6 +9137,9 @@
               },
               "tags": {
                 "type": "string"
+              },
+              "like": {
+                "type": "integer"
               },
               "createdAt": {
                 "type": "string",
@@ -9722,6 +9743,9 @@
                                           "tags": {
                                             "type": "string"
                                           },
+                                          "like": {
+                                            "type": "integer"
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -9835,6 +9859,9 @@
               },
               "tags": {
                 "type": "string"
+              },
+              "like": {
+                "type": "integer"
               },
               "createdAt": {
                 "type": "string",
@@ -16884,6 +16911,9 @@
                                                       "tags": {
                                                         "type": "string"
                                                       },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -17573,6 +17603,9 @@
                                                       },
                                                       "tags": {
                                                         "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
                                                       },
                                                       "createdAt": {
                                                         "type": "string",
@@ -18297,6 +18330,9 @@
                                                       "tags": {
                                                         "type": "string"
                                                       },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -18987,6 +19023,9 @@
                                                       "tags": {
                                                         "type": "string"
                                                       },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -19448,6 +19487,9 @@
                                                                     },
                                                                     "tags": {
                                                                       "type": "string"
+                                                                    },
+                                                                    "like": {
+                                                                      "type": "integer"
                                                                     },
                                                                     "createdAt": {
                                                                       "type": "string",
@@ -20167,6 +20209,9 @@
                                                                     },
                                                                     "tags": {
                                                                       "type": "string"
+                                                                    },
+                                                                    "like": {
+                                                                      "type": "integer"
                                                                     },
                                                                     "createdAt": {
                                                                       "type": "string",
@@ -20920,6 +20965,9 @@
                                                                     "tags": {
                                                                       "type": "string"
                                                                     },
+                                                                    "like": {
+                                                                      "type": "integer"
+                                                                    },
                                                                     "createdAt": {
                                                                       "type": "string",
                                                                       "format": "date-time"
@@ -21638,6 +21686,9 @@
                                                                     },
                                                                     "tags": {
                                                                       "type": "string"
+                                                                    },
+                                                                    "like": {
+                                                                      "type": "integer"
                                                                     },
                                                                     "createdAt": {
                                                                       "type": "string",
@@ -22765,6 +22816,9 @@
                                                       "tags": {
                                                         "type": "string"
                                                       },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -23511,6 +23565,9 @@
                                                       },
                                                       "tags": {
                                                         "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
                                                       },
                                                       "createdAt": {
                                                         "type": "string",
@@ -24292,6 +24349,9 @@
                                                       "tags": {
                                                         "type": "string"
                                                       },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -25038,6 +25098,9 @@
                                                       },
                                                       "tags": {
                                                         "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
                                                       },
                                                       "createdAt": {
                                                         "type": "string",

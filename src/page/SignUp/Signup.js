@@ -1,6 +1,9 @@
-import axios from "axios";
+import { authService, db, firebase } from "fBase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useSubmit } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 
 const Signup = () => {
@@ -12,29 +15,21 @@ const Signup = () => {
   } = useForm();
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    axios
-      .post(
-        "http://localhost:1337/api/auth/local/register",
-        {
-          // data,
-          email: data.email,
-          password: data.password,
-          username: data.username,
-        },
-        {
-          // headers: { "Content-Type": "application/json" }, 안보내도 콘솔에 찍힘
-        }
-      )
+  const onSubmit = async (data) => {
+    try {
+      const { user } = await createUserWithEmailAndPassword(
+        authService,
+        data.email,
+        data.password
+      );
+      console.log("user", user);
+      // displayName
+      await updateProfile(user, { displayName: data.username });
 
-      .then((res) => {
-        navigate("/login");
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log(data.email);
-      });
+      navigate("/login");
+    } catch (error) {
+      alert("이미 가입된 정보 입니다");
+    }
   };
 
   const onError = (errors) => {

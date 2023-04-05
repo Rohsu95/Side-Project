@@ -38,6 +38,10 @@
     },
     "tags": {
       "type": "string"
+    },
+    "like": {
+      "type": "integer",
+      "default": 0
     }
   }
 }

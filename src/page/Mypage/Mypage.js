@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FcLikePlaceholder } from "react-icons/fc";
+import { getUser, getWrite } from "../../api/userAPI";
 import imgs from "../../profile.jpg";
 import * as s from "./style";
 
@@ -11,6 +12,24 @@ const Mypage = () => {
   const mypageCurrent = (index) => {
     setMenu(index);
   };
+
+  useEffect(() => {
+    async function getUserData() {
+      try {
+        const local = localStorage.getItem("token");
+        const userInfo = await getUser(local);
+        const writeInfo = await getWrite(local);
+        const userData = {
+          userInfo,
+          writeInfo,
+        };
+        setYour([userData]);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getUserData();
+  }, []);
   return (
     <div>
       <s.MainImg>
@@ -38,45 +57,47 @@ const Mypage = () => {
           })}
         </s.MainUl>
       </div>
-      {/* {your.length > 0 &&
-        your.map((item, key) => ( */}
-      {/* <MainMap key={key}> */}
-      <s.MainMap>
-        <s.MapInfo>
-          <s.MapPicture href="/mypage">
-            <s.Img src={imgs} alt="profile" />
-          </s.MapPicture>
-          <s.Info>
-            <div className="info">
-              <s.MapName href="/mypage">shtngur</s.MapName>
-              <s.MapTime>나ㄹ짜 적ㅣ</s.MapTime>
-            </div>
-            <div className="Like">
-              <s.MapLike>
-                <FcLikePlaceholder />
-                {/* {item.attributes.like} */}0
-              </s.MapLike>
-            </div>
-          </s.Info>
-        </s.MapInfo>
-        <s.MapContent>
-          <s.MapTitle href="/detail">
-            <h1 className="title">{/* {item.attributes.title} */}타이틀</h1>
-            <p className="content">
-              {/* {item.attributes.content} */}
-              내용
-            </p>
-            <span className="span">Read more...</span>
-            <s.MapUl>
-              <li>
-                {/* {item.attributes.tags} */}
-                tags
-              </li>
-            </s.MapUl>
-          </s.MapTitle>
-        </s.MapContent>
-      </s.MainMap>
-      {/* ))} */}
+      {your && your.length > 0 ? (
+        your.map((item, key) => (
+          <s.MainMap key={key}>
+            {item.writeInfo.data.map((writeItem, writeKey) => (
+              <s.MainBorder key={writeKey}>
+                <s.MapInfo>
+                  <s.MapPicture href="/mypage">
+                    <s.Img src={imgs} alt="profile" />
+                  </s.MapPicture>
+                  <s.Info>
+                    <div className="info">
+                      <s.MapName href="/mypage">
+                        {item?.userInfo?.username}
+                      </s.MapName>
+                      <s.MapTime>2023/03/27</s.MapTime>
+                    </div>
+                    <div className="Like">
+                      <s.MapLike>
+                        <FcLikePlaceholder />
+                        {/* {item.attributes.like} */}0
+                      </s.MapLike>
+                    </div>
+                  </s.Info>
+                </s.MapInfo>
+                <s.MapContent>
+                  <s.MapTitle href="/detail">
+                    <h1 className="title">{writeItem.attributes?.title}</h1>
+                    <p className="content">{writeItem.attributes?.content}</p>
+                    <span className="span">Read more...</span>
+                    <s.MapUl>
+                      <li>{writeItem.attributes?.tags}</li>
+                    </s.MapUl>
+                  </s.MapTitle>
+                </s.MapContent>
+              </s.MainBorder>
+            ))}
+          </s.MainMap>
+        ))
+      ) : (
+        <div>Lodding...</div>
+      )}
     </div>
   );
 };
