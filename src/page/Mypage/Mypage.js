@@ -13,23 +13,6 @@ const Mypage = () => {
     setMenu(index);
   };
 
-  useEffect(() => {
-    async function getUserData() {
-      try {
-        const local = localStorage.getItem("token");
-        const userInfo = await getUser(local);
-        const writeInfo = await getWrite(local);
-        const userData = {
-          userInfo,
-          writeInfo,
-        };
-        setYour([userData]);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    getUserData();
-  }, []);
   return (
     <div>
       <s.MainImg>

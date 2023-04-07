@@ -63,7 +63,7 @@ const HeaderUl = styled.ul`
     font-size: 0.8rem;
   }
 `;
-const Header = () => {
+const Header = ({ displayName }) => {
   const cookies = new Cookies();
   const token = cookies.get("token");
   const [head, setHead] = useState(0);
@@ -78,7 +78,7 @@ const Header = () => {
     { name: "Home" },
     { name: "New Post" },
     { name: "setting" },
-    { name: "shtngur?" },
+    { name: displayName },
   ];
   const headCurrent = (index) => {
     setHead(index);
@@ -106,7 +106,6 @@ const Header = () => {
     token ? setHeadTest(true) : setHeadTest(false);
   }, [token]);
 
-  // BiEdit; 수정 AiOutlineSetting 세팅
   return (
     <Headers>
       <HeaderConduit href="/">conduit</HeaderConduit>

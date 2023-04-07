@@ -12,23 +12,42 @@ import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/Theme";
 import Detail from "./page/Detail/Detail";
 import Setting from "./page/Setting/Setting";
+import { useEffect, useState } from "react";
+import { authService } from "fBase";
 
 function App() {
+  const [displayName, setDisplayName] = useState("");
+
+  // displayName 불러오기
+  useEffect(() => {
+    const unsubscribe = authService.onAuthStateChanged((user) => {
+      if (user) {
+        setDisplayName(user.displayName);
+      }
+    });
+    return unsubscribe;
+  }, []);
   return (
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <Header />
+          <Header displayName={displayName} />
           <Nav />
           <Routes>
-            <Route path="/" element={<Main />} />
+            <Route path="/" element={<Main displayName={displayName} />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/editor" element={<Editor />} />
             <Route path="/mypage" element={<Mypage />} />
-            <Route path="/detail" element={<Detail />} />
-            <Route path="/setting" element={<Setting />} />
+            <Route
+              path="/detail/:id"
+              element={<Detail displayName={displayName} />}
+            />
+            <Route
+              path="/setting"
+              element={<Setting displayName={displayName} />}
+            />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

@@ -32,31 +32,11 @@ const Login = () => {
     } catch (error) {
       console.log(error);
     }
-    //   await axios
-    //     .post("http://localhost:1337/api/auth/local", {
-    //       identifier: data.identifier,
-    //       password: data.password,
-    //     })
-    //     .then((res) => {
-    //       const token = res.data.jwt;
-    //       cookie.set("token", token);
-    //       const userEmail = res.data.user.email;
-    //       const userName = res.data.user.username;
-    //       localStorage.setItem("userEmail", userEmail);
-    //       localStorage.setItem("username", userName);
-    //       localStorage.setItem("token", token);
-    //       console.log(res);
-    //       navigate("/");
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       console.log(data);
-    //     });
   };
   const onError = (errors) => {
     console.log(errors);
   };
-  // 현재 상황 회원가입 완료 된거 같고 로그인은 통신 연결 했고 토큰 받아야 하며 글 쓰기에서 아직 이메일이 저장이 안됌 ㅅㅂ ㄴㅌ
+
   return (
     <s.Container>
       <s.Sign>

@@ -43,6 +43,7 @@ export const EditorBtn = styled.button`
   padding: 0.75rem 1.5rem;
   border-radius: 5px;
   background-color: ${theme.colors.main};
+  cursor: pointer;
 `;
 export const TagDiv = styled.div`
   margin-top: 0.5rem;

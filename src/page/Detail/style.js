@@ -72,7 +72,7 @@ export const DetailName = styled.button`
   cursor: pointer;
   display: flex;
 
-  @media ${theme.media.mobile} {
+  @media ${theme.media.phone} {
     white-space: nowrap;
     justify-content: center;
   }
@@ -161,7 +161,6 @@ export const CommentPost = styled.div`
   }
 `;
 export const CommentBtn = styled.button`
-  height: 3vh;
   border-radius: 5px;
   padding: 0.25rem 0.5rem;
   margin-right: 1.25rem;

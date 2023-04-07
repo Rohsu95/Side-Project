@@ -1,47 +1,45 @@
 import React, { useEffect, useState } from "react";
 import imgs from "../../profile.jpg";
 import { FcLikePlaceholder, FcLike } from "react-icons/fc";
-import { getUser, getWrite } from "../../api/userAPI";
-import { Cookies, useCookies } from "react-cookie";
+import { Cookies } from "react-cookie";
 import * as s from "./style";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { authService, dbService } from "fBase";
+import Date from "component/Date";
 
-const Main = () => {
+const Main = ({ displayName }) => {
   const cookie = new Cookies();
   // 3가지 menu
   const [menu, setMenu] = useState(0);
   const MainMenu = [{ name: "Your Feed" }, { name: "Global Feed" }];
-  // axios
-  const [global, setGlobal] = useState([]);
+
   const [your, setYour] = useState([]);
   const [like, setLike] = useState(true);
 
-  // useEffect(() => {
-  //   async function getUserData() {
-  //     try {
-  //       const local = localStorage.getItem("token");
-  //       if (local) {
-  //         const userInfo = await getUser(local);
-  //         const writeInfo = await getWrite(local);
+  const [nweets, setNweets] = useState([]);
 
-  //         const userData = {
-  //           userInfo,
-  //           writeInfo,
-  //         };
-  //         setYour([userData]);
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  //   getUserData();
-  // }, []);
-  console.log("your정보", your);
+  // 작성한 글 보여주기
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "editor"),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
+      const nweetArr = snapshot.docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }));
+      setNweets(nweetArr);
+      console.log(nweetArr);
+    });
+  }, []);
+
+  console.log(nweets);
 
   const mainCurrent = (index) => {
     setMenu(index);
   };
-  // 클릭시 +1 이 되며 +1이 유지가 될려면 data에 넣어야 겠다 유저에 넣어야하나 ?
-  // 내가 눌렀으면 색이 변화한다 삼항연산자로 클릭시 스타일을 줄까?
+
   const LikeClick = () => {
     if (like === true) {
       setLike(like + 1);
@@ -49,14 +47,22 @@ const Main = () => {
       setLike(like - 1);
     }
   };
-  console.log(like);
+  // Firebase Timestamp 객체를 JavaScript Date 객체로 변환 createdAt 변환
+  const formatDate = (date) => {
+    const jsDate = date.toDate();
+    const year = jsDate.getFullYear();
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0");
+    const day = String(jsDate.getDate()).padStart(2, "0");
+    const hours = String(jsDate.getHours()).padStart(2, "0");
+    const minutes = String(jsDate.getMinutes()).padStart(2, "0");
+    return `${year}.${month}.${day} ${hours}:${minutes}`;
+  };
   return (
     <s.MainContainer>
       <s.MainImg>
         <h1 className="Container">conduit</h1>
         <p className="Span">A place to share your knowledge.</p>
       </s.MainImg>
-
       <div>
         <s.MainUl>
           {MainMenu.map((el, index) => {
@@ -74,45 +80,40 @@ const Main = () => {
         </s.MainUl>
       </div>
 
-      {your && your.length > 0 ? (
-        your.map((item, key) => (
+      {nweets && nweets.length > 0 ? (
+        nweets.map((item, key) => (
           <s.MainMap key={key}>
-            {item.writeInfo.data.map((writeItem, writeKey) => (
-              <s.MainBorder key={writeKey}>
-                <s.MapInfo>
-                  <s.MapPicture href="/mypage">
-                    <s.Img src={imgs} alt="profile" />
-                  </s.MapPicture>
-                  <s.Info>
-                    <div className="info">
-                      <s.MapName href="/mypage">
-                        {item?.userInfo?.username}
-                      </s.MapName>
-                      <s.MapTime>
-                        2022
-                        {writeItem.attributes?.createdAt}
-                      </s.MapTime>
-                    </div>
-                    <div className="Like">
-                      <s.MapLike value={like} onClick={LikeClick}>
-                        <FcLikePlaceholder />
-                        {writeItem.attributes?.like}
-                      </s.MapLike>
-                    </div>
-                  </s.Info>
-                </s.MapInfo>
-                <s.MapContent>
-                  <s.MapTitle href="/detail">
-                    <h1 className="title">{writeItem.attributes?.title}</h1>
-                    <p className="content">{writeItem.attributes?.content}</p>
-                    <span className="span">Read more...</span>
-                    <s.MapUl>
-                      <li>{writeItem.attributes?.tags}</li>
-                    </s.MapUl>
-                  </s.MapTitle>
-                </s.MapContent>
-              </s.MainBorder>
-            ))}
+            <s.MainBorder>
+              <s.MapInfo>
+                <s.MapPicture href="/mypage">
+                  <s.Img src={imgs} alt="profile" />
+                </s.MapPicture>
+                <s.Info>
+                  <div className="info">
+                    <s.MapName href="/mypage">{displayName}</s.MapName>
+                    {/* <s.MapTime>{item.createdAt.toMillis()}</s.MapTime> */}
+                    <s.MapTime>{formatDate(item.createdAt)}</s.MapTime>
+                  </div>
+                  <div className="Like">
+                    <s.MapLike value={like} onClick={LikeClick}>
+                      <FcLikePlaceholder />
+                      100
+                    </s.MapLike>
+                  </div>
+                </s.Info>
+              </s.MapInfo>
+              <s.MapContent>
+                <s.MapTitle href={`/detail/${item.id}`}>
+                  {/* <s.MapTitle href="/detail"> */}
+                  <h1 className="title">{item.title}</h1>
+                  <p className="content">{item.content}</p>
+                  <span className="span">Read more...</span>
+                  <s.MapUl>
+                    <li>{item.tags}</li>
+                  </s.MapUl>
+                </s.MapTitle>
+              </s.MapContent>
+            </s.MainBorder>
           </s.MainMap>
         ))
       ) : (
