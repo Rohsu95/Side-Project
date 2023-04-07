@@ -1,317 +1,252 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState } from "react";
 import imgs from "../../profile.jpg";
-import theme from "../../styles/Theme";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import * as s from "./style";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteWrite, getUser, getWrite } from "../../api/userAPI";
+import { Cookies } from "react-cookie";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+} from "firebase/firestore";
+import { dbService } from "fBase";
 
-const Container = styled.div`
-  height: 140vh;
-`;
-const DetailContainer = styled.div`
-  background-color: ${theme.colors.black};
-  color: ${theme.colors.white};
-  /* height: 15rem; */
-  padding: 3rem 0;
-  display: flex;
-  align-items: center;
-
-  .info {
-    margin-left: 3rem;
-    margin-right: 3rem;
-
-    @media ${theme.media.phone} {
-      font-size: ${theme.fontSizes.fs07};
-    }
-  }
-`;
-const DetailInfo = styled.div`
-  margin-top: 2rem;
-  .detailLine {
-    display: flex;
-    align-items: center;
-
-    @media ${theme.media.phone} {
-      flex-direction: column;
-    }
-  }
-  .name {
-    display: flex;
-    flex-direction: column;
-    margin-right: 2rem;
-
-    @media ${theme.media.mobile} {
-      white-space: nowrap;
-    }
-    @media ${theme.media.phone} {
-      font-size: ${theme.fontSizes.fs07};
-      margin-bottom: 0.5rem;
-      margin-left: 1.5rem;
-    }
-  }
-`;
-const DetailA = styled(Link)`
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-`;
-const DetailImg = styled.img`
-  width: ${(props) => props.width || "36px"};
-  height: ${(props) => props.height || "36px"};
-  border-radius: 25px;
-  margin-right: 0.5rem;
-  margin-left: ${(props) => props.margin};
-
-  @media ${theme.media.phone} {
-    margin-bottom: 0.5rem;
-    width: ${(props) => props.width_hover || "36px"};
-    height: ${(props) => props.height_hover || "36px"};
-  }
-`;
-const DetailName = styled.button`
-  color: ${theme.colors.main};
-  background-color: ${theme.colors.black};
-  border: none;
-  cursor: pointer;
-  display: flex;
-
-  @media ${theme.media.mobile} {
-    white-space: nowrap;
-    justify-content: center;
-  }
-`;
-const DetailDate = styled.span`
-  color: ${theme.colors.content};
-
-  @media ${theme.media.mobile} {
-    white-space: nowrap;
-  }
-`;
-const InfoBtn = styled.button`
-  display: flex;
-  height: 3vh;
-  align-items: center;
-  border-radius: 5px;
-  margin-right: 0.25rem;
-  padding: 0.25rem 0.25rem;
-  color: ${(props) => props.color};
-  background-color: ${theme.colors.black};
-  border: 2px solid ${(props) => props.border};
-  svg {
-    margin-right: 2px;
-  }
-  &:hover {
-    background-color: ${(props) => props.hover};
-    color: ${(props) => props.hover_color};
-  }
-
-  @media ${theme.media.mobile} {
-    white-space: nowrap;
-  }
-  @media ${theme.media.phone} {
-    font-size: ${theme.fontSizes.fs07};
-    margin-bottom: ${(props) => props.margin};
-  }
-`;
-const DetailContent = styled.div`
-  margin: 3rem 3rem 0 3rem;
-  padding-bottom: 3rem;
-  border-bottom: 2px solid ${theme.colors.gray_03};
-`;
-const DetailTag = styled.ul`
-  display: flex;
-  list-style: none;
-  color: ${theme.colors.content};
-  font-size: ${theme.fontSizes.fs0};
-
-  li {
-    border: 2px solid ${theme.colors.gray_03};
-    padding: 0.125rem 0.25rem;
-    border-radius: 20px;
-    margin-top: 1rem;
-    margin-right: 0.25rem;
-  }
-`;
-
-const CommentContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 3rem;
-  .textArea {
-    padding: 1.25rem 1.25rem;
-    width: 40vw;
-    height: 8vh;
-    display: block;
-    border-radius: 5px 5px 0 0;
-    border: 2px solid ${theme.colors.gray_01};
-  }
-`;
-
-const CommentText = styled.div``;
-const CommentPost = styled.div`
-  display: flex;
-  height: 6vh;
-  align-items: center;
-  justify-content: space-between;
-  background-color: ${theme.colors.gray_01};
-  border: 2px solid ${theme.colors.gray_01};
-  /* border-top: 1px solid ${theme.colors.gray_01}; */
-  border-radius: 0 0 10px 10px;
-
-  @media ${theme.media.phone} {
-    font-size: ${theme.fontSizes.fs0};
-    margin-bottom: ${(props) => props.margin};
-  }
-`;
-const CommentBtn = styled.button`
-  height: 3vh;
-  border-radius: 5px;
-  padding: 0.25rem 0.5rem;
-  margin-right: 1.25rem;
-  color: ${theme.colors.white};
-  border: 2px solid ${theme.colors.main};
-  background-color: ${theme.colors.main};
-
-  @media ${theme.media.phone} {
-    font-size: ${theme.fontSizes.fs0};
-  }
-`;
-
-const CcommentContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-`;
-const CcommentTitle = styled.div`
-  margin-bottom: 1rem;
-`;
-const CcommentDiv = styled.div`
-  width: 35vw;
-  height: 4vh;
-  padding: 1.25rem 1.25rem;
-  border: 2px solid ${theme.colors.gray_01};
-`;
-const CcommentDelete = styled.button`
-  border: none;
-  font-size: ${theme.fontSizes.fs15};
-  background-color: ${theme.colors.gray_01};
-  margin-right: 1.25rem;
-`;
-// 현재 상태값을 넣어줬다
-// 클릭 시 담아줘야 한다
-const Detail = () => {
+const Detail = ({ displayName }) => {
+  // 만들기
   const [commentInput, setCommentInput] = useState("");
-  const [commentInputCopy, setCommentInputCopy] = useState([]);
+  // 만든 정보 불러오기
+  const [comment, setComment] = useState([]);
+  const [nweets, setNweets] = useState([]);
+  const navigate = useNavigate();
+  const cookie = new Cookies();
+  const Token = cookie.get("token");
+  const { id } = useParams();
+
+  const [data, setData] = useState(null);
+
+  // 특정 게시물 페이지 불러오기
+  useEffect(() => {
+    const fetchData = async () => {
+      const docRef = doc(dbService, "editor", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setData(docSnap.data());
+      } else {
+        console.log("No such document!");
+      }
+    };
+    fetchData();
+  }, [id]);
+  // read 특정 게시물 정보 보여주기
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "editor"),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
+      const nweetArr = snapshot.docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }));
+
+      setNweets(nweetArr);
+    });
+  }, []);
+  // read 댓글 정보 보여주기
+  // useEffect(() => {
+  //   onSnapshot(query(collection(dbService, "test")), (docs) => {
+  //     const dataArr = [];
+  //     docs.forEach((doc) => {
+  //       dataArr.push(doc.data());
+  //     });
+  //     setComment([...dataArr]);
+  //   });
+  // }, []);
+  // 애도 작동함
+  // useEffect(() => {
+  //   const q = query(
+  //     collection(dbService, "test"),
+  //     orderBy("createdAt", "desc")
+  //   );
+  //   onSnapshot(q, (querySnapshot) => {
+  //     const dataArr = [];
+  //     querySnapshot.forEach((doc) => {
+  //       dataArr.push(doc.data());
+  //     });
+  //     setComment([...dataArr]);
+  //   });
+  // }, []);
+  //애도 작동 정렬은안됌
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "test"),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
+      const nweetArrs = snapshot.docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }));
+      console.log(nweetArrs);
+      console.log(snapshot.docs);
+      setComment(nweetArrs);
+    });
+  }, [id]);
+
   const onCommentChange = (e) => {
     setCommentInput(e.target.value);
   };
-  const onClick = () => {
-    setCommentInputCopy((el) => [commentInput, ...el]);
-    setCommentInput("");
+
+  console.log("빈 배열", comment);
+
+  const DeleteClick = async () => {
+    if (!window.confirm("정말 삭제 하시겠습니까?")) {
+      alert("취소했습니다.");
+    } else {
+      await deleteWrite(Token, id);
+      navigate("/");
+    }
   };
-  console.log(commentInput);
-  console.log("copy", commentInputCopy);
+
+  const CommentonClick = async () => {
+    const now = new Date(Date.now());
+
+    try {
+      const sweetObj = {
+        comment: commentInput,
+        createdAt: Timestamp.fromDate(now),
+      };
+      await addDoc(collection(dbService, "test"), sweetObj);
+      setCommentInput("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // Firebase Timestamp 객체를 JavaScript Date 객체로 변환 createdAt 변환
+  const formatDate = (date) => {
+    const jsDate = date.toDate();
+    const year = jsDate.getFullYear();
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0");
+    const day = String(jsDate.getDate()).padStart(2, "0");
+    const hours = String(jsDate.getHours()).padStart(2, "0");
+    const minutes = String(jsDate.getMinutes()).padStart(2, "0");
+    return `${year}.${month}.${day} ${hours}:${minutes}`;
+  };
   return (
-    <Container>
-      <DetailContainer>
-        <div className="info">
-          <h1>
-            If we quantify the alarm, we can get to the FTP pixel through the
-            online SSL interface!
-          </h1>
-          <DetailInfo>
-            <div className="detailLine">
-              <DetailA to="/mypage">
-                <DetailImg src={imgs} alt="이미지" />
-              </DetailA>
-              <div className="name">
-                <DetailName href="/mypage">shtngur</DetailName>
-                <DetailDate>mon 03 2023</DetailDate>
-              </div>
-              <InfoBtn
-                border="#ccc"
-                color="#ccc"
-                hover="#282A3A"
-                hover_color="white"
-                margin="0.5rem"
-              >
-                <CiEdit />
-                Edit Article
-              </InfoBtn>
-              <InfoBtn
-                border="#A86464"
-                color="#A86464"
-                hover="#A84448"
-                hover_color="white"
-              >
-                <RiDeleteBinLine />
-                Delete Article
-              </InfoBtn>
-            </div>
-          </DetailInfo>
-        </div>
-      </DetailContainer>
-      <DetailContent>
+    <s.Container>
+      {data ? (
         <div>
-          Quia quo iste et aperiam voluptas consectetur a omnis et.\nDolores et
-          earum consequuntur sunt et.\nEa nulla ab voluptatem dicta vel.
-          Temporibus aut adipisci magnam aliquam eveniet nihil laudantium
-          reprehenderit sit.\nAspernatur cumque labore voluptates mollitia
-          deleniti et.
+          <s.DetailContainer>
+            <div className="info">
+              <h1>{data.title}</h1>
+              <s.DetailInfo>
+                <div className="detailLine">
+                  <s.DetailA to="/mypage">
+                    <s.DetailImg src={imgs} alt="이미지" />
+                  </s.DetailA>
+                  <div className="name">
+                    <s.DetailName href="/mypage">{displayName}</s.DetailName>
+                    <s.DetailDate>{formatDate(data.createdAt)}</s.DetailDate>
+                  </div>
+                  <s.InfoBtn
+                    border="#ccc"
+                    color="#ccc"
+                    hover="#282A3A"
+                    hover_color="white"
+                    margin="0.5rem"
+                    onClick={() => navigate("/setting")}
+                  >
+                    <CiEdit />
+                    Edit Article
+                  </s.InfoBtn>
+                  <s.InfoBtn
+                    border="#A86464"
+                    color="#A86464"
+                    hover="#A84448"
+                    hover_color="white"
+                    onClick={DeleteClick}
+                  >
+                    <RiDeleteBinLine />
+                    Delete Article
+                  </s.InfoBtn>
+                </div>
+              </s.DetailInfo>
+            </div>
+          </s.DetailContainer>
+          <s.DetailContent>
+            <div>{data.content}</div>
+            <s.DetailTag>
+              <li>{data.tags}</li>
+            </s.DetailTag>
+          </s.DetailContent>
         </div>
-        <DetailTag>
-          <li>return</li>
-          <li>hellossssss</li>
-        </DetailTag>
-      </DetailContent>
-      <CommentContainer>
-        <CommentText>
+      ) : (
+        <p>Loading...</p>
+      )}
+      {/* 댓글 창  */}
+      <s.CommentContainer>
+        <s.CommentText>
           <textarea
             value={commentInput}
             onChange={onCommentChange}
             className="textArea"
             type="text"
+            name="commentInput"
             placeholder="Write a comment..."
           />
-          <CommentPost>
-            <DetailImg
-              src={imgs}
-              alt="이미지"
-              margin="1.25rem"
-              width_hover="28px"
-              height_hover="28px"
-            />
-            <CommentBtn onClick={onClick}>Post Comment</CommentBtn>
-          </CommentPost>
-        </CommentText>
-      </CommentContainer>
-      <CcommentContainer>
+          <s.CommentPost>
+            <div className="commentName">
+              <s.DetailImg
+                src={imgs}
+                alt="이미지"
+                margin="1.25rem"
+                width_hover="28px"
+                height_hover="28px"
+              />
+              <span>{displayName}</span>
+            </div>
+            <s.CommentBtn onClick={CommentonClick}>Comment</s.CommentBtn>
+          </s.CommentPost>
+        </s.CommentText>
+      </s.CommentContainer>
+      {/* 댓글 내용 부분 */}
+      <s.CcommentContainer>
         <div>
-          {commentInputCopy.map((item, key) => (
-            <CcommentTitle key={key}>
-              <CcommentDiv>
-                <p>{item}</p>
-              </CcommentDiv>
-              <CommentPost>
-                <DetailImg
-                  src={imgs}
-                  alt="이미지"
-                  margin="1.25rem"
-                  width="24px"
-                  height="24px"
-                  width_hover="28px"
-                  height_hover="28px"
-                />
-                <CcommentDelete>
+          {comment.map((item, key) => (
+            <s.CcommentTitle key={key}>
+              <s.CcommentDiv>
+                <p>{item.comment}</p>
+              </s.CcommentDiv>
+              <s.CommentPost>
+                <div className="commentName">
+                  <s.DetailImg
+                    src={imgs}
+                    alt="이미지"
+                    margin="1.25rem"
+                    width="24px"
+                    height="24px"
+                    width_hover="28px"
+                    height_hover="28px"
+                  />
+                  <span>{displayName}</span>
+                </div>
+
+                <s.CcommentDelete>
                   <RiDeleteBinLine />
-                </CcommentDelete>
-              </CommentPost>
-            </CcommentTitle>
+                </s.CcommentDelete>
+              </s.CommentPost>
+            </s.CcommentTitle>
           ))}
         </div>
-      </CcommentContainer>
-    </Container>
+      </s.CcommentContainer>
+    </s.Container>
   );
 };
 

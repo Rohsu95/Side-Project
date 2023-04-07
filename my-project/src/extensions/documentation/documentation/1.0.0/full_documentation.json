@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2023-03-20T12:15:27.974Z"
+    "x-generation-date": "2023-03-28T12:44:46.806Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -6972,6 +6972,21 @@
                   ],
                   "example": "string or id"
                 }
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "article": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "string"
+              },
+              "like": {
+                "type": "integer"
               }
             }
           }
@@ -7517,6 +7532,21 @@
                                               }
                                             }
                                           },
+                                          "title": {
+                                            "type": "string"
+                                          },
+                                          "content": {
+                                            "type": "string"
+                                          },
+                                          "article": {
+                                            "type": "string"
+                                          },
+                                          "tags": {
+                                            "type": "string"
+                                          },
+                                          "like": {
+                                            "type": "integer"
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -7618,6 +7648,21 @@
                     }
                   }
                 }
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "article": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "string"
+              },
+              "like": {
+                "type": "integer"
               },
               "createdAt": {
                 "type": "string",
@@ -8209,6 +8254,21 @@
                                               }
                                             }
                                           },
+                                          "title": {
+                                            "type": "string"
+                                          },
+                                          "content": {
+                                            "type": "string"
+                                          },
+                                          "article": {
+                                            "type": "string"
+                                          },
+                                          "tags": {
+                                            "type": "string"
+                                          },
+                                          "like": {
+                                            "type": "integer"
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -8310,6 +8370,21 @@
                     }
                   }
                 }
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "article": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "string"
+              },
+              "like": {
+                "type": "integer"
               },
               "createdAt": {
                 "type": "string",
@@ -8934,6 +9009,21 @@
                                               }
                                             }
                                           },
+                                          "title": {
+                                            "type": "string"
+                                          },
+                                          "content": {
+                                            "type": "string"
+                                          },
+                                          "article": {
+                                            "type": "string"
+                                          },
+                                          "tags": {
+                                            "type": "string"
+                                          },
+                                          "like": {
+                                            "type": "integer"
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -9035,6 +9125,21 @@
                     }
                   }
                 }
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "article": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "string"
+              },
+              "like": {
+                "type": "integer"
               },
               "createdAt": {
                 "type": "string",
@@ -9626,6 +9731,21 @@
                                               }
                                             }
                                           },
+                                          "title": {
+                                            "type": "string"
+                                          },
+                                          "content": {
+                                            "type": "string"
+                                          },
+                                          "article": {
+                                            "type": "string"
+                                          },
+                                          "tags": {
+                                            "type": "string"
+                                          },
+                                          "like": {
+                                            "type": "integer"
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -9727,6 +9847,21 @@
                     }
                   }
                 }
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "article": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "string"
+              },
+              "like": {
+                "type": "integer"
               },
               "createdAt": {
                 "type": "string",
@@ -16764,6 +16899,21 @@
                                                           }
                                                         }
                                                       },
+                                                      "title": {
+                                                        "type": "string"
+                                                      },
+                                                      "content": {
+                                                        "type": "string"
+                                                      },
+                                                      "article": {
+                                                        "type": "string"
+                                                      },
+                                                      "tags": {
+                                                        "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -17441,6 +17591,21 @@
                                                             }
                                                           }
                                                         }
+                                                      },
+                                                      "title": {
+                                                        "type": "string"
+                                                      },
+                                                      "content": {
+                                                        "type": "string"
+                                                      },
+                                                      "article": {
+                                                        "type": "string"
+                                                      },
+                                                      "tags": {
+                                                        "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
                                                       },
                                                       "createdAt": {
                                                         "type": "string",
@@ -18153,6 +18318,21 @@
                                                           }
                                                         }
                                                       },
+                                                      "title": {
+                                                        "type": "string"
+                                                      },
+                                                      "content": {
+                                                        "type": "string"
+                                                      },
+                                                      "article": {
+                                                        "type": "string"
+                                                      },
+                                                      "tags": {
+                                                        "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -18831,6 +19011,21 @@
                                                           }
                                                         }
                                                       },
+                                                      "title": {
+                                                        "type": "string"
+                                                      },
+                                                      "content": {
+                                                        "type": "string"
+                                                      },
+                                                      "article": {
+                                                        "type": "string"
+                                                      },
+                                                      "tags": {
+                                                        "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -19280,6 +19475,21 @@
                                                                           }
                                                                         }
                                                                       }
+                                                                    },
+                                                                    "title": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "content": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "article": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "tags": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "like": {
+                                                                      "type": "integer"
                                                                     },
                                                                     "createdAt": {
                                                                       "type": "string",
@@ -19987,6 +20197,21 @@
                                                                           }
                                                                         }
                                                                       }
+                                                                    },
+                                                                    "title": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "content": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "article": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "tags": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "like": {
+                                                                      "type": "integer"
                                                                     },
                                                                     "createdAt": {
                                                                       "type": "string",
@@ -20728,6 +20953,21 @@
                                                                         }
                                                                       }
                                                                     },
+                                                                    "title": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "content": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "article": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "tags": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "like": {
+                                                                      "type": "integer"
+                                                                    },
                                                                     "createdAt": {
                                                                       "type": "string",
                                                                       "format": "date-time"
@@ -21434,6 +21674,21 @@
                                                                           }
                                                                         }
                                                                       }
+                                                                    },
+                                                                    "title": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "content": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "article": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "tags": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "like": {
+                                                                      "type": "integer"
                                                                     },
                                                                     "createdAt": {
                                                                       "type": "string",
@@ -22549,6 +22804,21 @@
                                                           }
                                                         }
                                                       },
+                                                      "title": {
+                                                        "type": "string"
+                                                      },
+                                                      "content": {
+                                                        "type": "string"
+                                                      },
+                                                      "article": {
+                                                        "type": "string"
+                                                      },
+                                                      "tags": {
+                                                        "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -23283,6 +23553,21 @@
                                                             }
                                                           }
                                                         }
+                                                      },
+                                                      "title": {
+                                                        "type": "string"
+                                                      },
+                                                      "content": {
+                                                        "type": "string"
+                                                      },
+                                                      "article": {
+                                                        "type": "string"
+                                                      },
+                                                      "tags": {
+                                                        "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
                                                       },
                                                       "createdAt": {
                                                         "type": "string",
@@ -24052,6 +24337,21 @@
                                                           }
                                                         }
                                                       },
+                                                      "title": {
+                                                        "type": "string"
+                                                      },
+                                                      "content": {
+                                                        "type": "string"
+                                                      },
+                                                      "article": {
+                                                        "type": "string"
+                                                      },
+                                                      "tags": {
+                                                        "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
+                                                      },
                                                       "createdAt": {
                                                         "type": "string",
                                                         "format": "date-time"
@@ -24786,6 +25086,21 @@
                                                             }
                                                           }
                                                         }
+                                                      },
+                                                      "title": {
+                                                        "type": "string"
+                                                      },
+                                                      "content": {
+                                                        "type": "string"
+                                                      },
+                                                      "article": {
+                                                        "type": "string"
+                                                      },
+                                                      "tags": {
+                                                        "type": "string"
+                                                      },
+                                                      "like": {
+                                                        "type": "integer"
                                                       },
                                                       "createdAt": {
                                                         "type": "string",

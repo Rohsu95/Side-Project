@@ -4,6 +4,7 @@ const colors = {
   gray_01: "#DDDDDD",
   gray_02: "#CCCCCC",
   gray_03: "#BBBBBB",
+  gray_04: "#362222",
   black: "#000000",
   main: "#62B6B7",
   main_hover: "#439A97",
@@ -23,6 +24,7 @@ const sizes = {
   small: "360px",
 };
 const fontSizes = {
+  fs02: "0.25rem",
   fs0: "0.5rem",
   fs07: "0.75rem",
   fs1: "1rem",

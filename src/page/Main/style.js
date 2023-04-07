@@ -1,16 +1,18 @@
 import styled from "styled-components";
 import theme from "../../styles/Theme";
 
+export const MainContainer = styled.div``;
+
 export const MainImg = styled.div`
   height: 11rem;
-  background-color: ${theme.colors.content};
+  background-color: ${theme.colors.main};
   text-align: center;
   padding: 1rem;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
     rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 
-  .Containers {
-    /* color: ${theme.colors.white}; */
+  .Container {
+    color: ${theme.colors.white};
     font-weight: 700;
     font-size: ${theme.fontSizes.fs25};
     margin-top: 1.5rem;
@@ -19,33 +21,13 @@ export const MainImg = styled.div`
       padding: 0.55rem;
     }
   }
-  .Spans {
-    /* color: ${theme.colors.black}; */
+  .Span {
+    color: ${theme.colors.white};
     font-size: ${theme.fontSizes.fs15};
     margin-top: 1rem;
     @media ${theme.media.height} {
       font-size: ${theme.fontSizes.fs1};
       padding: 0.55rem;
-    }
-  }
-`;
-export const Edit = styled.div`
-  float: right;
-  margin-right: 3rem;
-  .EditA {
-    display: flex;
-    padding: 0.25rem 0.5rem;
-    border-radius: 5px;
-    align-items: center;
-    text-decoration: none;
-    color: ${theme.colors.gray_02};
-    border: 2px solid ${theme.colors.gray_03};
-    &:hover {
-      color: ${theme.colors.gray_04};
-      border: 2px solid ${theme.colors.gray_04};
-    }
-    @media ${theme.media.height} {
-      font-size: ${theme.fontSizes.fs0};
     }
   }
 `;
@@ -84,14 +66,14 @@ export const MainUl = styled.ul`
     }
   }
 `;
-export const MainMap = styled.div`
-  margin: 2rem 3rem 0 3rem;
-  /* border-bottom: 2px solid ${theme.colors.gray_03}; */
-`;
 
 export const MainBorder = styled.div`
   border-bottom: 2px solid ${theme.colors.gray_03};
   margin-bottom: 1rem;
+`;
+
+export const MainMap = styled.div`
+  margin: 2rem 3rem 0 3rem;
 `;
 export const MapPicture = styled.a`
   display: flex;
@@ -144,15 +126,16 @@ export const MapLike = styled.button`
   border: 1px solid ${theme.colors.main};
   background-color: white;
 
+  &:hover {
+    background-color: ${theme.colors.main};
+  }
+
   svg {
     margin-right: 0.25rem;
 
     @media ${theme.media.height} {
       font-size: ${theme.fontSizes.fs07};
     }
-  }
-  &:hover {
-    background-color: ${theme.colors.main};
   }
   @media ${theme.media.height} {
     font-size: ${theme.fontSizes.fs0};
@@ -191,4 +174,9 @@ export const MapUl = styled.ul`
     border-radius: 20px;
     margin-left: 0.5rem;
   }
+`;
+export const Loading = styled.div`
+  margin-left: 3rem;
+  margin-top: 1rem;
+  font-size: ${theme.fontSizes.fs15};
 `;
