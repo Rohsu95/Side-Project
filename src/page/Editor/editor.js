@@ -15,7 +15,7 @@ const Editor = () => {
     content: "",
     article: "",
   });
-
+  const [like, setLike] = useState(0);
   // const [title, setTitle] = useState("");
   // const [content, setContent] = useState("");
   // const [article, setArticle] = useState("");
@@ -69,6 +69,7 @@ const Editor = () => {
         content: content,
         article: article,
         tags: tagsitem,
+        like: like,
         createdAt: Timestamp.fromDate(now),
       };
       await addDoc(collection(dbService, "editor"), editor);

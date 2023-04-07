@@ -35,7 +35,7 @@ const Main = ({ displayName }) => {
   }, []);
 
   console.log(nweets);
-
+  // 좋아요 기능 만들어 보고 그 담음 세팅 페이지 하고 그 담 마이페이지 하자
   const mainCurrent = (index) => {
     setMenu(index);
   };

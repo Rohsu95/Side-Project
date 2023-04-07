@@ -11,7 +11,6 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -24,7 +23,6 @@ const Detail = ({ displayName }) => {
   const [commentInput, setCommentInput] = useState("");
   // 만든 정보 불러오기
   const [comment, setComment] = useState([]);
-  const [your, setYour] = useState([]);
   const [nweets, setNweets] = useState([]);
   const navigate = useNavigate();
   const cookie = new Cookies();
@@ -100,7 +98,7 @@ const Detail = ({ displayName }) => {
       console.log(snapshot.docs);
       setComment(nweetArrs);
     });
-  }, []);
+  }, [id]);
 
   const onCommentChange = (e) => {
     setCommentInput(e.target.value);
@@ -192,6 +190,7 @@ const Detail = ({ displayName }) => {
       ) : (
         <p>Loading...</p>
       )}
+      {/* 댓글 창  */}
       <s.CommentContainer>
         <s.CommentText>
           <textarea
@@ -203,18 +202,21 @@ const Detail = ({ displayName }) => {
             placeholder="Write a comment..."
           />
           <s.CommentPost>
-            <s.DetailImg
-              src={imgs}
-              alt="이미지"
-              margin="1.25rem"
-              width_hover="28px"
-              height_hover="28px"
-            />
-            <s.CommentBtn onClick={CommentonClick}>Post Comment</s.CommentBtn>
+            <div className="commentName">
+              <s.DetailImg
+                src={imgs}
+                alt="이미지"
+                margin="1.25rem"
+                width_hover="28px"
+                height_hover="28px"
+              />
+              <span>{displayName}</span>
+            </div>
+            <s.CommentBtn onClick={CommentonClick}>Comment</s.CommentBtn>
           </s.CommentPost>
         </s.CommentText>
       </s.CommentContainer>
-      {/* 댓글 부분 */}
+      {/* 댓글 내용 부분 */}
       <s.CcommentContainer>
         <div>
           {comment.map((item, key) => (
@@ -223,15 +225,19 @@ const Detail = ({ displayName }) => {
                 <p>{item.comment}</p>
               </s.CcommentDiv>
               <s.CommentPost>
-                <s.DetailImg
-                  src={imgs}
-                  alt="이미지"
-                  margin="1.25rem"
-                  width="24px"
-                  height="24px"
-                  width_hover="28px"
-                  height_hover="28px"
-                />
+                <div className="commentName">
+                  <s.DetailImg
+                    src={imgs}
+                    alt="이미지"
+                    margin="1.25rem"
+                    width="24px"
+                    height="24px"
+                    width_hover="28px"
+                    height_hover="28px"
+                  />
+                  <span>{displayName}</span>
+                </div>
+
                 <s.CcommentDelete>
                   <RiDeleteBinLine />
                 </s.CcommentDelete>

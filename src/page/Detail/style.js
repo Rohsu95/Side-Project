@@ -13,12 +13,22 @@ export const DetailContainer = styled.div`
   display: flex;
   align-items: center;
 
+  @media ${theme.media.phone} {
+    display: flex;
+    justify-content: center;
+  }
   .info {
     margin-left: 3rem;
     margin-right: 3rem;
 
     @media ${theme.media.phone} {
       font-size: ${theme.fontSizes.fs07};
+    }
+  }
+  h1 {
+    @media ${theme.media.phone} {
+      display: flex;
+      justify-content: center;
     }
   }
 `;
@@ -135,7 +145,7 @@ export const CommentContainer = styled.div`
   justify-content: center;
   margin-top: 3rem;
   .textArea {
-    padding: 1.25rem 1.25rem;
+    padding: 1.25rem 1.5rem;
     width: 40vw;
     height: 8vh;
     display: block;
@@ -155,6 +165,19 @@ export const CommentPost = styled.div`
   /* border-top: 1px solid ${theme.colors.gray_01}; */
   border-radius: 0 0 10px 10px;
 
+  .commentName {
+    display: flex;
+    align-items: center;
+
+    @media ${theme.media.height} {
+      white-space: nowrap;
+      font-size: ${theme.fontSizes.fs02};
+    }
+    span {
+      margin-bottom: 0.5rem;
+    }
+  }
+
   @media ${theme.media.phone} {
     font-size: ${theme.fontSizes.fs0};
     margin-bottom: ${(props) => props.margin};
@@ -167,9 +190,10 @@ export const CommentBtn = styled.button`
   color: ${theme.colors.white};
   border: 2px solid ${theme.colors.main};
   background-color: ${theme.colors.main};
-
+  cursor: pointer;
   @media ${theme.media.phone} {
-    font-size: ${theme.fontSizes.fs0};
+    font-size: 0.125rem;
+    margin-left: 0.5rem;
   }
 `;
 
@@ -192,4 +216,5 @@ export const CcommentDelete = styled.button`
   font-size: ${theme.fontSizes.fs15};
   background-color: ${theme.colors.gray_01};
   margin-right: 1.25rem;
+  cursor: pointer;
 `;
