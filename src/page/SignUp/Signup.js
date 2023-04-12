@@ -22,9 +22,17 @@ const Signup = () => {
         data.email,
         data.password
       );
+      const users = authService.currentUser;
       console.log("user", user);
+      // 이미지
+      await updateProfile(users, {
+        photoURL:
+          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      });
       // displayName
       await updateProfile(user, { displayName: data.username });
+      // uid
+      await updateProfile(user, { uid: data.uid });
 
       navigate("/login");
     } catch (error) {

@@ -25,7 +25,6 @@ export const FormContainer = styled.div`
   }
   form {
     padding-bottom: 2rem;
-    border-bottom: 1px solid ${theme.colors.gray_03};
   }
   span {
     font-size: ${theme.fontSizes.fs07};
@@ -74,30 +73,5 @@ export const SettingBtn = styled.button`
   }
   @media ${theme.media.height} {
     font-size: ${theme.fontSizes.fs0};
-  }
-`;
-export const LogOut = styled.div`
-  width: 53vw;
-  display: flex;
-  justify-content: center;
-  margin-left: 1.5rem;
-  margin-top: 2rem;
-  margin-bottom: 5rem;
-`;
-export const LogOutBtn = styled.button`
-  cursor: pointer;
-  padding: 0.5em;
-  color: #a77979;
-  border: 1px solid #a77979;
-  background-color: white;
-  border-radius: 4px;
-
-  &:hover {
-    background-color: #a77979;
-    color: white;
-  }
-  @media ${theme.media.height} {
-    font-size: ${theme.fontSizes.fs0};
-    margin-right: 1.5rem;
   }
 `;

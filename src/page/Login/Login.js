@@ -29,6 +29,7 @@ const Login = () => {
       const token = user.refreshToken;
       cookie.set("token", token);
       navigate("/");
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }

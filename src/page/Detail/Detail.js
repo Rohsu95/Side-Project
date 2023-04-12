@@ -4,34 +4,38 @@ import { CiEdit } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
 import * as s from "./style";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteWrite, getUser, getWrite } from "../../api/userAPI";
 import { Cookies } from "react-cookie";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   onSnapshot,
   orderBy,
   query,
   Timestamp,
+  where,
 } from "firebase/firestore";
 import { dbService } from "fBase";
 
-const Detail = ({ displayName }) => {
-  // 만들기
+const Detail = ({ displayName, uid }) => {
+  // 페이지 정보
   const [commentInput, setCommentInput] = useState("");
   // 만든 정보 불러오기
+  const [page, setPage] = useState(1); // 현재 페이지 번호
+  // 댓글
   const [comment, setComment] = useState([]);
+  // 전체 불러오기
   const [nweets, setNweets] = useState([]);
   const navigate = useNavigate();
   const cookie = new Cookies();
   const Token = cookie.get("token");
   const { id } = useParams();
-
+  // 특정 게시물 불러오기
   const [data, setData] = useState(null);
 
-  // 특정 게시물 페이지 불러오기
+  // 특정 게시물 페이지 불러오기 id
   useEffect(() => {
     const fetchData = async () => {
       const docRef = doc(dbService, "editor", id);
@@ -60,30 +64,7 @@ const Detail = ({ displayName }) => {
     });
   }, []);
   // read 댓글 정보 보여주기
-  // useEffect(() => {
-  //   onSnapshot(query(collection(dbService, "test")), (docs) => {
-  //     const dataArr = [];
-  //     docs.forEach((doc) => {
-  //       dataArr.push(doc.data());
-  //     });
-  //     setComment([...dataArr]);
-  //   });
-  // }, []);
-  // 애도 작동함
-  // useEffect(() => {
-  //   const q = query(
-  //     collection(dbService, "test"),
-  //     orderBy("createdAt", "desc")
-  //   );
-  //   onSnapshot(q, (querySnapshot) => {
-  //     const dataArr = [];
-  //     querySnapshot.forEach((doc) => {
-  //       dataArr.push(doc.data());
-  //     });
-  //     setComment([...dataArr]);
-  //   });
-  // }, []);
-  //애도 작동 정렬은안됌
+
   useEffect(() => {
     const q = query(
       collection(dbService, "test"),
@@ -94,24 +75,21 @@ const Detail = ({ displayName }) => {
         id: document.id,
         ...document.data(),
       }));
-      console.log(nweetArrs);
-      console.log(snapshot.docs);
+
       setComment(nweetArrs);
     });
-  }, [id]);
+  }, []);
 
   const onCommentChange = (e) => {
     setCommentInput(e.target.value);
   };
 
-  console.log("빈 배열", comment);
-
-  const DeleteClick = async () => {
-    if (!window.confirm("정말 삭제 하시겠습니까?")) {
-      alert("취소했습니다.");
-    } else {
-      await deleteWrite(Token, id);
-      navigate("/");
+  // 댓글 삭제
+  const onDeleteComment = async (id) => {
+    const ok = window.confirm("댓글을 삭제 하시겠습니까?");
+    if (ok) {
+      const commentRef = doc(dbService, "test", id);
+      await deleteDoc(commentRef);
     }
   };
 
@@ -120,6 +98,7 @@ const Detail = ({ displayName }) => {
 
     try {
       const sweetObj = {
+        displayName: displayName,
         comment: commentInput,
         createdAt: Timestamp.fromDate(now),
       };
@@ -152,7 +131,9 @@ const Detail = ({ displayName }) => {
                     <s.DetailImg src={imgs} alt="이미지" />
                   </s.DetailA>
                   <div className="name">
-                    <s.DetailName href="/mypage">{displayName}</s.DetailName>
+                    <s.DetailName href="/mypage">
+                      {data.displayName}
+                    </s.DetailName>
                     <s.DetailDate>{formatDate(data.createdAt)}</s.DetailDate>
                   </div>
                   <s.InfoBtn
@@ -161,20 +142,10 @@ const Detail = ({ displayName }) => {
                     hover="#282A3A"
                     hover_color="white"
                     margin="0.5rem"
-                    onClick={() => navigate("/setting")}
+                    onClick={() => navigate("/edit")}
                   >
                     <CiEdit />
                     Edit Article
-                  </s.InfoBtn>
-                  <s.InfoBtn
-                    border="#A86464"
-                    color="#A86464"
-                    hover="#A84448"
-                    hover_color="white"
-                    onClick={DeleteClick}
-                  >
-                    <RiDeleteBinLine />
-                    Delete Article
                   </s.InfoBtn>
                 </div>
               </s.DetailInfo>
@@ -235,10 +206,10 @@ const Detail = ({ displayName }) => {
                     width_hover="28px"
                     height_hover="28px"
                   />
-                  <span>{displayName}</span>
+                  <span>{item.displayName}</span>
                 </div>
 
-                <s.CcommentDelete>
+                <s.CcommentDelete onClick={() => onDeleteComment(item.id)}>
                   <RiDeleteBinLine />
                 </s.CcommentDelete>
               </s.CommentPost>

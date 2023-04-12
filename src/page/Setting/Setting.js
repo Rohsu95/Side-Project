@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { removeCookie } from "../../Cookies";
 import * as s from "./style";
 
-const Setting = () => {
-  const cookies = new Cookies();
-  const token = cookies.get("token");
+const Setting = ({ displayName, user }) => {
+  // const [img, setImg] = useState();
+  // const [userName, setUserName] = useState(displayName);
+  // const [test, setTest] = useState();
+  // const [email, setEmail] = useState(user.email);
+  // const [password, setPassword] = useState();
+  console.log(user);
   const navigate = useNavigate();
 
   const {
@@ -15,18 +19,12 @@ const Setting = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const logoutBtn = () => {
-    removeCookie("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("token");
-    // window.location.reload();
-    navigate("/login");
-  };
+
   const onSubmit = () => {};
   const onError = (errors) => {
     console.log(errors);
   };
+  // 이 페이지는 안쓰는 걸로 하자 그냥 준비중입니다 로 띄우던가 간단한 기능만 넣던가 하자
   return (
     <s.Container>
       <h1>Your Settings</h1>
@@ -35,6 +33,7 @@ const Setting = () => {
           <s.FirstInput placeholder="이미지" {...register("img")} />
           <s.SecondInput
             placeholder="Username"
+            // value={userName}
             {...register("username", {
               required: "4자 이상 12자리 이하로 입력해 주세요",
               minLength: {
@@ -55,6 +54,7 @@ const Setting = () => {
           />
           <s.SecondInput
             placeholder="Email"
+            // value={email}
             type="email"
             {...register("email", {
               required: "12자 이상 20자 이하로 입력해 주세요",
@@ -88,9 +88,6 @@ const Setting = () => {
           <s.SettingBtn>Update Settings</s.SettingBtn>
         </form>
       </s.FormContainer>
-      <s.LogOut>
-        <s.LogOutBtn onClick={logoutBtn}>Log Out</s.LogOutBtn>
-      </s.LogOut>
     </s.Container>
   );
 };

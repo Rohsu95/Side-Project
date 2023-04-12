@@ -2,13 +2,18 @@ import styled from "styled-components";
 import theme from "../../styles/Theme";
 
 export const MainImg = styled.div`
-  height: 11rem;
-  background-color: ${theme.colors.content};
+  height: 13rem;
+  background-color: ${theme.colors.main};
   text-align: center;
   padding: 1rem;
+
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
     rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-
+  .EditImg {
+    width: 90px;
+    height: 90px;
+    border-radius: 50px;
+  }
   .Containers {
     /* color: ${theme.colors.white}; */
     font-weight: 700;
@@ -20,29 +25,71 @@ export const MainImg = styled.div`
     }
   }
   .Spans {
-    /* color: ${theme.colors.black}; */
+    color: ${theme.colors.white};
     font-size: ${theme.fontSizes.fs15};
     margin-top: 1rem;
+    margin-bottom: 0.5rem;
     @media ${theme.media.height} {
       font-size: ${theme.fontSizes.fs1};
       padding: 0.55rem;
     }
   }
 `;
+
+export const ImgDiv = styled.div`
+  height: 80px;
+  .iconUp {
+    width: 90px;
+    height: 90px;
+  }
+`;
 export const Edit = styled.div`
+  display: flex;
   float: right;
   margin-right: 3rem;
+
+  .label-file {
+    padding: 5px 10px;
+    color: ${theme.colors.white};
+    border: 2px solid ${theme.colors.white};
+    cursor: pointer;
+    border-radius: 5px;
+    &:hover {
+      color: ${theme.colors.main_hover};
+      border: 2px solid ${theme.colors.main_hover};
+    }
+    @media ${theme.media.height} {
+      font-size: ${theme.fontSizes.fs0};
+    }
+  }
+  .submit {
+    color: ${theme.colors.white};
+    border: 2px solid ${theme.colors.white};
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background: none;
+    margin-left: 0.5rem;
+    &:hover {
+      color: ${theme.colors.main_hover};
+      border: 2px solid ${theme.colors.main_hover};
+    }
+    @media ${theme.media.height} {
+      font-size: ${theme.fontSizes.fs0};
+    }
+  }
   .EditA {
     display: flex;
     padding: 0.25rem 0.5rem;
+    margin-left: 0.5rem;
     border-radius: 5px;
     align-items: center;
     text-decoration: none;
-    color: ${theme.colors.gray_02};
-    border: 2px solid ${theme.colors.gray_03};
+    color: ${theme.colors.white};
+    border: 2px solid ${theme.colors.white};
     &:hover {
-      color: ${theme.colors.gray_04};
-      border: 2px solid ${theme.colors.gray_04};
+      color: ${theme.colors.main_hover};
+      border: 2px solid ${theme.colors.main_hover};
     }
     @media ${theme.media.height} {
       font-size: ${theme.fontSizes.fs0};
@@ -96,6 +143,13 @@ export const MainBorder = styled.div`
 export const MapPicture = styled.a`
   display: flex;
   align-items: center;
+  .icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 30px;
+    border: 1px solid gray;
+    margin-right: 0.5rem;
+  }
 `;
 export const Img = styled.img`
   width: 36px;
@@ -190,5 +244,26 @@ export const MapUl = styled.ul`
     padding: 0.125rem 0.25rem;
     border-radius: 20px;
     margin-left: 0.5rem;
+  }
+`;
+export const LogOut = styled.div`
+  display: flex;
+  justify-content: right;
+  margin-right: 3rem;
+`;
+export const LogOutBtn = styled.button`
+  cursor: pointer;
+  padding: 0.25em;
+  color: white;
+  border: 1px solid white;
+  background-color: ${theme.colors.main};
+  border-radius: 4px;
+
+  &:hover {
+    border: 1px solid ${theme.colors.main_hover};
+    color: ${theme.colors.main_hover};
+  }
+  @media ${theme.media.height} {
+    font-size: ${theme.fontSizes.fs0};
   }
 `;

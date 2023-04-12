@@ -1,13 +1,26 @@
-import { v4 } from "uuid";
-import { dbService, storageService } from "fBase";
+import axios from "axios";
+
+import { dbService } from "fBase";
 import { updateCurrentUser } from "firebase/auth";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getCookie } from "../../Cookies";
 import * as s from "./style";
 
-const Editor = ({ displayName, uid }) => {
+const Edit = ({ displayName, uid }) => {
+  // 수정 할 정보 불러오기
+  const [nweets, setNweets] = useState([]);
+  // 수정 후 불러오기
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
   const [input, setInput] = useState({
@@ -16,8 +29,8 @@ const Editor = ({ displayName, uid }) => {
     article: "",
   });
   const [like, setLike] = useState(0);
-  const [attachment, setAttachment] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // 수정 부분
+  const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
   const { title, content, article } = input;
 
@@ -28,6 +41,26 @@ const Editor = ({ displayName, uid }) => {
       [name]: value,
     });
   };
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "editor"),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
+      const nweetArr = snapshot.docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }));
+      setNweets(nweetArr);
+      setInput({
+        title: nweetArr[0]?.title,
+        content: nweetArr[0]?.content,
+        article: nweetArr[0]?.article,
+      });
+      setTags(nweetArr[0]?.tags);
+      console.log(nweetArr);
+    });
+  }, []);
 
   const onKeyPress = (e) => {
     if (e.target.value.length !== 0 && e.key === "Enter") {
@@ -45,37 +78,30 @@ const Editor = ({ displayName, uid }) => {
     setTagsList((tagsList) => tagsList.filter((el) => el !== id));
   };
 
-  const onClick = async () => {
+  const onClick = async (id) => {
     let tagsitem = String(tagsList);
     const now = new Date(Date.now());
 
     try {
-      let attachmentUrl = "";
-      if (attachment !== "") {
-        const fileRef = ref(storageService, `${uid}/${v4()}`);
-        const response = await uploadString(fileRef, attachment, "data_url");
-        attachmentUrl = await getDownloadURL(response.ref);
-      }
-
       const editor = {
         title: title,
         content: content,
         article: article,
         tags: tagsitem,
         like: like,
-        createdAt: Timestamp.fromDate(now),
+        // createdAt: Timestamp.fromDate(now),
         displayName: displayName,
         uid: uid,
-        attachmentUrl,
       };
-      await addDoc(collection(dbService, "editor"), editor);
-      console.log(editor);
+      const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
+      await updateDoc(pageRef, editor);
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
 
+  // const toggleEditing = () => setEditing((prev) => !prev);
   return (
     <s.EditorContainer>
       <div>
@@ -84,6 +110,7 @@ const Editor = ({ displayName, uid }) => {
           name="title"
           value={title}
           onChange={onTotal}
+          // onChange={(e) => setTitle(e.target.value)}
           placeholder="Article Title"
         />
         <s.ArticleInput
@@ -91,6 +118,7 @@ const Editor = ({ displayName, uid }) => {
           name="article"
           value={article}
           onChange={onTotal}
+          // onChange={(e) => setArticle(e.target.value)}
           placeholder="What's this article about"
         />
         <s.ContentArea
@@ -98,12 +126,14 @@ const Editor = ({ displayName, uid }) => {
           name="content"
           value={content}
           onChange={onTotal}
+          // onChange={(e) => setContent(e.target.value)}
           placeholder="Write your article (in markdown)"
         />
         <s.TagInput
           type="text"
           name="tags"
           value={tags}
+          // onChange={TagsChange}
           onChange={(e) => setTags(e.target.value)}
           onKeyPress={onKeyPress}
           placeholder="Enter tags"
@@ -116,9 +146,9 @@ const Editor = ({ displayName, uid }) => {
             </s.TagSpan>
           ))}
         </s.TagDiv>
-        <s.EditorBtn onClick={onClick}>Publish Article</s.EditorBtn>
+        <s.EditorBtn onClick={onClick}>Article Modify</s.EditorBtn>
       </div>
     </s.EditorContainer>
   );
 };
-export default Editor;
+export default Edit;
