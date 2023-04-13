@@ -208,7 +208,7 @@ const Mypage = ({ displayName, user, imageUrl }) => {
           })}
         </s.MainUl>
       </div>
-      {/* 유저에 있는 정보를 넣던가 아니면 로컬에 있는 정보를 넣던가   */}
+
       {nweets.map((item, key) =>
         user && item.uid === user.uid ? (
           <s.MainMap key={key}>
