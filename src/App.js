@@ -14,7 +14,7 @@ import Detail from "./page/Detail/Detail";
 import Setting from "./page/Setting/Setting";
 import Edit from "page/Edit/Edit";
 import { useEffect, useState } from "react";
-import { authService, db } from "fBase";
+import { authService } from "fBase";
 
 function App() {
   const [displayName, setDisplayName] = useState("");
@@ -32,9 +32,9 @@ function App() {
       }
     });
 
-    console.log(user);
     return unsubscribe;
   }, []);
+
   return (
     <>
       <GlobalStyle />

@@ -68,11 +68,13 @@ const Main = ({ displayName, uids, user }) => {
       const pageRef = doc(dbService, "editor", `${id}`);
       const pageDoc = await getDoc(pageRef);
       const currentPage = pageDoc.data();
-
+      // 좋아요를 눌렀는지 확인하기 위해 id가 있는지 찾는다
       if (like.map((item) => item.id).includes(id)) {
         const newLikes = like
           .map((item) => {
+            // id가 있으면 좋아요를 누른것이다 그러면 -1을 해준다
             if (item.id === id) {
+              // -1 감소 시킬 때 새로운 객체를 만들어 반환한다 아닐 경우는 그대로 반환 한다
               const updatedItem = { ...item, like: item.like - 1 };
               return updatedItem.like === 0 ? null : updatedItem;
             } else {
@@ -80,14 +82,14 @@ const Main = ({ displayName, uids, user }) => {
             }
           })
           .filter((item) => item !== null);
+        setLikeStyle((prev) => ({ ...prev, [id]: false }));
         setLike(newLikes);
         await updateDoc(pageRef, { like: currentPage.like - 1 });
-        setLikeStyle((prev) => ({ ...prev, [id]: false }));
       } else {
         const newLikes = [...like, { id, like: 1 }];
+        setLikeStyle((prev) => ({ ...prev, [id]: true }));
         setLike(newLikes);
         await updateDoc(pageRef, { like: currentPage.like + 1 });
-        setLikeStyle((prev) => ({ ...prev, [id]: true }));
         console.log(like);
       }
     } catch (err) {
