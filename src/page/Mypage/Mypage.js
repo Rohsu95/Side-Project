@@ -13,7 +13,12 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadString,
+} from "firebase/storage";
 import { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FcLikePlaceholder } from "react-icons/fc";

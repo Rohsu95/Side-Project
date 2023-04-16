@@ -61,8 +61,7 @@ const Main = ({ displayName, uids, user }) => {
       await deleteDoc(pageRef);
     }
   };
-  // 좋아요 기능이 현재 같은 상태라서 하나가 2면 나머진 3 각각 올라가야하는데 같이 올라간다 방법 찾자
-  // 좋아요
+  // 좋아요는 리펙토링 때 컴포넌트로 만들어서 사용하자
   const LikeClick = async (id) => {
     try {
       const pageRef = doc(dbService, "editor", `${id}`);
@@ -180,7 +179,9 @@ const Main = ({ displayName, uids, user }) => {
                   <p className="content">{item.content}</p>
                   <span className="span">Read more...</span>
                   <s.MapUl>
-                    <li>{item.tags}</li>
+                    {item.tags.split(",").map((tag, index) => (
+                      <li key={index}>{[tag]}</li>
+                    ))}
                   </s.MapUl>
                 </s.MapTitle>
               </s.MapContent>

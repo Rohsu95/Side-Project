@@ -75,6 +75,7 @@ const Editor = ({ displayName, uid }) => {
       console.log(error);
     }
   };
+  console.log(tagsList);
 
   return (
     <s.EditorContainer>
