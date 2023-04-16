@@ -48,7 +48,7 @@ const Main = ({ displayName, uids, user }) => {
     });
   }, []);
 
-  // console.log(nweets);
+  console.log(nweets);
 
   const mainCurrent = (index) => {
     setMenu(index);
@@ -141,6 +141,7 @@ const Main = ({ displayName, uids, user }) => {
                   ) : (
                     <s.Img src={item.attachmentUrl} alt="profile" />
                   )}
+                  {/* <s.Img src={item.attachmentUrl} alt="profile" /> */}
                 </s.MapPicture>
                 <s.Info>
                   <div className="info">

@@ -71,7 +71,7 @@ const Setting = ({ user }) => {
         console.error(error);
       });
   };
-
+  console.log(user);
   // 이 페이지는 안쓰는 걸로 하자 그냥 준비중입니다 로 띄우던가 간단한 기능만 넣던가 하자
   return (
     <s.Container>
@@ -84,7 +84,7 @@ const Setting = ({ user }) => {
             name="displayname"
             value={change.displayname}
             onChange={onChange}
-            // {...register("username", {
+            // {...register("displayname", {
             //   required: "4자 이상 12자리 이하로 입력해 주세요",
             //   minLength: {
             //     value: 4,

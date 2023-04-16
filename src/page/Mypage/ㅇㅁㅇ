@@ -107,20 +107,12 @@ const Mypage = ({ displayName, user }) => {
   const onClick = async (event) => {
     setSubmit(false);
     try {
-      // Cloud Storage에 새로운 이미지 업로드
       let attachmentUrl = "";
       if (attachment !== "") {
         const fileRef = ref(storageService, `${nweets.id}/${v4()}`);
         const response = await uploadString(fileRef, attachment, "data_url");
         attachmentUrl = await getDownloadURL(response.ref);
       }
-
-      // img 컬렉션에서 추가한 이미지 정보 가져오기
-      const querySnapshot = await getDocs(
-        query(collection(dbService, "img"), where("uid", "==", user.uid)),
-        orderBy("createdAt", "desc")
-      );
-
       // nweetObj 컬렉션 만든 후 이미지 넣기
       const imgs = {
         uid: user.uid,
@@ -129,26 +121,32 @@ const Mypage = ({ displayName, user }) => {
       };
       await addDoc(collection(dbService, "img"), imgs);
 
-      // user의 photoURL 0번째에 저장
+      // img 컬렉션에서 추가한 이미지 정보 가져오기
+      const querySnapshot = await getDocs(
+        query(collection(dbService, "img"), where("uid", "==", user.uid)),
+        orderBy("createdAt", "desc")
+      );
       const imgData = querySnapshot.docs.map((doc) => doc.data());
 
       if (imgData.length > 0) {
         await updateProfile(user, { photoURL: imgData[0].attachmentUrl });
         alert("저장되었습니다.");
+         await updateProfile(user, { photoURL: imgData[0].attachmentUrl });
         window.location.reload();
+      } else {
+        alert("이미지를 추가해주세요.");
       }
       // editor 컬렉션 이미지 수정
-      const edit = {
-        attachmentUrl: user.photoURL,
-      };
-      const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
-      await updateDoc(pageRef, edit);
+      // const edit = {
+      //   attachmentUrl: attachmentUrl,
+      // };
+      // const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
+      // await updateDoc(pageRef, edit);
     } catch (err) {
       console.log(err);
     }
   };
   console.log(user);
-  console.log(nweets);
 
   // 로그아웃
   const logoutBtn = () => {
