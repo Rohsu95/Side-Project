@@ -1,36 +1,29 @@
-import axios from "axios";
-
 import { dbService } from "fBase";
-import { updateCurrentUser } from "firebase/auth";
 import {
-  addDoc,
   collection,
   doc,
   onSnapshot,
   orderBy,
   query,
-  Timestamp,
   updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCookie } from "../../Cookies";
 import * as s from "./style";
 
 const Edit = ({ displayName, uid }) => {
   // 수정 할 정보 불러오기
   const [nweets, setNweets] = useState([]);
-  // 수정 후 불러오기
+  // 태그
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
+  // 인풋 내용
   const [input, setInput] = useState({
     title: "",
     content: "",
     article: "",
   });
-  const [like, setLike] = useState(0);
-  // 수정 부분
-  const [editing, setEditing] = useState(false);
+
   const navigate = useNavigate();
   const { title, content, article } = input;
 
@@ -41,6 +34,7 @@ const Edit = ({ displayName, uid }) => {
       [name]: value,
     });
   };
+  // 수정 부분
   useEffect(() => {
     const q = query(
       collection(dbService, "editor"),
@@ -62,25 +56,25 @@ const Edit = ({ displayName, uid }) => {
     });
   }, []);
 
+  // Enter 누를 시 태그 생성
   const onKeyPress = (e) => {
     if (e.target.value.length !== 0 && e.key === "Enter") {
       onItem();
     }
   };
+  // 태그
   const onItem = () => {
     let updataed = [...tagsList];
     updataed.push(tags);
     setTagsList(updataed);
     setTags("");
   };
-  // 유어 클래스 모달에 태그가 있을것이다 확인해보자 아니면 axios로 삭제 통신 만들기도 있다
+  // 태그 삭제
   const onDelete = (id) => {
-    setTagsList((tagsList) => tagsList.filter((el) => el !== id));
+    setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
-
   const onClick = async (id) => {
     let tagsitem = String(tagsList);
-    const now = new Date(Date.now());
 
     try {
       const editor = {
@@ -88,8 +82,6 @@ const Edit = ({ displayName, uid }) => {
         content: content,
         article: article,
         tags: tagsitem,
-        like: like,
-        // createdAt: Timestamp.fromDate(now),
         displayName: displayName,
         uid: uid,
       };
@@ -101,7 +93,6 @@ const Edit = ({ displayName, uid }) => {
     }
   };
 
-  // const toggleEditing = () => setEditing((prev) => !prev);
   return (
     <s.EditorContainer>
       <div>
@@ -110,7 +101,6 @@ const Edit = ({ displayName, uid }) => {
           name="title"
           value={title}
           onChange={onTotal}
-          // onChange={(e) => setTitle(e.target.value)}
           placeholder="Article Title"
         />
         <s.ArticleInput
@@ -118,7 +108,6 @@ const Edit = ({ displayName, uid }) => {
           name="article"
           value={article}
           onChange={onTotal}
-          // onChange={(e) => setArticle(e.target.value)}
           placeholder="What's this article about"
         />
         <s.ContentArea
@@ -126,7 +115,6 @@ const Edit = ({ displayName, uid }) => {
           name="content"
           value={content}
           onChange={onTotal}
-          // onChange={(e) => setContent(e.target.value)}
           placeholder="Write your article (in markdown)"
         />
         <s.TagInput
@@ -141,7 +129,7 @@ const Edit = ({ displayName, uid }) => {
         <s.TagDiv>
           {tagsList.map((el, id) => (
             <s.TagSpan key={id}>
-              <s.TagDelete onClick={onDelete}>X</s.TagDelete>
+              <s.TagDelete onClick={() => onDelete(id)}>X</s.TagDelete>
               {el}
             </s.TagSpan>
           ))}

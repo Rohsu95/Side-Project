@@ -64,4 +64,5 @@ export const TagDelete = styled.button`
   background-color: ${theme.colors.tag};
   font-size: 0.1rem;
   cursor: pointer;
+  margin: 0 0.25rem;
 `;

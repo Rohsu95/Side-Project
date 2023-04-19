@@ -34,6 +34,7 @@ const Mypage = ({ displayName, user }) => {
   const [img, setImg] = useState([]);
   const [nweets, setNweets] = useState([]);
   const [attachment, setAttachment] = useState("");
+
   const [submit, setSubmit] = useState(false);
   const MypageMenu = [{ name: "My Articles" }, { name: "Favorited Articles" }];
   const navigate = useNavigate();
@@ -59,22 +60,8 @@ const Mypage = ({ displayName, user }) => {
     });
   }, []);
 
-  // console.log("로그인 정보", user.photoURL);
-  // console.log("img", img);
-  // 이미지의 유아디를 찾아 유아디가 여러개라 언디파인 나온다 선택해주자 img 컬렉션에는 최신순으로 만들어진다
-  // 저장 시 이미지의 0번째 url을 user.포토url에 넣자
-  const map = img.map((img) => img?.uid);
-  // 이미지전부의 유아이디들 ["1","2"]이런식
-  const filter = map.filter((el) => el === user.uid);
-  // ["1","2"]중 user가 "1이라면 ["1"]을걸러준다 rY3Kw 나온다
-  // console.log("이미지 정보", filter === user?.uid);
-  // 필터는 ["1"]
-  // console.log("uid들", img);
-  // console.log("걸러준것", filter === user?.uid);
+  const attachmentUrl = localStorage.getItem("img");
 
-  const attachmentUrl = localStorage.getItem("attachmentUrl");
-  // 정리하자면 현재 포토 url은 회원가입에 있다 그렇기 때문에 수정은 세팅 때 한 로직처럼 수정을 하는 것을만들어보자
-  // 그리고 현재 문제는 이미지, 마이 페이지에 좋아요 기능 안됌 그리고 태그 2개 하면 합쳐서 나옴 수정 하자
   useEffect(() => {
     if (attachmentUrl) {
       const img = new Image();
@@ -111,43 +98,46 @@ const Mypage = ({ displayName, user }) => {
   // img 컬렉션 만들든 후 수정 editor 컬렉션에 수정하여 이미지를 넣어준다
   const onClick = async (event) => {
     setSubmit(false);
-    try {
-      // Cloud Storage에 새로운 이미지 업로드
-      let attachmentUrl = "";
-      if (attachment !== "") {
-        const fileRef = ref(storageService, `${nweets.id}/${v4()}`);
-        const response = await uploadString(fileRef, attachment, "data_url");
-        attachmentUrl = await getDownloadURL(response.ref);
-      }
+    alert("저장되었습니다.");
 
-      // img 컬렉션에서 추가한 이미지 정보 가져오기
+    try {
+      const imgRef = collection(dbService, "img");
       const querySnapshot = await getDocs(
-        query(collection(dbService, "img"), where("uid", "==", user.uid)),
+        query(imgRef, where("uid", "==", user.uid)),
         orderBy("createdAt", "desc")
       );
+      let attachmentUrl = user.photoURL;
 
-      // nweetObj 컬렉션 만든 후 이미지 넣기
-      const imgs = {
-        uid: user.uid,
-        attachmentUrl: attachmentUrl,
-        createdAt: Date.now(),
-      };
-      await addDoc(collection(dbService, "img"), imgs);
+      if (attachment !== "") {
+        if (querySnapshot.docs.length > 0) {
+          const docId = querySnapshot.docs[0].id;
 
-      // user의 photoURL 0번째에 저장
-      const imgData = querySnapshot.docs.map((doc) => doc.data());
+          const fileRef = ref(storageService, `${nweets.id}/${docId}`);
+          const response = await uploadString(fileRef, attachment, "data_url");
+          attachmentUrl = await getDownloadURL(response.ref);
 
-      if (imgData.length > 0) {
-        await updateProfile(user, { photoURL: imgData[0].attachmentUrl });
-        alert("저장되었습니다.");
-        window.location.reload();
+          // editor 컬렉션 이미지 수정
+          const edit = {
+            attachmentUrl: user.photoURL,
+          };
+          const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
+          await updateDoc(pageRef, edit);
+        } else {
+          const fileRef = ref(storageService, `${nweets.id}/${v4()}`);
+          const response = await uploadString(fileRef, attachment, "data_url");
+          attachmentUrl = await getDownloadURL(response.ref);
+          const imgs = {
+            uid: user.uid,
+            attachmentUrl,
+            createdAt: Date.now(),
+          };
+          await addDoc(imgRef, imgs);
+        }
       }
-      // editor 컬렉션 이미지 수정
-      const edit = {
-        attachmentUrl: user.photoURL,
-      };
-      const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
-      await updateDoc(pageRef, edit);
+      await updateProfile(user, { photoURL: attachmentUrl });
+      localStorage.setItem("img", attachment);
+      // alert("저장되었습니다."); 원래 여기 있었는데 위로 올림
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -179,11 +169,14 @@ const Mypage = ({ displayName, user }) => {
           <s.LogOutBtn onClick={logoutBtn}>Log Out</s.LogOutBtn>
         </s.LogOut>
         <s.ImgDiv>
-          {user?.uid === img?.uid ? (
+          {submit === true ? (
+            <img className="EditImg" src={attachment} alt="수정 이미지" />
+          ) : "" || user?.uid === img?.uid ? (
             <img className="EditImg" src={attachmentUrl} alt="수정 이미지" />
           ) : (
             <img className="EditImg" src={user.photoURL} alt="기본 이미지" />
           )}
+          {/* <img className="EditImg" src={attachment} alt="수정 이미지" /> */}
           {/* className="EditImg" */}
         </s.ImgDiv>
         <p className="Spans">{user?.displayName}</p>
@@ -285,7 +278,9 @@ const Mypage = ({ displayName, user }) => {
                   <p className="content">{item.content}</p>
                   <span className="span">Read more...</span>
                   <s.MapUl>
-                    <li>{item.tags}</li>
+                    {item.tags.split(",").map((tag, index) => (
+                      <li key={index}>{[tag]}</li>
+                    ))}
                   </s.MapUl>
                 </s.MapTitle>
               </s.MapContent>

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import imgs from "../../profile.jpg";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
 import * as s from "./style";
 import { useNavigate, useParams } from "react-router-dom";
-import { Cookies } from "react-cookie";
 import {
   addDoc,
   collection,
@@ -15,26 +13,21 @@ import {
   orderBy,
   query,
   Timestamp,
-  where,
 } from "firebase/firestore";
 import { dbService } from "fBase";
 
-const Detail = ({ displayName, uid }) => {
+const Detail = ({ displayName, user }) => {
   // 페이지 정보
   const [commentInput, setCommentInput] = useState("");
-  // 만든 정보 불러오기
-  const [page, setPage] = useState(1); // 현재 페이지 번호
   // 댓글
   const [comment, setComment] = useState([]);
-  // 전체 불러오기
-  const [nweets, setNweets] = useState([]);
-  const navigate = useNavigate();
-  const cookie = new Cookies();
-  const Token = cookie.get("token");
-  const { id } = useParams();
   // 특정 게시물 불러오기
   const [data, setData] = useState(null);
 
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const NoImg =
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
   // 특정 게시물 페이지 불러오기 id
   useEffect(() => {
     const fetchData = async () => {
@@ -48,23 +41,10 @@ const Detail = ({ displayName, uid }) => {
     };
     fetchData();
   }, [id]);
-  // read 특정 게시물 정보 보여주기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "editor"),
-      orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (snapshot) => {
-      const nweetArr = snapshot.docs.map((document) => ({
-        id: document.id,
-        ...document.data(),
-      }));
 
-      setNweets(nweetArr);
-    });
-  }, []);
+  console.log(data);
+  console.log(user);
   // read 댓글 정보 보여주기
-
   useEffect(() => {
     const q = query(
       collection(dbService, "test"),
@@ -101,6 +81,7 @@ const Detail = ({ displayName, uid }) => {
         displayName: displayName,
         comment: commentInput,
         createdAt: Timestamp.fromDate(now),
+        uid: user.uid,
       };
       await addDoc(collection(dbService, "test"), sweetObj);
       setCommentInput("");
@@ -118,6 +99,8 @@ const Detail = ({ displayName, uid }) => {
     const minutes = String(jsDate.getMinutes()).padStart(2, "0");
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
+  // 로컬에 저장된 이미지
+  const attachmentUrl = localStorage.getItem("img");
   return (
     <s.Container>
       {data ? (
@@ -127,26 +110,34 @@ const Detail = ({ displayName, uid }) => {
               <h1>{data.title}</h1>
               <s.DetailInfo>
                 <div className="detailLine">
-                  <s.DetailA to="/mypage">
-                    <s.DetailImg src={imgs} alt="이미지" />
-                  </s.DetailA>
+                  {data.attachmentUrl !== "" ? (
+                    <s.DetailA to="/mypage">
+                      <s.DetailImg src={data?.attachmentUrl} alt="이미지" />
+                    </s.DetailA>
+                  ) : (
+                    "새 계정 만들어서 이미지 없을때를 확인해보자 기본 이미지가 들어가는지"
+                  )}
                   <div className="name">
                     <s.DetailName href="/mypage">
                       {data.displayName}
                     </s.DetailName>
                     <s.DetailDate>{formatDate(data.createdAt)}</s.DetailDate>
                   </div>
-                  <s.InfoBtn
-                    border="#ccc"
-                    color="#ccc"
-                    hover="#282A3A"
-                    hover_color="white"
-                    margin="0.5rem"
-                    onClick={() => navigate("/edit")}
-                  >
-                    <CiEdit />
-                    Edit Article
-                  </s.InfoBtn>
+                  {data.uid === user.uid ? (
+                    <s.InfoBtn
+                      border="#ccc"
+                      color="#ccc"
+                      hover="#282A3A"
+                      hover_color="white"
+                      margin="0.5rem"
+                      onClick={() => navigate("/edit")}
+                    >
+                      <CiEdit />
+                      Edit Article
+                    </s.InfoBtn>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </s.DetailInfo>
             </div>
@@ -175,13 +166,13 @@ const Detail = ({ displayName, uid }) => {
           <s.CommentPost>
             <div className="commentName">
               <s.DetailImg
-                src={imgs}
+                src={user?.photoURL}
                 alt="이미지"
                 margin="1.25rem"
                 width_hover="28px"
                 height_hover="28px"
               />
-              <span>{displayName}</span>
+              <span>{user?.displayName}</span>
             </div>
             <s.CommentBtn onClick={CommentonClick}>Comment</s.CommentBtn>
           </s.CommentPost>
@@ -198,7 +189,8 @@ const Detail = ({ displayName, uid }) => {
               <s.CommentPost>
                 <div className="commentName">
                   <s.DetailImg
-                    src={imgs}
+                    // src={attachmentUrl}
+                    src={item.attachmentUrl}
                     alt="이미지"
                     margin="1.25rem"
                     width="24px"
@@ -208,10 +200,13 @@ const Detail = ({ displayName, uid }) => {
                   />
                   <span>{item.displayName}</span>
                 </div>
-
-                <s.CcommentDelete onClick={() => onDeleteComment(item.id)}>
-                  <RiDeleteBinLine />
-                </s.CcommentDelete>
+                {item.uid === user.uid ? (
+                  <s.CcommentDelete onClick={() => onDeleteComment(item.id)}>
+                    <RiDeleteBinLine />
+                  </s.CcommentDelete>
+                ) : (
+                  ""
+                )}
               </s.CommentPost>
             </s.CcommentTitle>
           ))}

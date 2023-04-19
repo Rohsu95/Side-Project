@@ -66,4 +66,5 @@ export const TagDelete = styled.button`
   margin-right: 0.25rem;
   font-size: 0.1rem;
   cursor: pointer;
+  margin: 0 0.25rem;
 `;

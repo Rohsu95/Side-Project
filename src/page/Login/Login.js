@@ -1,13 +1,11 @@
-import axios from "axios";
 import { authService } from "fBase";
-import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React from "react";
 import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as s from "./style";
-// 유저에 정보가 들어가야해
-//
+
 const Login = () => {
   const navigate = useNavigate();
   const cookie = new Cookies();
@@ -25,9 +23,9 @@ const Login = () => {
         data.password
       );
 
-      console.log("user", user);
       const token = user.refreshToken;
       cookie.set("token", token);
+      console.log("user", user);
       navigate("/");
       window.location.reload();
     } catch (error) {

@@ -1,13 +1,10 @@
-import { v4 } from "uuid";
-import { dbService, storageService } from "fBase";
-import { updateCurrentUser } from "firebase/auth";
+import { dbService } from "fBase";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 
-const Editor = ({ displayName, uid }) => {
+const Editor = ({ displayName, uid, user }) => {
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
   const [input, setInput] = useState({
@@ -16,8 +13,6 @@ const Editor = ({ displayName, uid }) => {
     article: "",
   });
   const [like, setLike] = useState(0);
-  const [attachment, setAttachment] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const { title, content, article } = input;
 
@@ -28,35 +23,29 @@ const Editor = ({ displayName, uid }) => {
       [name]: value,
     });
   };
-
+  // 엔터 누를 시 실행
   const onKeyPress = (e) => {
     if (e.target.value.length !== 0 && e.key === "Enter") {
       onItem();
     }
   };
+  // 태그
   const onItem = () => {
     let updataed = [...tagsList];
     updataed.push(tags);
     setTagsList(updataed);
     setTags("");
   };
-  // 유어 클래스 모달에 태그가 있을것이다 확인해보자 아니면 axios로 삭제 통신 만들기도 있다
+  // 삭제
   const onDelete = (id) => {
-    setTagsList((tagsList) => tagsList.filter((el) => el !== id));
+    setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
-
+  // 생성
   const onClick = async () => {
     let tagsitem = String(tagsList);
     const now = new Date(Date.now());
 
     try {
-      let attachmentUrl = "";
-      if (attachment !== "") {
-        const fileRef = ref(storageService, `${uid}/${v4()}`);
-        const response = await uploadString(fileRef, attachment, "data_url");
-        attachmentUrl = await getDownloadURL(response.ref);
-      }
-
       const editor = {
         title: title,
         content: content,
@@ -66,7 +55,7 @@ const Editor = ({ displayName, uid }) => {
         createdAt: Timestamp.fromDate(now),
         displayName: displayName,
         uid: uid,
-        attachmentUrl,
+        attachmentUrl: user.photoURL,
       };
       await addDoc(collection(dbService, "editor"), editor);
       console.log(editor);
@@ -112,7 +101,7 @@ const Editor = ({ displayName, uid }) => {
         <s.TagDiv>
           {tagsList.map((el, id) => (
             <s.TagSpan key={id}>
-              <s.TagDelete onClick={onDelete}>X</s.TagDelete>
+              <s.TagDelete onClick={() => onDelete(id)}>X</s.TagDelete>
               {el}
             </s.TagSpan>
           ))}

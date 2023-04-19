@@ -14,13 +14,16 @@ import Detail from "./page/Detail/Detail";
 import Setting from "./page/Setting/Setting";
 import Edit from "page/Edit/Edit";
 import { useEffect, useState } from "react";
-import { authService } from "fBase";
+import { authService, dbService } from "fBase";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 
 function App() {
   const [displayName, setDisplayName] = useState("");
   const [uid, SetUid] = useState();
   const [user, setUser] = useState();
   const [imageUrl, setImageUrl] = useState();
+  const [nweets, setNweets] = useState([]);
+  const [nweets1, setNweets1] = useState([]);
   // displayName 불러오기
   useEffect(() => {
     const unsubscribe = authService.onAuthStateChanged(async (user) => {
@@ -35,6 +38,22 @@ function App() {
     return unsubscribe;
   }, []);
 
+  // 작성한 글 보여주기
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "editor"),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
+      const nweetArr = snapshot.docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }));
+      setNweets(nweetArr);
+      setNweets1(nweetArr);
+    });
+  }, []);
+
   return (
     <>
       <GlobalStyle />
@@ -46,18 +65,26 @@ function App() {
             <Route
               path="/"
               element={
-                <Main displayName={displayName} uids={uid} user={user} />
+                <Main
+                  displayName={displayName}
+                  uids={uid}
+                  user={user}
+                  nweets={nweets}
+                  nweets1={nweets1}
+                />
               }
             />
             <Route path="/login" element={<Login />} uid={uid} />
             <Route path="/signup" element={<Signup />} />
             <Route
               path="/editor"
-              element={<Editor displayName={displayName} uid={uid} />}
+              element={
+                <Editor displayName={displayName} uid={uid} user={user} />
+              }
             />
             <Route
               path="/edit"
-              element={<Edit displayName={displayName} uid={uid} />}
+              element={<Edit displayName={displayName} uid={uid} user={user} />}
             />
             <Route
               path="/mypage"
@@ -72,7 +99,9 @@ function App() {
             />
             <Route
               path="/detail/:id"
-              element={<Detail displayName={displayName} uid={uid} />}
+              element={
+                <Detail displayName={displayName} uid={uid} user={user} />
+              }
             />
             <Route
               path="/setting"

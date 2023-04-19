@@ -1,58 +1,31 @@
-import React, { useEffect, useState } from "react";
-import imgs from "../../profile.jpg";
-import { FcLikePlaceholder, FcLike } from "react-icons/fc";
+import React, { useState } from "react";
+import { FcLikePlaceholder } from "react-icons/fc";
 import { Cookies } from "react-cookie";
 import * as s from "./style";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  updateDoc,
-} from "firebase/firestore";
-import { authService, dbService } from "fBase";
-import Date from "component/Date";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { dbService } from "fBase";
 import { RiDeleteBinLine } from "react-icons/ri";
 import theme from "styles/Theme";
-import { async } from "@firebase/util";
 
-const Main = ({ displayName, uids, user }) => {
+const Main = ({ user, nweets, nweets1 }) => {
   const cookie = new Cookies();
   const Token = cookie.get("token");
   // 3가지 menu
   const [menu, setMenu] = useState(0);
   const MainMenu = [{ name: "Global Articles" }, { name: "My Articles" }];
+  // 좋아요 기능
   const [like, setLike] = useState([]);
   const [likeStyle, setLikeStyle] = useState({});
-  const [nweets, setNweets] = useState([]);
-  const [nweets1, setNweets1] = useState([]);
+
   const IconImg =
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
-
-  // 작성한 글 보여주기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "editor"),
-      orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (snapshot) => {
-      const nweetArr = snapshot.docs.map((document) => ({
-        id: document.id,
-        ...document.data(),
-      }));
-      setNweets(nweetArr);
-      setNweets1(nweetArr);
-    });
-  }, []);
 
   console.log(nweets);
 
   const mainCurrent = (index) => {
     setMenu(index);
   };
+
   // 선택 삭제
   const onDeletePage = async (id) => {
     const ok = window.confirm("삭제 하시겠습니까?");
@@ -61,40 +34,36 @@ const Main = ({ displayName, uids, user }) => {
       await deleteDoc(pageRef);
     }
   };
-  // 좋아요는 리펙토링 때 컴포넌트로 만들어서 사용하자
+  // 좋아요와 삭제는 컴포넌트로 같이 만들자
   const LikeClick = async (id) => {
     try {
       const pageRef = doc(dbService, "editor", `${id}`);
       const pageDoc = await getDoc(pageRef);
       const currentPage = pageDoc.data();
-      // 좋아요를 눌렀는지 확인하기 위해 id가 있는지 찾는다
-      if (like.map((item) => item.id).includes(id)) {
-        const newLikes = like
-          .map((item) => {
-            // id가 있으면 좋아요를 누른것이다 그러면 -1을 해준다
-            if (item.id === id) {
-              // -1 감소 시킬 때 새로운 객체를 만들어 반환한다 아닐 경우는 그대로 반환 한다
-              const updatedItem = { ...item, like: item.like - 1 };
-              return updatedItem.like === 0 ? null : updatedItem;
-            } else {
-              return item;
-            }
-          })
-          .filter((item) => item !== null);
-        setLikeStyle((prev) => ({ ...prev, [id]: false }));
+
+      // 좋아요 누른 기록이 있는지 확인
+      const alreadyLiked = like.find((item) => item.id === id);
+
+      if (alreadyLiked) {
+        // 이미 좋아요를 누른 경우
+        const newLikes = like.filter((item) => item.id !== id);
         setLike(newLikes);
+        setLikeStyle((prev) => ({ ...prev, [id]: false }));
         await updateDoc(pageRef, { like: currentPage.like - 1 });
       } else {
+        // 좋아요를 누르지 않은 경우
         const newLikes = [...like, { id, like: 1 }];
-        setLikeStyle((prev) => ({ ...prev, [id]: true }));
         setLike(newLikes);
+        setLikeStyle((prev) => ({ ...prev, [id]: true }));
         await updateDoc(pageRef, { like: currentPage.like + 1 });
         console.log(like);
+        console.log(likeStyle);
       }
     } catch (err) {
       console.log(err);
     }
   };
+
   // Firebase Timestamp 객체를 JavaScript Date 객체로 변환 createdAt 변환
   const formatDate = (date) => {
     const jsDate = date.toDate();
@@ -105,7 +74,8 @@ const Main = ({ displayName, uids, user }) => {
     const minutes = String(jsDate.getMinutes()).padStart(2, "0");
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
-  console.log(likeStyle);
+
+  // 이미지가 컬렉션에 저장은 되지만 전체에 다 저장이 되는게 아닌거 같다
   return (
     <s.MainContainer>
       <s.MainImg>
@@ -211,14 +181,20 @@ const Main = ({ displayName, uids, user }) => {
                     <s.Info>
                       <div className="info">
                         <s.MapName href="/mypage">{item.displayName}</s.MapName>
-                        {/* <s.MapTime>{item.createdAt.toMillis()}</s.MapTime> */}
                         <s.MapTime>{formatDate(item.createdAt)}</s.MapTime>
                       </div>
                       <div className="Like">
-                        <s.MapLike value={like}>
+                        <button
+                          value={like}
+                          onClick={() => LikeClick(item.id)}
+                          className={`basic ${
+                            likeStyle[item.id] ? "focus" : ""
+                          }`}
+                        >
                           <FcLikePlaceholder />
-                          100
-                        </s.MapLike>
+
+                          {item.like}
+                        </button>
                         {user && item.uid === user.uid ? (
                           <s.InfoBtn
                             border={`${theme.colors.main}`}
@@ -241,7 +217,9 @@ const Main = ({ displayName, uids, user }) => {
                       <p className="content">{item.content}</p>
                       <span className="span">Read more...</span>
                       <s.MapUl>
-                        <li>{item.tags}</li>
+                        {item.tags.split(",").map((tag, index) => (
+                          <li key={index}>{[tag]}</li>
+                        ))}
                       </s.MapUl>
                     </s.MapTitle>
                   </s.MapContent>
