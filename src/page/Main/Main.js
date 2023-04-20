@@ -34,7 +34,7 @@ const Main = ({ user, nweets, nweets1 }) => {
       await deleteDoc(pageRef);
     }
   };
-  // 좋아요와 삭제는 컴포넌트로 같이 만들자
+  // 좋아요 기능
   const LikeClick = async (id) => {
     try {
       const pageRef = doc(dbService, "editor", `${id}`);

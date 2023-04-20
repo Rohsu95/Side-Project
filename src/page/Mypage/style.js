@@ -177,6 +177,35 @@ export const Info = styled.div`
       white-space: nowrap;
     }
   }
+
+  .basic {
+    cursor: pointer;
+    padding: 0 0.5rem;
+    height: 2.8vh;
+    border-radius: 5px;
+    border: 1px solid ${theme.colors.main};
+    background-color: white;
+
+    &:hover {
+      background-color: ${theme.colors.main};
+      color: white;
+    }
+
+    svg {
+      margin-right: 0.25rem;
+
+      @media ${theme.media.height} {
+        font-size: ${theme.fontSizes.fs07};
+      }
+    }
+    @media ${theme.media.height} {
+      font-size: ${theme.fontSizes.fs0};
+    }
+  }
+  .focus {
+    background-color: ${theme.colors.main};
+    color: white;
+  }
 `;
 export const MapName = styled.a`
   color: ${theme.colors.main};
@@ -265,5 +294,33 @@ export const LogOutBtn = styled.button`
   }
   @media ${theme.media.height} {
     font-size: ${theme.fontSizes.fs0};
+  }
+`;
+
+export const InfoBtn = styled.button`
+  display: flex;
+  height: 3vh;
+  align-items: center;
+  border-radius: 5px;
+  margin-left: 0.125rem;
+  margin-right: 0.25rem;
+  padding: 0.25rem 0.25rem;
+  color: ${(props) => props.color};
+  background-color: ${theme.colors.white};
+  border: 1.5px solid ${(props) => props.border};
+  svg {
+    padding: 0.125rem;
+  }
+  &:hover {
+    background-color: ${(props) => props.hover};
+    color: ${(props) => props.hover_color};
+  }
+
+  @media ${theme.media.mobile} {
+    white-space: nowrap;
+  }
+  @media ${theme.media.phone} {
+    font-size: ${theme.fontSizes.fs07};
+    margin-bottom: ${(props) => props.margin};
   }
 `;

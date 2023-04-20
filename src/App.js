@@ -21,7 +21,7 @@ function App() {
   const [displayName, setDisplayName] = useState("");
   const [uid, SetUid] = useState();
   const [user, setUser] = useState();
-  const [imageUrl, setImageUrl] = useState();
+
   const [nweets, setNweets] = useState([]);
   const [nweets1, setNweets1] = useState([]);
   // displayName 불러오기
@@ -30,7 +30,6 @@ function App() {
       if (user) {
         setDisplayName(user.displayName);
         SetUid(user.uid);
-        setImageUrl(user.photoURL);
         setUser(user);
       }
     });
@@ -93,7 +92,7 @@ function App() {
                   displayName={displayName}
                   uid={uid}
                   user={user}
-                  imageUrl={imageUrl}
+                  nweets={nweets}
                 />
               }
             />

@@ -1,67 +1,48 @@
-import { async } from "@firebase/util";
 import { removeCookie } from "Cookies";
 import { dbService, storageService } from "fBase";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
+  getDoc,
   getDocs,
-  onSnapshot,
   orderBy,
   query,
-  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadString,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FcLikePlaceholder } from "react-icons/fc";
-import { BsPerson } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
-import imgs from "../../profile.jpg";
 import * as s from "./style";
 import { updateProfile } from "firebase/auth";
+import theme from "styles/Theme";
+import { RiDeleteBinLine } from "react-icons/ri";
 
-const Mypage = ({ displayName, user }) => {
+const Mypage = ({ nweets, user }) => {
   const [menu, setMenu] = useState(0);
   const [img, setImg] = useState([]);
-  const [nweets, setNweets] = useState([]);
+
   const [attachment, setAttachment] = useState("");
 
   const [submit, setSubmit] = useState(false);
   const MypageMenu = [{ name: "My Articles" }, { name: "Favorited Articles" }];
   const navigate = useNavigate();
-  const IconImg =
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
+  // 좋아요 기능
+  const [like, setLike] = useState([]);
+  const [likeStyle, setLikeStyle] = useState({});
+  // 메뉴
   const mypageCurrent = (index) => {
     setMenu(index);
   };
 
-  // editor 컬렉션 내용을 불러온다
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "editor"),
-      orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (snapshot) => {
-      const nweetArr = snapshot.docs.map((document) => ({
-        id: document.id,
-        ...document.data(),
-      }));
-      setNweets(nweetArr);
-    });
-  }, []);
-
   const attachmentUrl = localStorage.getItem("img");
-
+  //Firebase Storage에서 가져온 이미지 파일을 attachmentUrl에 넣은 후 랜더링한다
   useEffect(() => {
     if (attachmentUrl) {
       const img = new Image();
@@ -111,7 +92,7 @@ const Mypage = ({ displayName, user }) => {
       if (attachment !== "") {
         if (querySnapshot.docs.length > 0) {
           const docId = querySnapshot.docs[0].id;
-
+          // 스토리지에 만드는 코드
           const fileRef = ref(storageService, `${nweets.id}/${docId}`);
           const response = await uploadString(fileRef, attachment, "data_url");
           attachmentUrl = await getDownloadURL(response.ref);
@@ -126,6 +107,7 @@ const Mypage = ({ displayName, user }) => {
           const fileRef = ref(storageService, `${nweets.id}/${v4()}`);
           const response = await uploadString(fileRef, attachment, "data_url");
           attachmentUrl = await getDownloadURL(response.ref);
+
           const imgs = {
             uid: user.uid,
             attachmentUrl,
@@ -161,7 +143,43 @@ const Mypage = ({ displayName, user }) => {
     const minutes = String(jsDate.getMinutes()).padStart(2, "0");
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
+  // 좋아요 기능
 
+  const LikeClick = async (id) => {
+    try {
+      const pageRef = doc(dbService, "editor", `${id}`);
+      const pageDoc = await getDoc(pageRef);
+      const currentPage = pageDoc.data();
+
+      // 좋아요 누른 기록이 있는지 확인
+      const alreadyLiked = like.find((item) => item.id === id);
+
+      if (alreadyLiked) {
+        // 이미 좋아요를 누른 경우
+        const newLikes = like.filter((item) => item.id !== id);
+        setLike(newLikes);
+        setLikeStyle((prev) => ({ ...prev, [id]: false }));
+        await updateDoc(pageRef, { like: currentPage.like - 1 });
+      } else {
+        // 좋아요를 누르지 않은 경우
+        const newLikes = [...like, { id, like: 1 }];
+        setLike(newLikes);
+        setLikeStyle((prev) => ({ ...prev, [id]: true }));
+        await updateDoc(pageRef, { like: currentPage.like + 1 });
+        console.log(like);
+        console.log(likeStyle);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const onDeletePage = async (id) => {
+    const ok = window.confirm("삭제 하시겠습니까?");
+    if (ok) {
+      const pageRef = doc(dbService, "editor", `${id}`);
+      await deleteDoc(pageRef);
+    }
+  };
   return (
     <div>
       <s.MainImg>
@@ -176,13 +194,11 @@ const Mypage = ({ displayName, user }) => {
           ) : (
             <img className="EditImg" src={user.photoURL} alt="기본 이미지" />
           )}
-          {/* <img className="EditImg" src={attachment} alt="수정 이미지" /> */}
-          {/* className="EditImg" */}
         </s.ImgDiv>
         <p className="Spans">{user?.displayName}</p>
         <s.Edit>
           {/* label for이랑 input id를 같이 맞추면 커스터마이징이 되어 라벨이 인풋 기능을 한다 */}
-          <label for="input-file" className="label-file">
+          <label htmlFor="input-file" className="label-file">
             업로드
           </label>
           <input
@@ -227,15 +243,6 @@ const Mypage = ({ displayName, user }) => {
             <s.MainBorder>
               <s.MapInfo>
                 <s.MapPicture href="/mypage">
-                  {/* {item.attachmentUrl.length === 0 ? (
-                    <s.Img
-                      className="EditImg"
-                      src={user.photoURL}
-                      alt="수정 이미지"
-                    />
-                  ) : (
-                    <img className="icon" src={IconImg} alt="기본 이미지" />
-                  )} */}
                   {user?.uid === img?.uid ? (
                     <s.Img
                       className="EditImg"
@@ -249,15 +256,6 @@ const Mypage = ({ displayName, user }) => {
                       alt="기본 이미지"
                     />
                   )}
-                  {/* {item.uid === user.uid && item.attachmentUrl.length === [] ? (
-                    <s.Img
-                      className="EditImg"
-                      src={item.attachmentUrl}
-                      alt="수정 이미지"
-                    ></s.Img>
-                  ) : (
-                    <BsPerson className="icon" />
-                  )} */}
                 </s.MapPicture>
                 <s.Info>
                   <div className="info">
@@ -265,10 +263,27 @@ const Mypage = ({ displayName, user }) => {
                     <s.MapTime>{formatDate(item.createdAt)}</s.MapTime>
                   </div>
                   <div className="Like">
-                    <s.MapLike>
+                    <button
+                      value={like}
+                      onClick={() => LikeClick(item.id)}
+                      className={`basic ${likeStyle[item.id] ? "focus" : ""}`}
+                    >
                       <FcLikePlaceholder />
-                      {/* {item.attributes.like} */}0
-                    </s.MapLike>
+                      {item.like}
+                    </button>
+                    {user && item.uid === user.uid ? (
+                      <s.InfoBtn
+                        border={`${theme.colors.main}`}
+                        color={`${theme.colors.main}`}
+                        hover={`${theme.colors.main_hover}`}
+                        hover_color="white"
+                        onClick={() => onDeletePage(item.id)}
+                      >
+                        <RiDeleteBinLine />
+                      </s.InfoBtn>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </s.Info>
               </s.MapInfo>
