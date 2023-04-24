@@ -6,6 +6,16 @@
 ### 회원 가입, 로그인
 
 ![회원가입,로그인](https://user-images.githubusercontent.com/97446711/234043720-8fcba876-9cd4-4851-8d22-2cc8cb0c2151.gif)
- 
+ * fire base 사용
+ * 유효성 검사 후 아이디, 닉네임, 비밀번호로 회원 가입 가능
+ * 회원 가입 후 회원 가입 완료 문구로 이동 후 로그인 페이지로 이동 가능
+
+### 
+
+![마이 페이지-  글 작성](https://user-images.githubusercontent.com/97446711/234044255-1b27649f-9bc9-4976-b1f4-c3b5b9cb21b5.gif)
+
+
+
+
 
 <br/>
