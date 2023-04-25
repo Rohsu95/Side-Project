@@ -102,12 +102,13 @@ const Mypage = ({ nweets, user }) => {
             attachmentUrl: user.photoURL,
           };
           const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
+          // const pageRef1 = doc(dbService, "editor", `${nweets1[0].id}`);
           await updateDoc(pageRef, edit);
         } else {
           const fileRef = ref(storageService, `${nweets.id}/${v4()}`);
           const response = await uploadString(fileRef, attachment, "data_url");
           attachmentUrl = await getDownloadURL(response.ref);
-
+          // 이미지 컬렉션
           const imgs = {
             uid: user.uid,
             attachmentUrl,
@@ -118,7 +119,6 @@ const Mypage = ({ nweets, user }) => {
       }
       await updateProfile(user, { photoURL: attachmentUrl });
       localStorage.setItem("img", attachment);
-      // alert("저장되었습니다."); 원래 여기 있었는데 위로 올림
       window.location.reload();
     } catch (err) {
       console.log(err);
@@ -130,6 +130,7 @@ const Mypage = ({ nweets, user }) => {
   // 로그아웃
   const logoutBtn = () => {
     removeCookie("token");
+    alert("로그아웃 되었습니다.");
     navigate("/");
     window.location.reload();
   };
@@ -197,7 +198,6 @@ const Mypage = ({ nweets, user }) => {
         </s.ImgDiv>
         <p className="Spans">{user?.displayName}</p>
         <s.Edit>
-          {/* label for이랑 input id를 같이 맞추면 커스터마이징이 되어 라벨이 인풋 기능을 한다 */}
           <label htmlFor="input-file" className="label-file">
             업로드
           </label>
@@ -288,7 +288,7 @@ const Mypage = ({ nweets, user }) => {
                 </s.Info>
               </s.MapInfo>
               <s.MapContent>
-                <s.MapTitle href="/detail">
+                <s.MapTitle href={`/detail/${item.id}`}>
                   <h1 className="title">{item.title}</h1>
                   <p className="content">{item.content}</p>
                   <span className="span">Read more...</span>

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 
-const Editor = ({ displayName, uid, user }) => {
+const Editor = ({ user }) => {
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
   const [input, setInput] = useState({
@@ -53,8 +53,8 @@ const Editor = ({ displayName, uid, user }) => {
         tags: tagsitem,
         like: like,
         createdAt: Timestamp.fromDate(now),
-        displayName: displayName,
-        uid: uid,
+        displayName: user.displayName,
+        uid: user.uid,
         attachmentUrl: user.photoURL,
       };
       await addDoc(collection(dbService, "editor"), editor);

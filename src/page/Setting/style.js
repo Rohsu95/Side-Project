@@ -7,6 +7,7 @@ export const Container = styled.div`
   h1 {
     text-align: center;
     font-weight: 400;
+    margin-bottom: 1rem;
     @media ${theme.media.height} {
       font-size: ${theme.fontSizes.fs15};
     }

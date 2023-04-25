@@ -17,9 +17,6 @@ const Main = ({ user, nweets, nweets1 }) => {
   const [like, setLike] = useState([]);
   const [likeStyle, setLikeStyle] = useState({});
 
-  const IconImg =
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
-
   console.log(nweets);
 
   const mainCurrent = (index) => {
@@ -75,7 +72,9 @@ const Main = ({ user, nweets, nweets1 }) => {
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
 
-  // 이미지가 컬렉션에 저장은 되지만 전체에 다 저장이 되는게 아닌거 같다
+  // 아마 app에서 프롭스로 보내면 같이 보내기 때문에 마이페이지에서 수정이 되어도
+  // 바로 메인에서는 수정이 안되는거 같다 그러면 수정을 app에서 만들어볼까?
+  // 먼저 이미지 변경 후 글 작성하면 이미지가 적용된다
   return (
     <s.MainContainer>
       <s.MainImg>
@@ -105,12 +104,12 @@ const Main = ({ user, nweets, nweets1 }) => {
             <s.MainBorder>
               <s.MapInfo>
                 <s.MapPicture href="/mypage">
-                  {item.attachmentUrl === "" ? (
+                  {/* {item.attachmentUrl === "" ? (
                     <s.Img src={IconImg} alt="profile" />
                   ) : (
                     <s.Img src={item.attachmentUrl} alt="profile" />
-                  )}
-                  {/* <s.Img src={item.attachmentUrl} alt="profile" /> */}
+                  )} */}
+                  <s.Img src={item?.attachmentUrl} alt="profile" />
                 </s.MapPicture>
                 <s.Info>
                   <div className="info">
@@ -192,7 +191,6 @@ const Main = ({ user, nweets, nweets1 }) => {
                           }`}
                         >
                           <FcLikePlaceholder />
-
                           {item.like}
                         </button>
                         {user && item.uid === user.uid ? (

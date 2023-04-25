@@ -1,7 +1,5 @@
-import { authService, db, firebase } from "fBase";
+import { authService } from "fBase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
@@ -10,7 +8,6 @@ const Signup = () => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
@@ -22,6 +19,7 @@ const Signup = () => {
         data.email,
         data.password
       );
+      alert("회원 가입에 성공하셨습니다.");
       const users = authService.currentUser;
       console.log("user", user);
       // 이미지
@@ -33,16 +31,12 @@ const Signup = () => {
       await updateProfile(user, { displayName: data.username });
       // uid
       await updateProfile(user, { uid: data.uid });
-
       navigate("/login");
     } catch (error) {
       alert("이미 가입된 정보 입니다");
     }
   };
 
-  const onError = (errors) => {
-    console.log(errors);
-  };
   return (
     <s.Container>
       <s.Sign>
@@ -52,7 +46,7 @@ const Signup = () => {
         </s.SignupLink>
       </s.Sign>
       <s.FormContainer>
-        <form onSubmit={handleSubmit(onSubmit, onError)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <input
             type="text"
             className="Input"
@@ -104,13 +98,7 @@ const Signup = () => {
             })}
           />
           <span>{errors?.password?.message}</span>
-          <button
-            onClick={() =>
-              setError("email", { type: "focus" }, { shouldFocus: true })
-            }
-          >
-            Sign up
-          </button>
+          <button>Sign up</button>
         </form>
       </s.FormContainer>
     </s.Container>

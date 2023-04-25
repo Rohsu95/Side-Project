@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 import { dbService } from "fBase";
 
-const Detail = ({ displayName, user }) => {
+const Detail = ({ user }) => {
   // 페이지 정보
   const [commentInput, setCommentInput] = useState("");
   // 댓글
@@ -25,13 +25,12 @@ const Detail = ({ displayName, user }) => {
   const [data, setData] = useState(null);
 
   const navigate = useNavigate();
-  const { id } = useParams();
-  const NoImg =
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+  const { ids } = useParams();
+
   // 특정 게시물 페이지 불러오기 id
   useEffect(() => {
     const fetchData = async () => {
-      const docRef = doc(dbService, "editor", id);
+      const docRef = doc(dbService, "editor", ids);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setData(docSnap.data());
@@ -40,14 +39,14 @@ const Detail = ({ displayName, user }) => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [ids]);
 
-  console.log(data);
-  console.log(user);
+  console.log("댓글", comment);
+
   // read 댓글 정보 보여주기
   useEffect(() => {
     const q = query(
-      collection(dbService, "test"),
+      collection(dbService, "comment"),
       orderBy("createdAt", "desc")
     );
     onSnapshot(q, (snapshot) => {
@@ -68,8 +67,13 @@ const Detail = ({ displayName, user }) => {
   const onDeleteComment = async (id) => {
     const ok = window.confirm("댓글을 삭제 하시겠습니까?");
     if (ok) {
-      const commentRef = doc(dbService, "test", id);
-      await deleteDoc(commentRef);
+      const commentRef = doc(dbService, "comment", id);
+      try {
+        await deleteDoc(commentRef);
+        console.log("삭제 완료");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -78,12 +82,14 @@ const Detail = ({ displayName, user }) => {
 
     try {
       const sweetObj = {
-        displayName: displayName,
+        displayName: user.displayName,
         comment: commentInput,
         createdAt: Timestamp.fromDate(now),
         uid: user.uid,
+        attachmentUrl: user.photoURL,
+        ids,
       };
-      await addDoc(collection(dbService, "test"), sweetObj);
+      await addDoc(collection(dbService, "comment"), sweetObj);
       setCommentInput("");
     } catch (error) {
       console.log(error);
@@ -100,7 +106,8 @@ const Detail = ({ displayName, user }) => {
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
   // 로컬에 저장된 이미지
-  const attachmentUrl = localStorage.getItem("img");
+  // const attachmentUrl = localStorage.getItem("img");
+
   return (
     <s.Container>
       {data ? (
@@ -115,7 +122,7 @@ const Detail = ({ displayName, user }) => {
                       <s.DetailImg src={data?.attachmentUrl} alt="이미지" />
                     </s.DetailA>
                   ) : (
-                    "새 계정 만들어서 이미지 없을때를 확인해보자 기본 이미지가 들어가는지"
+                    ""
                   )}
                   <div className="name">
                     <s.DetailName href="/mypage">
@@ -181,35 +188,39 @@ const Detail = ({ displayName, user }) => {
       {/* 댓글 내용 부분 */}
       <s.CcommentContainer>
         <div>
-          {comment.map((item, key) => (
-            <s.CcommentTitle key={key}>
-              <s.CcommentDiv>
-                <p>{item.comment}</p>
-              </s.CcommentDiv>
-              <s.CommentPost>
-                <div className="commentName">
-                  <s.DetailImg
-                    // src={attachmentUrl}
-                    src={item.attachmentUrl}
-                    alt="이미지"
-                    margin="1.25rem"
-                    width="24px"
-                    height="24px"
-                    width_hover="28px"
-                    height_hover="28px"
-                  />
-                  <span>{item.displayName}</span>
-                </div>
-                {item.uid === user.uid ? (
-                  <s.CcommentDelete onClick={() => onDeleteComment(item.id)}>
-                    <RiDeleteBinLine />
-                  </s.CcommentDelete>
-                ) : (
-                  ""
-                )}
-              </s.CommentPost>
-            </s.CcommentTitle>
-          ))}
+          {comment.map((item, key) =>
+            ids === item?.ids ? (
+              // filter ? (
+              <s.CcommentTitle key={key}>
+                <s.CcommentDiv>
+                  <p>{item.comment}</p>
+                </s.CcommentDiv>
+                <s.CommentPost>
+                  <div className="commentName">
+                    <s.DetailImg
+                      src={item?.attachmentUrl}
+                      alt="이미지"
+                      margin="1.25rem"
+                      width="24px"
+                      height="24px"
+                      width_hover="28px"
+                      height_hover="28px"
+                    />
+                    <span>{item.displayName}</span>
+                  </div>
+                  {item.uid === user.uid ? (
+                    <s.CcommentDelete onClick={() => onDeleteComment(item?.id)}>
+                      <RiDeleteBinLine />
+                    </s.CcommentDelete>
+                  ) : (
+                    ""
+                  )}
+                </s.CommentPost>
+              </s.CcommentTitle>
+            ) : (
+              ""
+            )
+          )}
         </div>
       </s.CcommentContainer>
     </s.Container>

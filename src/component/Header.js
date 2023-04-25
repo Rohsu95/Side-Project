@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import theme from "../styles/Theme";
 import { BiEdit } from "react-icons/bi";
@@ -63,7 +63,7 @@ const HeaderUl = styled.ul`
     font-size: 0.8rem;
   }
 `;
-const Header = ({ displayName }) => {
+const Header = ({ user }) => {
   const cookies = new Cookies();
   const token = cookies.get("token");
   const [head, setHead] = useState(0);
@@ -78,7 +78,7 @@ const Header = ({ displayName }) => {
     { name: "Home" },
     { name: "New Post" },
     { name: "setting" },
-    { name: displayName },
+    { name: user?.displayName },
   ];
   const headCurrent = (index) => {
     setHead(index);

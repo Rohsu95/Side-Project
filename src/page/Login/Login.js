@@ -29,11 +29,8 @@ const Login = () => {
       navigate("/");
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      alert("로그인 정보를 다시 확인해주세요");
     }
-  };
-  const onError = (errors) => {
-    console.log(errors);
   };
 
   return (
@@ -45,7 +42,7 @@ const Login = () => {
         </s.SignupLink>
       </s.Sign>
       <s.FormContainer>
-        <form onSubmit={handleSubmit(onSubmit, onError)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <input
             {...register("email", {
               required: "12자 이상 20자 이하의 email을 입력해 주세요",

@@ -94,6 +94,13 @@ export const Edit = styled.div`
     @media ${theme.media.height} {
       font-size: ${theme.fontSizes.fs0};
     }
+    svg {
+      @media ${theme.media.height} {
+        font-size: ${theme.fontSizes.fs07};
+        margin-right: 0.125rem;
+        margin-top: 0.125rem;
+      }
+    }
   }
 `;
 export const MainUl = styled.ul`
@@ -294,6 +301,7 @@ export const LogOutBtn = styled.button`
   }
   @media ${theme.media.height} {
     font-size: ${theme.fontSizes.fs0};
+    padding: 0.5em;
   }
 `;
 

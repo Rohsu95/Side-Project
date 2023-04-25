@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 
-const Edit = ({ displayName, uid }) => {
+const Edit = ({ user }) => {
   // 수정 할 정보 불러오기
   const [nweets, setNweets] = useState([]);
   // 태그
@@ -82,8 +82,8 @@ const Edit = ({ displayName, uid }) => {
         content: content,
         article: article,
         tags: tagsitem,
-        displayName: displayName,
-        uid: uid,
+        displayName: user.displayName,
+        uid: user.uid,
       };
       const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
       await updateDoc(pageRef, editor);
