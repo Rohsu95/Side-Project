@@ -1,4 +1,3 @@
-import { removeCookie } from "Cookies";
 import { dbService, storageService } from "fBase";
 import {
   addDoc,
@@ -22,6 +21,7 @@ import * as s from "./style";
 import { updateProfile } from "firebase/auth";
 import theme from "styles/Theme";
 import { RiDeleteBinLine } from "react-icons/ri";
+// import { removeCookie } from "Cookies";
 
 const Mypage = ({ nweets, user }) => {
   const [menu, setMenu] = useState(0);
@@ -129,7 +129,7 @@ const Mypage = ({ nweets, user }) => {
 
   // 로그아웃
   const logoutBtn = () => {
-    removeCookie("token");
+    // removeCookie("token");
     alert("로그아웃 되었습니다.");
     navigate("/");
     window.location.reload();
