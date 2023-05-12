@@ -1,13 +1,11 @@
-import axios from "axios";
 import { authService } from "fBase";
-import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React from "react";
 import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as s from "./style";
-// 유저에 정보가 들어가야해
-//
+
 const Login = () => {
   const navigate = useNavigate();
   const cookie = new Cookies();
@@ -25,16 +23,14 @@ const Login = () => {
         data.password
       );
 
-      console.log("user", user);
       const token = user.refreshToken;
       cookie.set("token", token);
+      console.log("user", user);
       navigate("/");
+      window.location.reload();
     } catch (error) {
-      console.log(error);
+      alert("로그인 정보를 다시 확인해주세요");
     }
-  };
-  const onError = (errors) => {
-    console.log(errors);
   };
 
   return (
@@ -46,7 +42,7 @@ const Login = () => {
         </s.SignupLink>
       </s.Sign>
       <s.FormContainer>
-        <form onSubmit={handleSubmit(onSubmit, onError)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <input
             {...register("email", {
               required: "12자 이상 20자 이하의 email을 입력해 주세요",

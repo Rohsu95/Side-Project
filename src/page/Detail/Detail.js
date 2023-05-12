@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import imgs from "../../profile.jpg";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
 import * as s from "./style";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteWrite, getUser, getWrite } from "../../api/userAPI";
-import { Cookies } from "react-cookie";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   onSnapshot,
@@ -18,23 +16,21 @@ import {
 } from "firebase/firestore";
 import { dbService } from "fBase";
 
-const Detail = ({ displayName }) => {
-  // 만들기
+const Detail = ({ user }) => {
+  // 페이지 정보
   const [commentInput, setCommentInput] = useState("");
-  // 만든 정보 불러오기
+  // 댓글
   const [comment, setComment] = useState([]);
-  const [nweets, setNweets] = useState([]);
-  const navigate = useNavigate();
-  const cookie = new Cookies();
-  const Token = cookie.get("token");
-  const { id } = useParams();
-
+  // 특정 게시물 불러오기
   const [data, setData] = useState(null);
 
-  // 특정 게시물 페이지 불러오기
+  const navigate = useNavigate();
+  const { ids } = useParams();
+
+  // 특정 게시물 페이지 불러오기 id
   useEffect(() => {
     const fetchData = async () => {
-      const docRef = doc(dbService, "editor", id);
+      const docRef = doc(dbService, "editor", ids);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setData(docSnap.data());
@@ -43,50 +39,14 @@ const Detail = ({ displayName }) => {
       }
     };
     fetchData();
-  }, [id]);
-  // read 특정 게시물 정보 보여주기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "editor"),
-      orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (snapshot) => {
-      const nweetArr = snapshot.docs.map((document) => ({
-        id: document.id,
-        ...document.data(),
-      }));
+  }, [ids]);
 
-      setNweets(nweetArr);
-    });
-  }, []);
+  console.log("댓글", comment);
+
   // read 댓글 정보 보여주기
-  // useEffect(() => {
-  //   onSnapshot(query(collection(dbService, "test")), (docs) => {
-  //     const dataArr = [];
-  //     docs.forEach((doc) => {
-  //       dataArr.push(doc.data());
-  //     });
-  //     setComment([...dataArr]);
-  //   });
-  // }, []);
-  // 애도 작동함
-  // useEffect(() => {
-  //   const q = query(
-  //     collection(dbService, "test"),
-  //     orderBy("createdAt", "desc")
-  //   );
-  //   onSnapshot(q, (querySnapshot) => {
-  //     const dataArr = [];
-  //     querySnapshot.forEach((doc) => {
-  //       dataArr.push(doc.data());
-  //     });
-  //     setComment([...dataArr]);
-  //   });
-  // }, []);
-  //애도 작동 정렬은안됌
   useEffect(() => {
     const q = query(
-      collection(dbService, "test"),
+      collection(dbService, "comment"),
       orderBy("createdAt", "desc")
     );
     onSnapshot(q, (snapshot) => {
@@ -94,24 +54,26 @@ const Detail = ({ displayName }) => {
         id: document.id,
         ...document.data(),
       }));
-      console.log(nweetArrs);
-      console.log(snapshot.docs);
+
       setComment(nweetArrs);
     });
-  }, [id]);
+  }, []);
 
   const onCommentChange = (e) => {
     setCommentInput(e.target.value);
   };
 
-  console.log("빈 배열", comment);
-
-  const DeleteClick = async () => {
-    if (!window.confirm("정말 삭제 하시겠습니까?")) {
-      alert("취소했습니다.");
-    } else {
-      await deleteWrite(Token, id);
-      navigate("/");
+  // 댓글 삭제
+  const onDeleteComment = async (id) => {
+    const ok = window.confirm("댓글을 삭제 하시겠습니까?");
+    if (ok) {
+      const commentRef = doc(dbService, "comment", id);
+      try {
+        await deleteDoc(commentRef);
+        console.log("삭제 완료");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -120,10 +82,14 @@ const Detail = ({ displayName }) => {
 
     try {
       const sweetObj = {
+        displayName: user.displayName,
         comment: commentInput,
         createdAt: Timestamp.fromDate(now),
+        uid: user.uid,
+        attachmentUrl: user.photoURL,
+        ids,
       };
-      await addDoc(collection(dbService, "test"), sweetObj);
+      await addDoc(collection(dbService, "comment"), sweetObj);
       setCommentInput("");
     } catch (error) {
       console.log(error);
@@ -139,6 +105,9 @@ const Detail = ({ displayName }) => {
     const minutes = String(jsDate.getMinutes()).padStart(2, "0");
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
+  // 로컬에 저장된 이미지
+  // const attachmentUrl = localStorage.getItem("img");
+
   return (
     <s.Container>
       {data ? (
@@ -148,34 +117,34 @@ const Detail = ({ displayName }) => {
               <h1>{data.title}</h1>
               <s.DetailInfo>
                 <div className="detailLine">
-                  <s.DetailA to="/mypage">
-                    <s.DetailImg src={imgs} alt="이미지" />
-                  </s.DetailA>
+                  {data.attachmentUrl !== "" ? (
+                    <s.DetailA to="/mypage">
+                      <s.DetailImg src={data?.attachmentUrl} alt="이미지" />
+                    </s.DetailA>
+                  ) : (
+                    ""
+                  )}
                   <div className="name">
-                    <s.DetailName href="/mypage">{displayName}</s.DetailName>
+                    <s.DetailName href="/mypage">
+                      {data.displayName}
+                    </s.DetailName>
                     <s.DetailDate>{formatDate(data.createdAt)}</s.DetailDate>
                   </div>
-                  <s.InfoBtn
-                    border="#ccc"
-                    color="#ccc"
-                    hover="#282A3A"
-                    hover_color="white"
-                    margin="0.5rem"
-                    onClick={() => navigate("/setting")}
-                  >
-                    <CiEdit />
-                    Edit Article
-                  </s.InfoBtn>
-                  <s.InfoBtn
-                    border="#A86464"
-                    color="#A86464"
-                    hover="#A84448"
-                    hover_color="white"
-                    onClick={DeleteClick}
-                  >
-                    <RiDeleteBinLine />
-                    Delete Article
-                  </s.InfoBtn>
+                  {data.uid === user.uid ? (
+                    <s.InfoBtn
+                      border="#ccc"
+                      color="#ccc"
+                      hover="#282A3A"
+                      hover_color="white"
+                      margin="0.5rem"
+                      onClick={() => navigate("/edit")}
+                    >
+                      <CiEdit />
+                      Edit Article
+                    </s.InfoBtn>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </s.DetailInfo>
             </div>
@@ -204,13 +173,13 @@ const Detail = ({ displayName }) => {
           <s.CommentPost>
             <div className="commentName">
               <s.DetailImg
-                src={imgs}
+                src={user?.photoURL}
                 alt="이미지"
                 margin="1.25rem"
                 width_hover="28px"
                 height_hover="28px"
               />
-              <span>{displayName}</span>
+              <span>{user?.displayName}</span>
             </div>
             <s.CommentBtn onClick={CommentonClick}>Comment</s.CommentBtn>
           </s.CommentPost>
@@ -219,31 +188,39 @@ const Detail = ({ displayName }) => {
       {/* 댓글 내용 부분 */}
       <s.CcommentContainer>
         <div>
-          {comment.map((item, key) => (
-            <s.CcommentTitle key={key}>
-              <s.CcommentDiv>
-                <p>{item.comment}</p>
-              </s.CcommentDiv>
-              <s.CommentPost>
-                <div className="commentName">
-                  <s.DetailImg
-                    src={imgs}
-                    alt="이미지"
-                    margin="1.25rem"
-                    width="24px"
-                    height="24px"
-                    width_hover="28px"
-                    height_hover="28px"
-                  />
-                  <span>{displayName}</span>
-                </div>
-
-                <s.CcommentDelete>
-                  <RiDeleteBinLine />
-                </s.CcommentDelete>
-              </s.CommentPost>
-            </s.CcommentTitle>
-          ))}
+          {comment.map((item, key) =>
+            ids === item?.ids ? (
+              // filter ? (
+              <s.CcommentTitle key={key}>
+                <s.CcommentDiv>
+                  <p>{item.comment}</p>
+                </s.CcommentDiv>
+                <s.CommentPost>
+                  <div className="commentName">
+                    <s.DetailImg
+                      src={item?.attachmentUrl}
+                      alt="이미지"
+                      margin="1.25rem"
+                      width="24px"
+                      height="24px"
+                      width_hover="28px"
+                      height_hover="28px"
+                    />
+                    <span>{item.displayName}</span>
+                  </div>
+                  {item.uid === user.uid ? (
+                    <s.CcommentDelete onClick={() => onDeleteComment(item?.id)}>
+                      <RiDeleteBinLine />
+                    </s.CcommentDelete>
+                  ) : (
+                    ""
+                  )}
+                </s.CommentPost>
+              </s.CcommentTitle>
+            ) : (
+              ""
+            )
+          )}
         </div>
       </s.CcommentContainer>
     </s.Container>

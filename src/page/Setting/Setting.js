@@ -1,41 +1,64 @@
+import { getAuth, updatePassword, updateProfile } from "firebase/auth";
+import { updateEmail } from "firebase/auth";
 import React from "react";
-import { Cookies } from "react-cookie";
+
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { removeCookie } from "../../Cookies";
 import * as s from "./style";
 
-const Setting = () => {
-  const cookies = new Cookies();
-  const token = cookies.get("token");
+const Setting = ({ user }) => {
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
-  const logoutBtn = () => {
-    removeCookie("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("token");
-    // window.location.reload();
-    navigate("/login");
-  };
-  const onSubmit = () => {};
+
   const onError = (errors) => {
     console.log(errors);
   };
+
+  // 이메일,비밀번호,displayName 수정
+  const onSetting = () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    const { displayname, email, password } = watch();
+    updateEmail(user, email)
+      .then(() => {
+        user.getIdToken();
+      })
+      .then((token) => {
+        return updatePassword(user, password);
+      })
+      .then(() => {
+        updateProfile(user, { displayName: displayname });
+      })
+      .then(() => {
+        alert("수정 되었습니다.");
+        navigate("/mypage");
+        console.log("수정 된다");
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("접속 시간이 초과하였습니다. 새로 로그인 해주세요");
+      });
+  };
+  console.log(user);
+
   return (
     <s.Container>
       <h1>Your Settings</h1>
       <s.FormContainer>
-        <form onSubmit={handleSubmit(onSubmit, onError)}>
-          <s.FirstInput placeholder="이미지" {...register("img")} />
+        <form onSubmit={handleSubmit(onSetting, onError)}>
           <s.SecondInput
+            type="text"
             placeholder="Username"
-            {...register("username", {
+            name="displayname"
+            {...register("displayname", {
               required: "4자 이상 12자리 이하로 입력해 주세요",
               minLength: {
                 value: 4,
@@ -47,14 +70,11 @@ const Setting = () => {
               },
             })}
           />
-          <span>{errors?.username?.message}</span>
-          <s.TextArea
-            placeholder="Short bio about you"
-            type="text"
-            {...register("content", {})}
-          />
+          <span>{errors?.displayname?.message}</span>
+
           <s.SecondInput
             placeholder="Email"
+            name="email"
             type="email"
             {...register("email", {
               required: "12자 이상 20자 이하로 입력해 주세요",
@@ -69,9 +89,11 @@ const Setting = () => {
             })}
           />
           <span>{errors?.email?.message}</span>
+
           <s.SecondInput
             placeholder="New Password"
             type="password"
+            name="password"
             {...register("password", {
               required: "8자 이상 12자 이하로 입력해 주세요",
               minLength: {
@@ -85,12 +107,10 @@ const Setting = () => {
             })}
           />
           <span>{errors?.password?.message}</span>
+
           <s.SettingBtn>Update Settings</s.SettingBtn>
         </form>
       </s.FormContainer>
-      <s.LogOut>
-        <s.LogOutBtn onClick={logoutBtn}>Log Out</s.LogOutBtn>
-      </s.LogOut>
     </s.Container>
   );
 };

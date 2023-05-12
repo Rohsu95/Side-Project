@@ -54,16 +54,14 @@ export const TagSpan = styled.span`
   color: ${theme.colors.white};
   font-size: ${theme.fontSizes.fs0};
   padding: 0.2rem 0.3rem 0.2rem 0.1rem;
-  border-radius: 15px;
+  border-radius: 8px;
   margin-right: 0.5rem;
   background-color: ${theme.colors.tag};
-  padding: 0.375rem;
 `;
 export const TagDelete = styled.button`
   border: none;
   color: white;
   background-color: ${theme.colors.tag};
-  margin-right: 0.25rem;
   font-size: 0.1rem;
   cursor: pointer;
   margin: 0 0.25rem;

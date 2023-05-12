@@ -1,18 +1,29 @@
 import { dbService } from "fBase";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
-import React, { useState } from "react";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 
-const Editor = ({ user }) => {
+const Edit = ({ user }) => {
+  // 수정 할 정보 불러오기
+  const [nweets, setNweets] = useState([]);
+  // 태그
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
+  // 인풋 내용
   const [input, setInput] = useState({
     title: "",
     content: "",
     article: "",
   });
-  const [like, setLike] = useState(0);
+
   const navigate = useNavigate();
   const { title, content, article } = input;
 
@@ -23,7 +34,29 @@ const Editor = ({ user }) => {
       [name]: value,
     });
   };
-  // 엔터 누를 시 실행
+  // 수정 부분
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "editor"),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
+      const nweetArr = snapshot.docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }));
+      setNweets(nweetArr);
+      setInput({
+        title: nweetArr[0]?.title,
+        content: nweetArr[0]?.content,
+        article: nweetArr[0]?.article,
+      });
+      setTags(nweetArr[0]?.tags);
+      console.log(nweetArr);
+    });
+  }, []);
+
+  // Enter 누를 시 태그 생성
   const onKeyPress = (e) => {
     if (e.target.value.length !== 0 && e.key === "Enter") {
       onItem();
@@ -36,14 +69,12 @@ const Editor = ({ user }) => {
     setTagsList(updataed);
     setTags("");
   };
-  // 삭제
+  // 태그 삭제
   const onDelete = (id) => {
     setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
-  // 생성
-  const onClick = async () => {
+  const onClick = async (id) => {
     let tagsitem = String(tagsList);
-    const now = new Date(Date.now());
 
     try {
       const editor = {
@@ -51,20 +82,16 @@ const Editor = ({ user }) => {
         content: content,
         article: article,
         tags: tagsitem,
-        like: like,
-        createdAt: Timestamp.fromDate(now),
         displayName: user.displayName,
         uid: user.uid,
-        attachmentUrl: user.photoURL,
       };
-      await addDoc(collection(dbService, "editor"), editor);
-      console.log(editor);
+      const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
+      await updateDoc(pageRef, editor);
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(tagsList);
 
   return (
     <s.EditorContainer>
@@ -94,6 +121,7 @@ const Editor = ({ user }) => {
           type="text"
           name="tags"
           value={tags}
+          // onChange={TagsChange}
           onChange={(e) => setTags(e.target.value)}
           onKeyPress={onKeyPress}
           placeholder="Enter tags"
@@ -106,9 +134,9 @@ const Editor = ({ user }) => {
             </s.TagSpan>
           ))}
         </s.TagDiv>
-        <s.EditorBtn onClick={onClick}>Publish Article</s.EditorBtn>
+        <s.EditorBtn onClick={onClick}>Article Modify</s.EditorBtn>
       </div>
     </s.EditorContainer>
   );
 };
-export default Editor;
+export default Edit;
