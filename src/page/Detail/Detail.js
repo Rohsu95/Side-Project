@@ -105,8 +105,6 @@ const Detail = ({ user }) => {
     const minutes = String(jsDate.getMinutes()).padStart(2, "0");
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
-  // 로컬에 저장된 이미지
-  // const attachmentUrl = localStorage.getItem("img");
 
   return (
     <s.Container>
@@ -226,7 +224,5 @@ const Detail = ({ user }) => {
     </s.Container>
   );
 };
-
-// RiDeleteBinLine;
 
 export default Detail;

@@ -16,7 +16,7 @@ export const Container = styled.div`
 export const FormContainer = styled.div`
   display: flex;
   justify-content: center;
-  /* width: 100px; */
+
   input {
     width: 45vw;
     outline: none;
@@ -38,13 +38,11 @@ export const FormContainer = styled.div`
   }
 `;
 export const FirstInput = styled.input`
-  /* width: 50vw; */
   padding: 0.5rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
 `;
 export const SecondInput = styled.input`
-  /* width: 50vw; */
   margin-bottom: 0.25rem;
   padding: 0.9rem 0.5rem;
 `;
@@ -61,8 +59,6 @@ export const TextArea = styled.textarea`
 export const SettingBtn = styled.button`
   float: right;
   cursor: pointer;
-  /* margin-top: 1rem; */
-  /* display: block; */
   border-radius: 5px;
   padding: 0.5rem 0.75rem;
   color: ${theme.colors.white};

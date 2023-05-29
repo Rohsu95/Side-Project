@@ -4,7 +4,7 @@ import "./App.css";
 import Header from "./component/Header";
 import Mypage from "./page/Mypage/Mypage";
 import Main from "./page/Main/Main";
-import Editor from "./page/Editor/Editor";
+import Editor from "page/Editor/Editor";
 import Login from "./page/Login/Login";
 import Signup from "./page/SignUp/Signup";
 import GlobalStyle from "./styles/GlobalStyle";

@@ -30,9 +30,6 @@ export const FormContainer = styled.div`
   }
 
   .Input {
-    /* border: 2px solid red; */
-    /* width: 150%; */
-    /* padding: 0.75rem 8rem; */
     width: 30rem;
     height: 3.25rem;
     padding: 0 0.75rem;
