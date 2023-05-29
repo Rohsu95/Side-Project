@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 
-const Editor = ({ user }) => {
+const editor = ({ user }) => {
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
   const [input, setInput] = useState({
@@ -111,4 +111,4 @@ const Editor = ({ user }) => {
     </s.EditorContainer>
   );
 };
-export default Editor;
+export default editor;
