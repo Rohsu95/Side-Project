@@ -305,9 +305,6 @@ const Mypage = ({ nweets, user }) => {
           ""
         )
       )}
-      {/* ) : (
-        <div>Lodding...</div>
-      )} */}
     </div>
   );
 };

@@ -150,22 +150,6 @@ const Header = ({ user }) => {
                 </button>
               );
             })}
-
-        {/* <li>
-          <Link to="/">
-            <button className="Head-item">Home</button>
-          </Link>
-        </li>
-        <li>
-          <Link to="/login">
-            <button className="Head-item">Sign in</button>
-          </Link>
-        </li>
-        <li>
-          <Link to="/signup">
-            <button className="Head-item">Sign up</button>
-          </Link>
-        </li> */}
       </HeaderUl>
     </Headers>
   );

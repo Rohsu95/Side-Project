@@ -121,7 +121,6 @@ const Edit = ({ user }) => {
           type="text"
           name="tags"
           value={tags}
-          // onChange={TagsChange}
           onChange={(e) => setTags(e.target.value)}
           onKeyPress={onKeyPress}
           placeholder="Enter tags"

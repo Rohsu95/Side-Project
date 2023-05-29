@@ -15,7 +15,6 @@ export const MainImg = styled.div`
     border-radius: 50px;
   }
   .Containers {
-    /* color: ${theme.colors.white}; */
     font-weight: 700;
     font-size: ${theme.fontSizes.fs25};
     margin-top: 1.5rem;
@@ -140,7 +139,6 @@ export const MainUl = styled.ul`
 `;
 export const MainMap = styled.div`
   margin: 2rem 3rem 0 3rem;
-  /* border-bottom: 2px solid ${theme.colors.gray_03}; */
 `;
 
 export const MainBorder = styled.div`
