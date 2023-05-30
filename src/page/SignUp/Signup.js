@@ -21,7 +21,7 @@ const Signup = () => {
       );
       alert("회원 가입에 성공하셨습니다.");
       const users = authService.currentUser;
-      console.log("user", user);
+      // console.log("user", user);
       // 이미지
       await updateProfile(users, {
         photoURL:

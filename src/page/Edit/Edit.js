@@ -52,7 +52,7 @@ const Edit = ({ user }) => {
         article: nweetArr[0]?.article,
       });
       setTags(nweetArr[0]?.tags);
-      console.log(nweetArr);
+      // console.log(nweetArr);
     });
   }, []);
 
@@ -89,7 +89,7 @@ const Edit = ({ user }) => {
       await updateDoc(pageRef, editor);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

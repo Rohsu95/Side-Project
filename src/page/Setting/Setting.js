@@ -17,7 +17,7 @@ const Setting = ({ user }) => {
   } = useForm();
 
   const onError = (errors) => {
-    console.log(errors);
+    // console.log(errors);
   };
 
   // 이메일,비밀번호,displayName 수정
@@ -39,15 +39,15 @@ const Setting = ({ user }) => {
       .then(() => {
         alert("수정 되었습니다.");
         navigate("/mypage");
-        console.log("수정 된다");
+        // console.log("수정 된다");
         window.location.reload();
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         alert("접속 시간이 초과하였습니다. 새로 로그인 해주세요");
       });
   };
-  console.log(user);
+  // console.log(user);
 
   return (
     <s.Container>

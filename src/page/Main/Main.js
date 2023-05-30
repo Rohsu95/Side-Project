@@ -17,7 +17,7 @@ const Main = ({ user, nweets, nweets1 }) => {
   const [like, setLike] = useState([]);
   const [likeStyle, setLikeStyle] = useState({});
 
-  console.log(nweets);
+  // console.log(nweets);
 
   const mainCurrent = (index) => {
     setMenu(index);
@@ -53,11 +53,11 @@ const Main = ({ user, nweets, nweets1 }) => {
         setLike(newLikes);
         setLikeStyle((prev) => ({ ...prev, [id]: true }));
         await updateDoc(pageRef, { like: currentPage.like + 1 });
-        console.log(like);
-        console.log(likeStyle);
+        // console.log(like);
+        // console.log(likeStyle);
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

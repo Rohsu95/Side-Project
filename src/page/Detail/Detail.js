@@ -35,13 +35,13 @@ const Detail = ({ user }) => {
       if (docSnap.exists()) {
         setData(docSnap.data());
       } else {
-        console.log("No such document!");
+        // console.log("No such document!");
       }
     };
     fetchData();
   }, [ids]);
 
-  console.log("댓글", comment);
+  // console.log("댓글", comment);
 
   // read 댓글 정보 보여주기
   useEffect(() => {
@@ -70,9 +70,9 @@ const Detail = ({ user }) => {
       const commentRef = doc(dbService, "comment", id);
       try {
         await deleteDoc(commentRef);
-        console.log("삭제 완료");
+        // console.log("삭제 완료");
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     }
   };
@@ -92,7 +92,7 @@ const Detail = ({ user }) => {
       await addDoc(collection(dbService, "comment"), sweetObj);
       setCommentInput("");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   // Firebase Timestamp 객체를 JavaScript Date 객체로 변환 createdAt 변환
