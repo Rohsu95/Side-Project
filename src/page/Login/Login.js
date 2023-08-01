@@ -22,12 +22,12 @@ const Login = () => {
         data.email,
         data.password
       );
-
       const token = user.refreshToken;
       cookie.set("token", token);
-      // console.log("user", user);
+      cookie.set("user", data.email);
       navigate("/");
       window.location.reload();
+      console.log("user", user);
     } catch (error) {
       alert("로그인 정보를 다시 확인해주세요");
     }

@@ -58,13 +58,13 @@ const Editor = ({ user }) => {
         attachmentUrl: user.photoURL,
       };
       await addDoc(collection(dbService, "editor"), editor);
-      console.log(editor);
+      // console.log(editor);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
-  console.log(tagsList);
+  // console.log(tagsList);
 
   return (
     <s.EditorContainer>

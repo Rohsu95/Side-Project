@@ -100,12 +100,12 @@ const Main = ({ user, nweets, nweets1 }) => {
           <s.MainMap key={key}>
             <s.MainBorder>
               <s.MapInfo>
-                <s.MapPicture href="/mypage">
+                <s.MapPicture>
                   <s.Img src={item?.attachmentUrl} alt="profile" />
                 </s.MapPicture>
                 <s.Info>
                   <div className="info">
-                    <s.MapName href="/mypage">{item.displayName}</s.MapName>
+                    <s.MapName>{item.displayName}</s.MapName>
                     <s.MapTime>{formatDate(item.createdAt)}</s.MapTime>
                   </div>
                   <div className="Like">
@@ -159,7 +159,7 @@ const Main = ({ user, nweets, nweets1 }) => {
               <s.MainMap key={key}>
                 <s.MainBorder>
                   <s.MapInfo>
-                    <s.MapPicture href="/mypage">
+                    <s.MapPicture>
                       {item.attachmentUrl === "" ? (
                         <s.Img
                           src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
@@ -171,7 +171,7 @@ const Main = ({ user, nweets, nweets1 }) => {
                     </s.MapPicture>
                     <s.Info>
                       <div className="info">
-                        <s.MapName href="/mypage">{item.displayName}</s.MapName>
+                        <s.MapName>{item.displayName}</s.MapName>
                         <s.MapTime>{formatDate(item.createdAt)}</s.MapTime>
                       </div>
                       <div className="Like">

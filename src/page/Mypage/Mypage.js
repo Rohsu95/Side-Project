@@ -15,13 +15,14 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FcLikePlaceholder } from "react-icons/fc";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
 import * as s from "./style";
 import { updateProfile } from "firebase/auth";
 import theme from "styles/Theme";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { removeCookie } from "cookies";
+import { Cookies } from "react-cookie";
 
 const Mypage = ({ nweets, user }) => {
   const [menu, setMenu] = useState(0);
