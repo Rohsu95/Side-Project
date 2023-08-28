@@ -14,7 +14,6 @@ import {
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
-import { FcLikePlaceholder } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
 import * as s from "./style";
