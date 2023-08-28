@@ -19,9 +19,10 @@ const Signup = () => {
         data.email,
         data.password
       );
+
       alert("회원 가입에 성공하셨습니다.");
       const users = authService.currentUser;
-      // console.log("user", user);
+
       // 이미지
       await updateProfile(users, {
         photoURL:
@@ -36,7 +37,6 @@ const Signup = () => {
       alert("이미 가입된 정보 입니다");
     }
   };
-
   return (
     <s.Container>
       <s.Sign>

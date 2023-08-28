@@ -136,6 +136,9 @@ export const MainUl = styled.ul`
       color: ${theme.colors.main_hover};
     }
   }
+  .likeFocus {
+    background-color: white;
+  }
 `;
 export const MainMap = styled.div`
   margin: 2rem 3rem 0 3rem;

@@ -2,25 +2,27 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import "./App.css";
 import Header from "./component/Header";
-import Mypage from "./page/Mypage/Mypage";
-import Main from "./page/Main/Main";
-import Editor from "./page/Editor/Editor";
-import Login from "./page/Login/Login";
-import Signup from "./page/SignUp/Signup";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/Theme";
-import Detail from "./page/Detail/Detail";
-import Setting from "./page/Setting/Setting";
-import Edit from "page/Edit/Edit";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { authService, dbService } from "fBase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+
+const Main = lazy(() => import("./page/Main/Main"));
+const Login = lazy(() => import("./page/Login/Login"));
+const Signup = lazy(() => import("./page/SignUp/Signup"));
+const Editor = lazy(() => import("./page/Editor/Editor"));
+const Edit = lazy(() => import("./page/Edit/Edit"));
+const Mypage = lazy(() => import("./page/Mypage/Mypage"));
+const Detail = lazy(() => import("./page/Detail/Detail"));
+const Setting = lazy(() => import("./page/Setting/Setting"));
 
 function App() {
   const [user, setUser] = useState();
 
   const [nweets, setNweets] = useState([]);
   const [nweets1, setNweets1] = useState([]);
+
   // displayName 불러오기
   useEffect(() => {
     const unsubscribe = authService.onAuthStateChanged(async (user) => {
@@ -43,6 +45,7 @@ function App() {
         id: document.id,
         ...document.data(),
       }));
+      // 하나는 전체 글 보기용, 하나는 내가 작성한 글 보기용
       setNweets(nweetArr);
       setNweets1(nweetArr);
     });
@@ -54,23 +57,21 @@ function App() {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Header user={user} />
-
-          <Routes>
-            <Route
-              path="/"
-              element={<Main user={user} nweets={nweets} nweets1={nweets1} />}
-            />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/editor" element={<Editor user={user} />} />
-            <Route path="/edit" element={<Edit user={user} />} />
-            <Route
-              path="/mypage"
-              element={<Mypage user={user} nweets={nweets} />}
-            />
-            <Route path="/detail/:ids" element={<Detail user={user} />} />
-            <Route path="/setting" element={<Setting user={user} />} />
-          </Routes>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <Routes>
+              <Route path="/" element={<Main user={user} nweets={nweets} />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/editor" element={<Editor user={user} />} />
+              <Route path="/edit" element={<Edit user={user} />} />
+              <Route
+                path="/mypage"
+                element={<Mypage user={user} nweets={nweets} />}
+              />
+              <Route path="/detail/:ids" element={<Detail user={user} />} />
+              <Route path="/setting" element={<Setting user={user} />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </ThemeProvider>
     </>

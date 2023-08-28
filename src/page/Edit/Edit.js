@@ -69,6 +69,7 @@ const Edit = ({ user }) => {
     setTagsList(updataed);
     setTags("");
   };
+
   // 태그 삭제
   const onDelete = (id) => {
     setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
@@ -103,13 +104,6 @@ const Edit = ({ user }) => {
           onChange={onTotal}
           placeholder="Article Title"
         />
-        <s.ArticleInput
-          type="text"
-          name="article"
-          value={article}
-          onChange={onTotal}
-          placeholder="What's this article about"
-        />
         <s.ContentArea
           type="text"
           name="content"
@@ -128,12 +122,19 @@ const Edit = ({ user }) => {
         <s.TagDiv>
           {tagsList.map((el, id) => (
             <s.TagSpan key={id}>
-              <s.TagDelete onClick={() => onDelete(id)}>X</s.TagDelete>
+              <s.TagDelete
+                aria-label="delete_button"
+                onClick={() => onDelete(id)}
+              >
+                X
+              </s.TagDelete>
               {el}
             </s.TagSpan>
           ))}
         </s.TagDiv>
-        <s.EditorBtn onClick={onClick}>Article Modify</s.EditorBtn>
+        <s.EditorBtn aria-label="modify_button" onClick={onClick}>
+          Article Modify
+        </s.EditorBtn>
       </div>
     </s.EditorContainer>
   );

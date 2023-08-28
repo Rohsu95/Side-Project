@@ -28,9 +28,9 @@ const HeaderConduit = styled.a`
 const HeaderUl = styled.ul`
   display: flex;
   margin-right: 3rem;
+  align-items: center;
   li {
     list-style: none;
-    padding: 0.5em;
   }
   .Head-item {
     color: ${theme.colors.content};
@@ -113,41 +113,47 @@ const Header = ({ user }) => {
         {headTest
           ? headersMenu.map((el, index) => {
               return (
-                <button
-                  key={index}
-                  className={head === index ? "Head-item focused" : "Head-item"}
-                  onClick={() => headsCurrent(index)}
-                >
-                  {index === 0 ? el.name : ""}
-                  {index === 1 ? (
-                    <>
-                      <BiEdit />
-                      {el.name}
-                    </>
-                  ) : (
-                    ""
-                  )}
-                  {index === 2 ? (
-                    <>
-                      <AiOutlineSetting />
-                      {el.name}
-                    </>
-                  ) : (
-                    ""
-                  )}
-                  {index === 3 ? el.name : ""}
-                </button>
+                <li key={index}>
+                  <button
+                    className={
+                      head === index ? "Head-item focused" : "Head-item"
+                    }
+                    onClick={() => headsCurrent(index)}
+                  >
+                    {index === 0 ? el.name : ""}
+                    {index === 1 ? (
+                      <>
+                        <BiEdit />
+                        {el.name}
+                      </>
+                    ) : (
+                      ""
+                    )}
+                    {index === 2 ? (
+                      <>
+                        <AiOutlineSetting />
+                        {el.name}
+                      </>
+                    ) : (
+                      ""
+                    )}
+                    {index === 3 ? el.name : ""}
+                  </button>
+                </li>
               );
             })
           : headerMenu.map((el, index) => {
               return (
-                <button
-                  key={index}
-                  className={head === index ? "Head-item focused" : "Head-item"}
-                  onClick={() => headCurrent(index)}
-                >
-                  {el.name}
-                </button>
+                <li key={index}>
+                  <button
+                    className={
+                      head === index ? "Head-item focused" : "Head-item"
+                    }
+                    onClick={() => headCurrent(index)}
+                  >
+                    {el.name}
+                  </button>
+                </li>
               );
             })}
       </HeaderUl>

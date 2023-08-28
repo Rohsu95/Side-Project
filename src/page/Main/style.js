@@ -134,6 +134,9 @@ export const Info = styled.div`
     background-color: ${theme.colors.main};
     color: white;
   }
+  .likeFocus {
+    background-color: white;
+  }
 `;
 export const MapName = styled.a`
   color: ${theme.colors.main};

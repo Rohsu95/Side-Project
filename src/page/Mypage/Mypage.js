@@ -15,14 +15,15 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FcLikePlaceholder } from "react-icons/fc";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
 import * as s from "./style";
-import { updateProfile } from "firebase/auth";
 import theme from "styles/Theme";
+import { updateProfile } from "firebase/auth";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { removeCookie } from "cookies";
-import { Cookies } from "react-cookie";
+import FormatDate from "component/Date";
+import imageCompression from "browser-image-compression";
 
 const Mypage = ({ nweets, user }) => {
   const [menu, setMenu] = useState(0);
@@ -34,15 +35,13 @@ const Mypage = ({ nweets, user }) => {
   const MypageMenu = [{ name: "My Articles" }];
   const navigate = useNavigate();
 
-  // 좋아요 기능
-  const [like, setLike] = useState([]);
-  const [likeStyle, setLikeStyle] = useState({});
   // 메뉴
   const mypageCurrent = (index) => {
     setMenu(index);
   };
 
   const attachmentUrl = localStorage.getItem("img");
+
   //Firebase Storage에서 가져온 이미지 파일을 attachmentUrl에 넣은 후 랜더링한다
   useEffect(() => {
     if (attachmentUrl) {
@@ -64,31 +63,51 @@ const Mypage = ({ nweets, user }) => {
     } = event;
     // 파일을 갖고 reader 만든다 0은 첫번째 파일만 갖는다
     const theFile = files[0];
-    const reader = new FileReader();
-    // 로딩이 끝나면 finishedEvent를 갖는다
-    reader.onloadend = (finishedEvent) => {
-      const {
-        currentTarget: { result },
-      } = finishedEvent;
-      setAttachment(result);
+    const options = {
+      maxSizeMB: 0.5, // 최대 파일 크기 (0.5MB)
+      fileType: "image/jpeg", // JPEG 형식으로 변환
     };
-    //그 후 readAsDataURL을 사용하여 파일 읽기
-    reader.readAsDataURL(theFile);
-    setSubmit(true);
+    try {
+      // 이미지 최적화 !!!
+      const compressedFile = await imageCompression(theFile, options);
+      setAttachment(compressedFile);
+      setSubmit(true);
+
+      const reader = new FileReader();
+      // 로딩이 끝나면 finishedEvent를 갖는다
+      reader.onloadend = (finishedEvent) => {
+        const {
+          currentTarget: { result },
+        } = finishedEvent;
+        setAttachment(result);
+      };
+      //그 후 readAsDataURL을 사용하여 파일 읽기
+      reader.readAsDataURL(compressedFile);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // img 컬렉션 만들든 후 수정 editor 컬렉션에 수정하여 이미지를 넣어준다
-  const onClick = async (event) => {
-    setSubmit(false);
-    alert("저장되었습니다.");
-
+  const onClick = async () => {
     try {
+      setSubmit(false);
+
+      let attachmentUrls = user.photoURL;
+
       const imgRef = collection(dbService, "img");
       const querySnapshot = await getDocs(
         query(imgRef, where("uid", "==", user.uid)),
         orderBy("createdAt", "desc")
       );
-      let attachmentUrl = user.photoURL;
+
+      // 이미지 컬렉션
+      const imgs = {
+        uid: user.uid,
+        attachmentUrls,
+        createdAt: Date.now(),
+      };
+      await addDoc(imgRef, imgs);
 
       if (attachment !== "") {
         if (querySnapshot.docs.length > 0) {
@@ -96,85 +115,44 @@ const Mypage = ({ nweets, user }) => {
           // 스토리지에 만드는 코드
           const fileRef = ref(storageService, `${nweets.id}/${docId}`);
           const response = await uploadString(fileRef, attachment, "data_url");
-          attachmentUrl = await getDownloadURL(response.ref);
+          attachmentUrls = await getDownloadURL(response.ref);
 
           // editor 컬렉션 이미지 수정
-          const edit = {
-            attachmentUrl: user.photoURL,
-          };
-          const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
-          // const pageRef1 = doc(dbService, "editor", `${nweets1[0].id}`);
-          await updateDoc(pageRef, edit);
+          for (const nweet of nweets) {
+            const edit = {
+              attachmentUrls,
+            };
+            const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
+            await updateDoc(pageRef, edit);
+          }
         } else {
           const fileRef = ref(storageService, `${nweets.id}/${v4()}`);
           const response = await uploadString(fileRef, attachment, "data_url");
-          attachmentUrl = await getDownloadURL(response.ref);
-          // 이미지 컬렉션
-          const imgs = {
-            uid: user.uid,
-            attachmentUrl,
-            createdAt: Date.now(),
-          };
-          await addDoc(imgRef, imgs);
+          attachmentUrls = await getDownloadURL(response.ref);
         }
       }
-      await updateProfile(user, { photoURL: attachmentUrl });
+      alert("저장되었습니다.");
+      // 사용자 프로필 업데이트
+      await updateProfile(user, { photoURL: attachmentUrls });
+      setAttachment(attachmentUrls);
       localStorage.setItem("img", attachment);
-      window.location.reload();
+
+      // window.location.reload();
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   };
-  // console.log(user);
-  // console.log(nweets);
 
+  console.log(nweets);
   // 로그아웃
   const logoutBtn = () => {
     removeCookie("token");
+    removeCookie("user");
     alert("로그아웃 되었습니다.");
     navigate("/");
     window.location.reload();
   };
-  // 날짜
-  const formatDate = (date) => {
-    const jsDate = date.toDate();
-    const year = jsDate.getFullYear();
-    const month = String(jsDate.getMonth() + 1).padStart(2, "0");
-    const day = String(jsDate.getDate()).padStart(2, "0");
-    const hours = String(jsDate.getHours()).padStart(2, "0");
-    const minutes = String(jsDate.getMinutes()).padStart(2, "0");
-    return `${year}.${month}.${day} ${hours}:${minutes}`;
-  };
-  // 좋아요 기능
 
-  const LikeClick = async (id) => {
-    try {
-      const pageRef = doc(dbService, "editor", `${id}`);
-      const pageDoc = await getDoc(pageRef);
-      const currentPage = pageDoc.data();
-
-      // 좋아요 누른 기록이 있는지 확인
-      const alreadyLiked = like.find((item) => item.id === id);
-
-      if (alreadyLiked) {
-        // 이미 좋아요를 누른 경우
-        const newLikes = like.filter((item) => item.id !== id);
-        setLike(newLikes);
-        setLikeStyle((prev) => ({ ...prev, [id]: false }));
-        await updateDoc(pageRef, { like: currentPage.like - 1 });
-      } else {
-        // 좋아요를 누르지 않은 경우
-        const newLikes = [...like, { id, like: 1 }];
-        setLike(newLikes);
-        setLikeStyle((prev) => ({ ...prev, [id]: true }));
-        await updateDoc(pageRef, { like: currentPage.like + 1 });
-        // console.log(like);
-        // console.log(likeStyle);
-      }
-    } catch (err) {
-      // console.log(err);
-    }
-  };
   const onDeletePage = async (id) => {
     const ok = window.confirm("삭제 하시겠습니까?");
     if (ok) {
@@ -261,19 +239,14 @@ const Mypage = ({ nweets, user }) => {
                 <s.Info>
                   <div className="info">
                     <s.MapName href="/mypage">{user?.displayName}</s.MapName>
-                    <s.MapTime>{formatDate(item.createdAt)}</s.MapTime>
+                    <s.MapTime>
+                      <FormatDate date={item.createdAt}></FormatDate>
+                    </s.MapTime>
                   </div>
                   <div className="Like">
-                    <button
-                      value={like}
-                      onClick={() => LikeClick(item.id)}
-                      className={`basic ${likeStyle[item.id] ? "focus" : ""}`}
-                    >
-                      <FcLikePlaceholder />
-                      {item.like}
-                    </button>
                     {user && item.uid === user.uid ? (
                       <s.InfoBtn
+                        aria-label="trash_button"
                         border={`${theme.colors.main}`}
                         color={`${theme.colors.main}`}
                         hover={`${theme.colors.main_hover}`}
@@ -294,9 +267,11 @@ const Mypage = ({ nweets, user }) => {
                   <p className="content">{item.content}</p>
                   <span className="span">Read more...</span>
                   <s.MapUl>
-                    {item.tags.split(",").map((tag, index) => (
-                      <li key={index}>{[tag]}</li>
-                    ))}
+                    {item.tags.length === 0
+                      ? ""
+                      : item.tags
+                          .split(",")
+                          .map((tag, index) => <li key={index}>{tag}</li>)}
                   </s.MapUl>
                 </s.MapTitle>
               </s.MapContent>
