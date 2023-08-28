@@ -1,23 +1,18 @@
 import React, { useState } from "react";
-import { FcLikePlaceholder } from "react-icons/fc";
 import { Cookies } from "react-cookie";
 import * as s from "./style";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { dbService } from "fBase";
 import { RiDeleteBinLine } from "react-icons/ri";
 import theme from "styles/Theme";
+import FormatDate from "component/Date";
 
-const Main = ({ user, nweets, nweets1 }) => {
+const Main = ({ user, nweets }) => {
   const cookie = new Cookies();
   const Token = cookie.get("token");
-  // 3가지 menu
+  // 2가지 menu
   const [menu, setMenu] = useState(0);
   const MainMenu = [{ name: "Global Articles" }, { name: "My Articles" }];
-  // 좋아요 기능
-  const [like, setLike] = useState([]);
-  const [likeStyle, setLikeStyle] = useState({});
-
-  // console.log(nweets);
 
   const mainCurrent = (index) => {
     setMenu(index);
@@ -30,46 +25,6 @@ const Main = ({ user, nweets, nweets1 }) => {
       const pageRef = doc(dbService, "editor", `${id}`);
       await deleteDoc(pageRef);
     }
-  };
-  // 좋아요 기능
-  const LikeClick = async (id) => {
-    try {
-      const pageRef = doc(dbService, "editor", `${id}`);
-      const pageDoc = await getDoc(pageRef);
-      const currentPage = pageDoc.data();
-
-      // 좋아요 누른 기록이 있는지 확인
-      const alreadyLiked = like.find((item) => item.id === id);
-
-      if (alreadyLiked) {
-        // 이미 좋아요를 누른 경우
-        const newLikes = like.filter((item) => item.id !== id);
-        setLike(newLikes);
-        setLikeStyle((prev) => ({ ...prev, [id]: false }));
-        await updateDoc(pageRef, { like: currentPage.like - 1 });
-      } else {
-        // 좋아요를 누르지 않은 경우
-        const newLikes = [...like, { id, like: 1 }];
-        setLike(newLikes);
-        setLikeStyle((prev) => ({ ...prev, [id]: true }));
-        await updateDoc(pageRef, { like: currentPage.like + 1 });
-        // console.log(like);
-        // console.log(likeStyle);
-      }
-    } catch (err) {
-      // console.log(err);
-    }
-  };
-
-  // Firebase Timestamp 객체를 JavaScript Date 객체로 변환 createdAt 변환
-  const formatDate = (date) => {
-    const jsDate = date.toDate();
-    const year = jsDate.getFullYear();
-    const month = String(jsDate.getMonth() + 1).padStart(2, "0");
-    const day = String(jsDate.getDate()).padStart(2, "0");
-    const hours = String(jsDate.getHours()).padStart(2, "0");
-    const minutes = String(jsDate.getMinutes()).padStart(2, "0");
-    return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
 
   return (
@@ -95,31 +50,33 @@ const Main = ({ user, nweets, nweets1 }) => {
         </s.MainUl>
       </div>
 
-      {nweets1.map((item, key) =>
-        user && menu === 0 ? (
+      {nweets.map((item, key) =>
+        menu === 0 ? (
           <s.MainMap key={key}>
             <s.MainBorder>
               <s.MapInfo>
-                <s.MapPicture href="/mypage">
-                  <s.Img src={item?.attachmentUrl} alt="profile" />
+                <s.MapPicture>
+                  <s.Img
+                    key={item.id}
+                    src={
+                      item.uid === user.uid
+                        ? user?.photoURL
+                        : item?.attachmentUrl
+                    }
+                    alt="profile"
+                  />
                 </s.MapPicture>
                 <s.Info>
                   <div className="info">
-                    <s.MapName href="/mypage">{item.displayName}</s.MapName>
-                    <s.MapTime>{formatDate(item.createdAt)}</s.MapTime>
+                    <s.MapName>{item.displayName}</s.MapName>
+                    <s.MapTime>
+                      <FormatDate date={item.createdAt}></FormatDate>
+                    </s.MapTime>
                   </div>
                   <div className="Like">
-                    <button
-                      value={like}
-                      onClick={() => LikeClick(item.id)}
-                      className={`basic ${likeStyle[item.id] ? "focus" : ""}`}
-                    >
-                      <FcLikePlaceholder />
-
-                      {item.like}
-                    </button>
-                    {user && item.uid === user.uid ? (
+                    {Token && item.uid === user.uid ? (
                       <s.InfoBtn
+                        aria-label="trash_button"
                         border={`${theme.colors.main}`}
                         color={`${theme.colors.main}`}
                         hover={`${theme.colors.main_hover}`}
@@ -140,9 +97,11 @@ const Main = ({ user, nweets, nweets1 }) => {
                   <p className="content">{item.content}</p>
                   <span className="span">Read more...</span>
                   <s.MapUl>
-                    {item.tags.split(",").map((tag, index) => (
-                      <li key={index}>{[tag]}</li>
-                    ))}
+                    {item.tags.length === 0
+                      ? ""
+                      : item.tags
+                          .split(",")
+                          .map((tag, index) => <li key={index}>{tag}</li>)}
                   </s.MapUl>
                 </s.MapTitle>
               </s.MapContent>
@@ -153,40 +112,34 @@ const Main = ({ user, nweets, nweets1 }) => {
         )
       )}
       {Token !== undefined ? (
-        nweets && nweets.length > 0 ? (
+        nweets ? (
           nweets.map((item, key) =>
             user && item.uid === user.uid && menu === 1 ? (
               <s.MainMap key={key}>
                 <s.MainBorder>
                   <s.MapInfo>
-                    <s.MapPicture href="/mypage">
-                      {item.attachmentUrl === "" ? (
-                        <s.Img
-                          src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                          alt="profile"
-                        />
-                      ) : (
-                        <s.Img src={item.attachmentUrl} alt="profile" />
-                      )}
+                    <s.MapPicture>
+                      <s.Img
+                        key={item.id}
+                        src={
+                          item.uid === user.uid
+                            ? user?.photoURL
+                            : item?.attachmentUrl
+                        }
+                        alt="profile"
+                      />
                     </s.MapPicture>
                     <s.Info>
                       <div className="info">
-                        <s.MapName href="/mypage">{item.displayName}</s.MapName>
-                        <s.MapTime>{formatDate(item.createdAt)}</s.MapTime>
+                        <s.MapName>{item.displayName}</s.MapName>
+                        <s.MapTime>
+                          <FormatDate date={item.createdAt} />
+                        </s.MapTime>
                       </div>
                       <div className="Like">
-                        <button
-                          value={like}
-                          onClick={() => LikeClick(item.id)}
-                          className={`basic ${
-                            likeStyle[item.id] ? "focus" : ""
-                          }`}
-                        >
-                          <FcLikePlaceholder />
-                          {item.like}
-                        </button>
                         {user && item.uid === user.uid ? (
                           <s.InfoBtn
+                            aria-label="trash_button"
                             border={`${theme.colors.main}`}
                             color={`${theme.colors.main}`}
                             hover={`${theme.colors.main_hover}`}
@@ -207,9 +160,11 @@ const Main = ({ user, nweets, nweets1 }) => {
                       <p className="content">{item.content}</p>
                       <span className="span">Read more...</span>
                       <s.MapUl>
-                        {item.tags.split(",").map((tag, index) => (
-                          <li key={index}>{[tag]}</li>
-                        ))}
+                        {item.tags.length === 0
+                          ? ""
+                          : item.tags
+                              .split(",")
+                              .map((tag, index) => <li key={index}>{tag}</li>)}
                       </s.MapUl>
                     </s.MapTitle>
                   </s.MapContent>

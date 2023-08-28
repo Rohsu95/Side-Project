@@ -1,4 +1,4 @@
-import { MapTime } from "page/Main/style";
+
 import React from "react";
 
 // Firebase Timestamp 객체를 JavaScript Date 객체로 변환 createdAt 변환

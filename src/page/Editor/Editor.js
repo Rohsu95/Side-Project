@@ -10,11 +10,9 @@ const Editor = ({ user }) => {
   const [input, setInput] = useState({
     title: "",
     content: "",
-    article: "",
   });
-  const [like, setLike] = useState(0);
   const navigate = useNavigate();
-  const { title, content, article } = input;
+  const { title, content } = input;
 
   const onTotal = (e) => {
     const { name, value } = e.target;
@@ -42,29 +40,31 @@ const Editor = ({ user }) => {
   };
   // 생성
   const onClick = async () => {
-    let tagsitem = String(tagsList);
+    let tagsItem = String(tagsList);
     const now = new Date(Date.now());
 
     try {
       const editor = {
         title: title,
         content: content,
-        article: article,
-        tags: tagsitem,
-        like: like,
+        tags: tagsItem,
         createdAt: Timestamp.fromDate(now),
         displayName: user.displayName,
         uid: user.uid,
         attachmentUrl: user.photoURL,
       };
-      await addDoc(collection(dbService, "editor"), editor);
-      console.log(editor);
-      navigate("/");
+      if (editor.title.length === 0) {
+        alert("Title을 작성해 주세요");
+      } else if (editor.content.length === 0) {
+        alert("Content를 작성해 주세요");
+      } else {
+        await addDoc(collection(dbService, "editor"), editor);
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(tagsList);
 
   return (
     <s.EditorContainer>
@@ -75,13 +75,6 @@ const Editor = ({ user }) => {
           value={title}
           onChange={onTotal}
           placeholder="Article Title"
-        />
-        <s.ArticleInput
-          type="text"
-          name="article"
-          value={article}
-          onChange={onTotal}
-          placeholder="What's this article about"
         />
         <s.ContentArea
           type="text"
@@ -96,12 +89,17 @@ const Editor = ({ user }) => {
           value={tags}
           onChange={(e) => setTags(e.target.value)}
           onKeyPress={onKeyPress}
-          placeholder="Enter tags"
+          placeholder="태그 작성 후 엔터를 눌러주세요"
         />
         <s.TagDiv>
           {tagsList.map((el, id) => (
             <s.TagSpan key={id}>
-              <s.TagDelete onClick={() => onDelete(id)}>X</s.TagDelete>
+              <s.TagDelete
+                aria-label="delete_button"
+                onClick={() => onDelete(id)}
+              >
+                X
+              </s.TagDelete>
               {el}
             </s.TagSpan>
           ))}

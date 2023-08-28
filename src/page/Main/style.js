@@ -75,7 +75,7 @@ export const MainBorder = styled.div`
 export const MainMap = styled.div`
   margin: 2rem 3rem 0 3rem;
 `;
-export const MapPicture = styled.a`
+export const MapPicture = styled.span`
   display: flex;
   align-items: center;
 `;
@@ -133,6 +133,9 @@ export const Info = styled.div`
   .focus {
     background-color: ${theme.colors.main};
     color: white;
+  }
+  .likeFocus {
+    background-color: white;
   }
 `;
 export const MapName = styled.a`

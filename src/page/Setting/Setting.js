@@ -16,10 +16,6 @@ const Setting = ({ user }) => {
     formState: { errors },
   } = useForm();
 
-  const onError = (errors) => {
-    // console.log(errors);
-  };
-
   // 이메일,비밀번호,displayName 수정
   const onSetting = () => {
     const auth = getAuth();
@@ -53,7 +49,7 @@ const Setting = ({ user }) => {
     <s.Container>
       <h1>Your Settings</h1>
       <s.FormContainer>
-        <form onSubmit={handleSubmit(onSetting, onError)}>
+        <form onSubmit={handleSubmit(onSetting)}>
           <s.SecondInput
             type="text"
             placeholder="Username"

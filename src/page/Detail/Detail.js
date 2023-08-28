@@ -15,8 +15,12 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { dbService } from "fBase";
+import { Cookies } from "react-cookie";
+import FormatDate from "component/Date";
 
 const Detail = ({ user }) => {
+  const cookie = new Cookies();
+  const Token = cookie.get("token");
   // 페이지 정보
   const [commentInput, setCommentInput] = useState("");
   // 댓글
@@ -35,7 +39,6 @@ const Detail = ({ user }) => {
       if (docSnap.exists()) {
         setData(docSnap.data());
       } else {
-        // console.log("No such document!");
       }
     };
     fetchData();
@@ -95,20 +98,10 @@ const Detail = ({ user }) => {
       // console.log(error);
     }
   };
-  // Firebase Timestamp 객체를 JavaScript Date 객체로 변환 createdAt 변환
-  const formatDate = (date) => {
-    const jsDate = date.toDate();
-    const year = jsDate.getFullYear();
-    const month = String(jsDate.getMonth() + 1).padStart(2, "0");
-    const day = String(jsDate.getDate()).padStart(2, "0");
-    const hours = String(jsDate.getHours()).padStart(2, "0");
-    const minutes = String(jsDate.getMinutes()).padStart(2, "0");
-    return `${year}.${month}.${day} ${hours}:${minutes}`;
-  };
 
   return (
     <s.Container>
-      {data ? (
+      {data && (
         <div>
           <s.DetailContainer>
             <div className="info">
@@ -126,10 +119,13 @@ const Detail = ({ user }) => {
                     <s.DetailName href="/mypage">
                       {data.displayName}
                     </s.DetailName>
-                    <s.DetailDate>{formatDate(data.createdAt)}</s.DetailDate>
+                    <s.DetailDate>
+                      <FormatDate date={data.createdAt}></FormatDate>
+                    </s.DetailDate>
                   </div>
-                  {data.uid === user.uid ? (
+                  {Token && data.uid === user.uid ? (
                     <s.InfoBtn
+                      aria-label="edit_button"
                       border="#ccc"
                       color="#ccc"
                       hover="#282A3A"
@@ -153,74 +149,84 @@ const Detail = ({ user }) => {
               <li>{data.tags}</li>
             </s.DetailTag>
           </s.DetailContent>
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
-      {/* 댓글 창  */}
-      <s.CommentContainer>
-        <s.CommentText>
-          <textarea
-            value={commentInput}
-            onChange={onCommentChange}
-            className="textArea"
-            type="text"
-            name="commentInput"
-            placeholder="Write a comment..."
-          />
-          <s.CommentPost>
-            <div className="commentName">
-              <s.DetailImg
-                src={user?.photoURL}
-                alt="이미지"
-                margin="1.25rem"
-                width_hover="28px"
-                height_hover="28px"
-              />
-              <span>{user?.displayName}</span>
-            </div>
-            <s.CommentBtn onClick={CommentonClick}>Comment</s.CommentBtn>
-          </s.CommentPost>
-        </s.CommentText>
-      </s.CommentContainer>
-      {/* 댓글 내용 부분 */}
-      <s.CcommentContainer>
-        <div>
-          {comment.map((item, key) =>
-            ids === item?.ids ? (
-              // filter ? (
-              <s.CcommentTitle key={key}>
-                <s.CcommentDiv>
-                  <p>{item.comment}</p>
-                </s.CcommentDiv>
+          {/* 댓글 창 */}
+          <s.CommentContainer>
+            {Token ? (
+              <s.CommentText>
+                <textarea
+                  value={commentInput}
+                  onChange={onCommentChange}
+                  className="textArea"
+                  type="text"
+                  name="commentInput"
+                  placeholder="Write a comment..."
+                />
                 <s.CommentPost>
                   <div className="commentName">
                     <s.DetailImg
-                      src={item?.attachmentUrl}
+                      src={user?.photoURL}
                       alt="이미지"
                       margin="1.25rem"
-                      width="24px"
-                      height="24px"
                       width_hover="28px"
                       height_hover="28px"
                     />
-                    <span>{item.displayName}</span>
+                    <span>{user?.displayName}</span>
                   </div>
-                  {item.uid === user.uid ? (
-                    <s.CcommentDelete onClick={() => onDeleteComment(item?.id)}>
-                      <RiDeleteBinLine />
-                    </s.CcommentDelete>
-                  ) : (
-                    ""
-                  )}
+                  <s.CommentBtn
+                    aria-label="comment_button"
+                    onClick={CommentonClick}
+                  >
+                    Comment
+                  </s.CommentBtn>
                 </s.CommentPost>
-              </s.CcommentTitle>
+              </s.CommentText>
             ) : (
-              ""
-            )
-          )}
+              <div>로그인 하신 후에 댓글을 사용하실 수 있습니다.</div>
+            )}
+          </s.CommentContainer>
+          {/* 댓글 내용 */}
+          <s.CcommentContainer>
+            <div>
+              {comment.map((item, key) =>
+                ids === item?.ids ? (
+                  // filter ? (
+                  <s.CcommentTitle key={key}>
+                    <s.CcommentDiv>
+                      <p>{item.comment}</p>
+                    </s.CcommentDiv>
+                    <s.CommentPost>
+                      <div className="commentName">
+                        <s.DetailImg
+                          src={item?.attachmentUrl}
+                          alt="이미지"
+                          margin="1.25rem"
+                          width="24px"
+                          height="24px"
+                          width_hover="28px"
+                          height_hover="28px"
+                        />
+                        <span>{item.displayName}</span>
+                      </div>
+                      {item.uid === user.uid ? (
+                        <s.CcommentDelete
+                          aria-label="delete_button"
+                          onClick={() => onDeleteComment(item?.id)}
+                        >
+                          <RiDeleteBinLine />
+                        </s.CcommentDelete>
+                      ) : (
+                        ""
+                      )}
+                    </s.CommentPost>
+                  </s.CcommentTitle>
+                ) : (
+                  ""
+                )
+              )}
+            </div>
+          </s.CcommentContainer>
         </div>
-      </s.CcommentContainer>
+      )}
     </s.Container>
   );
 };
