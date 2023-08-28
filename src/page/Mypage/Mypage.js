@@ -38,15 +38,15 @@ const Mypage = ({ nweets, user }) => {
     setMenu(index);
   };
 
-  const attachmentUrl = localStorage.getItem("img");
+  const attachmentUrls = localStorage.getItem("img");
 
-  //Firebase Storage에서 가져온 이미지 파일을 attachmentUrl에 넣은 후 랜더링한다
+  //Firebase Storage에서 가져온 이미지 파일을 attachmentUrls에 넣은 후 랜더링한다
   useEffect(() => {
-    if (attachmentUrl) {
+    if (attachmentUrls) {
       const img = new Image();
-      img.src = attachmentUrl;
+      img.src = attachmentUrls;
       img.onload = () => {
-        setAttachment(attachmentUrl);
+        setAttachment(attachmentUrls);
       };
       img.onerror = () => {};
     }
@@ -89,7 +89,7 @@ const Mypage = ({ nweets, user }) => {
     try {
       setSubmit(false);
 
-      let attachmentUrls = user.photoURL;
+      let attachmentUrl = user.photoURL;
 
       const imgRef = collection(dbService, "img");
       const querySnapshot = await getDocs(
@@ -100,7 +100,7 @@ const Mypage = ({ nweets, user }) => {
       // 이미지 컬렉션
       const imgs = {
         uid: user.uid,
-        attachmentUrls,
+        attachmentUrl,
         createdAt: Date.now(),
       };
       await addDoc(imgRef, imgs);
@@ -111,12 +111,12 @@ const Mypage = ({ nweets, user }) => {
           // 스토리지에 만드는 코드
           const fileRef = ref(storageService, `${nweets.id}/${docId}`);
           const response = await uploadString(fileRef, attachment, "data_url");
-          attachmentUrls = await getDownloadURL(response.ref);
+          attachmentUrl = await getDownloadURL(response.ref);
 
           // editor 컬렉션 이미지 수정
           for (const nweet of nweets) {
             const edit = {
-              attachmentUrls,
+              attachmentUrl,
             };
             const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
             await updateDoc(pageRef, edit);
@@ -124,22 +124,21 @@ const Mypage = ({ nweets, user }) => {
         } else {
           const fileRef = ref(storageService, `${nweets.id}/${v4()}`);
           const response = await uploadString(fileRef, attachment, "data_url");
-          attachmentUrls = await getDownloadURL(response.ref);
+          attachmentUrl = await getDownloadURL(response.ref);
         }
       }
       alert("저장되었습니다.");
       // 사용자 프로필 업데이트
-      await updateProfile(user, { photoURL: attachmentUrls });
-      setAttachment(attachmentUrls);
+      await updateProfile(user, { photoURL: attachmentUrl });
+      setAttachment(attachmentUrl);
       localStorage.setItem("img", attachment);
 
       // window.location.reload();
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
-  console.log(nweets);
   // 로그아웃
   const logoutBtn = () => {
     removeCookie("token");
@@ -166,7 +165,7 @@ const Mypage = ({ nweets, user }) => {
           {submit === true ? (
             <img className="EditImg" src={attachment} alt="수정 이미지" />
           ) : "" || user?.uid === img?.uid ? (
-            <img className="EditImg" src={attachmentUrl} alt="수정 이미지" />
+            <img className="EditImg" src={attachmentUrls} alt="수정 이미지" />
           ) : (
             <img className="EditImg" src={user.photoURL} alt="기본 이미지" />
           )}
@@ -221,7 +220,7 @@ const Mypage = ({ nweets, user }) => {
                   {user?.uid === img?.uid ? (
                     <s.Img
                       className="EditImg"
-                      src={attachmentUrl}
+                      src={attachmentUrls}
                       alt="수정 이미지"
                     />
                   ) : (
