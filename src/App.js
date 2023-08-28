@@ -21,7 +21,6 @@ function App() {
   const [user, setUser] = useState();
 
   const [nweets, setNweets] = useState([]);
-  const [nweets1, setNweets1] = useState([]);
 
   // displayName 불러오기
   useEffect(() => {
@@ -47,7 +46,6 @@ function App() {
       }));
       // 하나는 전체 글 보기용, 하나는 내가 작성한 글 보기용
       setNweets(nweetArr);
-      setNweets1(nweetArr);
     });
   }, []);
 
