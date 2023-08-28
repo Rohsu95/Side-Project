@@ -51,7 +51,7 @@ const Mypage = ({ nweets, user }) => {
         setAttachment(attachmentUrl);
       };
       img.onerror = () => {
-        console.log("Error loading image from Firebase Storage.");
+        // console.log("Error loading image from Firebase Storage.");
       };
     }
   }, []);
@@ -121,11 +121,11 @@ const Mypage = ({ nweets, user }) => {
       localStorage.setItem("img", attachment);
       window.location.reload();
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
-  console.log(user);
-  console.log(nweets);
+  // console.log(user);
+  // console.log(nweets);
 
   // 로그아웃
   const logoutBtn = () => {
@@ -167,11 +167,11 @@ const Mypage = ({ nweets, user }) => {
         setLike(newLikes);
         setLikeStyle((prev) => ({ ...prev, [id]: true }));
         await updateDoc(pageRef, { like: currentPage.like + 1 });
-        console.log(like);
-        console.log(likeStyle);
+        // console.log(like);
+        // console.log(likeStyle);
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
   const onDeletePage = async (id) => {
