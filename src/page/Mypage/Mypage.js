@@ -4,7 +4,6 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   orderBy,
   query,
@@ -49,9 +48,7 @@ const Mypage = ({ nweets, user }) => {
       img.onload = () => {
         setAttachment(attachmentUrl);
       };
-      img.onerror = () => {
-        // console.log("Error loading image from Firebase Storage.");
-      };
+      img.onerror = () => {};
     }
   }, []);
 

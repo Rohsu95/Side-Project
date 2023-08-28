@@ -11,7 +11,6 @@ const Editor = ({ user }) => {
     title: "",
     content: "",
   });
-  const [like, setLike] = useState(0);
   const navigate = useNavigate();
   const { title, content } = input;
 

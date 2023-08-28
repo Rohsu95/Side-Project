@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { FcLikePlaceholder } from "react-icons/fc";
 import { Cookies } from "react-cookie";
 import * as s from "./style";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { dbService } from "fBase";
 import { RiDeleteBinLine } from "react-icons/ri";
 import theme from "styles/Theme";
