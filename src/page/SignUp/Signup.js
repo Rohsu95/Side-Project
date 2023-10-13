@@ -1,8 +1,7 @@
-import { authService } from "fBase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
+import axios from "axios";
 
 const Signup = () => {
   const {
@@ -14,29 +13,17 @@ const Signup = () => {
 
   const onSubmit = async (data) => {
     try {
-      const { user } = await createUserWithEmailAndPassword(
-        authService,
-        data.email,
-        data.password
-      );
-
-      alert("회원 가입에 성공하셨습니다.");
-      const users = authService.currentUser;
-
-      // 이미지
-      await updateProfile(users, {
-        photoURL:
-          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-      });
-      // displayName
-      await updateProfile(user, { displayName: data.username });
-      // uid
-      await updateProfile(user, { uid: data.uid });
+      axios
+        .post("http://localhost:8000/api/users/signup", data, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((res) => console.log("회원 가입쪽?", res));
       navigate("/login");
-    } catch (error) {
-      alert("이미 가입된 정보 입니다");
+    } catch (err) {
+      console.log(err);
     }
   };
+
   return (
     <s.Container>
       <s.Sign>

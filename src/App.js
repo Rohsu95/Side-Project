@@ -7,6 +7,8 @@ import theme from "./styles/Theme";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { authService, dbService } from "fBase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { getUser } from "api/userAPI";
+import { getPlaces } from "api/writingAPI";
 
 const Main = lazy(() => import("./page/Main/Main"));
 const Login = lazy(() => import("./page/Login/Login"));
@@ -19,8 +21,31 @@ const Setting = lazy(() => import("./page/Setting/Setting"));
 
 function App() {
   const [user, setUser] = useState();
-
   const [nweets, setNweets] = useState([]);
+
+  // 유저 정보
+  const [userInfo, setUserInfo] = useState([]);
+
+  // place(게시글) 정보
+  const [userPlace, setUserPlace] = useState([]);
+
+  // 유저 정보
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const res = await getUser();
+      setUserInfo(res.data.users);
+    };
+    getUserInfo();
+  }, []);
+
+  // 게시글
+  useEffect(() => {
+    const getPlaceInfo = async () => {
+      const res = await getPlaces();
+      setUserPlace(res.data.places);
+    };
+    getPlaceInfo();
+  }, []);
 
   // displayName 불러오기
   useEffect(() => {
@@ -54,20 +79,26 @@ function App() {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <Header user={user} />
+          <Header userInfo={userInfo} />
           <Suspense fallback={<h1>Loading...</h1>}>
             <Routes>
-              <Route path="/" element={<Main user={user} nweets={nweets} />} />
+              <Route path="/" element={<Main />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/editor" element={<Editor user={user} />} />
-              <Route path="/edit" element={<Edit user={user} />} />
+              <Route path="/editor" element={<Editor />} />
+              <Route
+                path="/edit/:id"
+                element={<Edit userPlace={userPlace} />}
+              />
               <Route
                 path="/mypage"
-                element={<Mypage user={user} nweets={nweets} />}
+                element={<Mypage userInfo={userInfo} userPlace={userPlace} />}
               />
-              <Route path="/detail/:ids" element={<Detail user={user} />} />
-              <Route path="/setting" element={<Setting user={user} />} />
+              <Route
+                path="/detail/:id"
+                element={<Detail userPlace={userPlace} userInfo={userInfo} />}
+              />
+              <Route path="/setting/:id" element={<Setting user={user} />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

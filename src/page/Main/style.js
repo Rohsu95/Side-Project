@@ -214,6 +214,7 @@ export const Loading = styled.div`
 `;
 
 export const InfoBtn = styled.button`
+  cursor: pointer;
   display: flex;
   height: 3vh;
   align-items: center;

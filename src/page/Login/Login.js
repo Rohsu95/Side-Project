@@ -1,35 +1,42 @@
-import { authService } from "fBase";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import React from "react";
 import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
+import { login } from "api/userAPI";
 
 const Login = () => {
   const navigate = useNavigate();
   const cookie = new Cookies();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  // user 정보
 
   const onSubmit = async (data) => {
     try {
-      const { user } = await signInWithEmailAndPassword(
-        authService,
-        data.email,
-        data.password
-      );
-      const token = user.refreshToken;
-      cookie.set("token", token);
-      cookie.set("user", data.email);
-      navigate("/");
-      window.location.reload();
-      console.log("user", user);
-    } catch (error) {
-      alert("로그인 정보를 다시 확인해주세요");
+      const res = await login(data);
+      if (res?.response?.data?.status) {
+        alert("가입된 정보가 없습니다.");
+      } else if (res?.status === 200) {
+        const userId = res?.data?.userId;
+        const token = res?.data?.token;
+        const username = res?.data?.username;
+        cookie.set("token", token);
+        cookie.set("userId", userId);
+        cookie.set("username", username);
+        navigate("/");
+
+        console.log("로그인 쪽", res);
+        window.location.reload();
+      } else {
+        alert("잠시 후에 로그인을 해주세요 .");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 

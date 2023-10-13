@@ -3,15 +3,23 @@ import { addDoc, collection, Timestamp } from "firebase/firestore";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
+import axios from "axios";
+import { getCookie } from "cookies";
+import FormatDate from "component/Date";
+import { Cookies } from "react-cookie";
 
-const Editor = ({ user }) => {
+const Editor = () => {
+  const cookie = new Cookies();
+  const userId = cookie.get("userId");
+  const username = cookie.get("username");
+
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
   const [input, setInput] = useState({
     title: "",
     content: "",
   });
-  const [like, setLike] = useState(0);
+
   const navigate = useNavigate();
   const { title, content } = input;
 
@@ -39,30 +47,36 @@ const Editor = ({ user }) => {
   const onDelete = (id) => {
     setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
-  // 생성
-  const onClick = async () => {
-    let tagsItem = String(tagsList);
-    const now = new Date(Date.now());
 
+  // 생성
+  const onWriting = async () => {
     try {
-      const editor = {
-        title: title,
-        content: content,
-        tags: tagsItem,
-        createdAt: Timestamp.fromDate(now),
-        displayName: user.displayName,
-        uid: user.uid,
-        attachmentUrl: user.photoURL,
-      };
-      if (editor.title.length === 0) {
-        alert("Title을 작성해 주세요");
-      } else if (editor.content.length === 0) {
-        alert("Content를 작성해 주세요");
-      } else {
-        await addDoc(collection(dbService, "editor"), editor);
-        navigate("/");
-      }
+      let tagsItem = String(tagsList);
+      const now = new Date(Date.now());
+
+      const res = await axios.post(
+        "http://localhost:8000/api/places/editor",
+        {
+          title: title,
+          content: content,
+          tags: tagsItem,
+          createdAt: now,
+          creator: userId,
+          username: username,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
+
+      console.log("게시글 생성 성공", res);
+      navigate("/");
+      window.location.reload();
     } catch (error) {
+      alert(error.response.data.message);
       console.log(error);
     }
   };
@@ -105,7 +119,7 @@ const Editor = ({ user }) => {
             </s.TagSpan>
           ))}
         </s.TagDiv>
-        <s.EditorBtn onClick={onClick}>Publish Article</s.EditorBtn>
+        <s.EditorBtn onClick={onWriting}>Publish Article</s.EditorBtn>
       </div>
     </s.EditorContainer>
   );

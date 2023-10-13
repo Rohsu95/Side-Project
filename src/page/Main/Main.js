@@ -1,32 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FcLikePlaceholder } from "react-icons/fc";
 import { Cookies } from "react-cookie";
 import * as s from "./style";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { dbService } from "fBase";
 import { RiDeleteBinLine } from "react-icons/ri";
 import theme from "styles/Theme";
-import FormatDate from "component/Date";
 
-const Main = ({ user, nweets }) => {
+import { getUser } from "api/userAPI";
+import { deletePlaces, getPlaces } from "api/writingAPI";
+import { useNavigate } from "react-router-dom";
+
+const Main = () => {
   const cookie = new Cookies();
   const Token = cookie.get("token");
+  // 쿠키에 담긴 userId
+  const userId = cookie.get("userId");
+
   // 2가지 menu
   const [menu, setMenu] = useState(0);
   const MainMenu = [{ name: "Global Articles" }, { name: "My Articles" }];
+
+  // user 정보
+  const [userInfo, setUserInfo] = useState([]);
+  // place(게시글) 정보
+  const [userPlace, setUserPlace] = useState([]);
+
+  // 이동
+  const navigate = useNavigate();
+  // 내가 작성한 글이 없는 경우
+  // userId가 find로 찾은 place에 없다면
+  const myPlace = userPlace.filter((el) => el.creator === userId);
+  console.log("myPlace", myPlace);
+
+
 
   const mainCurrent = (index) => {
     setMenu(index);
   };
 
-  // 선택 삭제
+  // 작성한 글 삭제
   const onDeletePage = async (id) => {
-    const ok = window.confirm("삭제 하시겠습니까?");
-    if (ok) {
-      const pageRef = doc(dbService, "editor", `${id}`);
-      await deleteDoc(pageRef);
+    if (!window.confirm("삭제 하시겠습니까?")) {
+      alert("취소하였습니다.");
+    } else {
+      await deletePlaces(Token, id);
+      window.location.reload();
     }
   };
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const res = await getUser();
+      setUserInfo(res.data.users);
+    };
+    getUserInfo();
+  }, []);
+  // console.log("userInfo", userInfo);
+
+  useEffect(() => {
+    const getPlaceInfo = async () => {
+      const res = await getPlaces();
+      setUserPlace(res.data.places);
+    };
+    getPlaceInfo();
+  }, []);
+  // console.log("userPlace", userPlace);
 
   return (
     <s.MainContainer>
@@ -50,72 +87,9 @@ const Main = ({ user, nweets }) => {
           })}
         </s.MainUl>
       </div>
-
-      {nweets.map((item, key) =>
-        menu === 0 ? (
-          <s.MainMap key={key}>
-            <s.MainBorder>
-              <s.MapInfo>
-                <s.MapPicture>
-                  <s.Img
-                    key={item.id}
-                    src={
-                      item.uid === user.uid
-                        ? user?.photoURL
-                        : item?.attachmentUrl
-                    }
-                    alt="profile"
-                  />
-                </s.MapPicture>
-                <s.Info>
-                  <div className="info">
-                    <s.MapName>{item.displayName}</s.MapName>
-                    <s.MapTime>
-                      <FormatDate date={item.createdAt}></FormatDate>
-                    </s.MapTime>
-                  </div>
-                  <div className="Like">
-                    {Token && item.uid === user.uid ? (
-                      <s.InfoBtn
-                        aria-label="trash_button"
-                        border={`${theme.colors.main}`}
-                        color={`${theme.colors.main}`}
-                        hover={`${theme.colors.main_hover}`}
-                        hover_color="white"
-                        onClick={() => onDeletePage(item.id)}
-                      >
-                        <RiDeleteBinLine />
-                      </s.InfoBtn>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </s.Info>
-              </s.MapInfo>
-              <s.MapContent>
-                <s.MapTitle href={`/detail/${item.id}`}>
-                  <h1 className="title">{item.title}</h1>
-                  <p className="content">{item.content}</p>
-                  <span className="span">Read more...</span>
-                  <s.MapUl>
-                    {item.tags.length === 0
-                      ? ""
-                      : item.tags
-                          .split(",")
-                          .map((tag, index) => <li key={index}>{tag}</li>)}
-                  </s.MapUl>
-                </s.MapTitle>
-              </s.MapContent>
-            </s.MainBorder>
-          </s.MainMap>
-        ) : (
-          ""
-        )
-      )}
-      {Token !== undefined ? (
-        nweets ? (
-          nweets.map((item, key) =>
-            user && item.uid === user.uid && menu === 1 ? (
+      {menu === 0
+        ? userPlace
+            .map((item, key) => (
               <s.MainMap key={key}>
                 <s.MainBorder>
                   <s.MapInfo>
@@ -123,22 +97,22 @@ const Main = ({ user, nweets }) => {
                       <s.Img
                         key={item.id}
                         src={
-                          item.uid === user.uid
-                            ? user?.photoURL
-                            : item?.attachmentUrl
+                          // 이미지 부분은 뭐 ecss머시기 있잖아 그거 확인해보자 메인 프젝한거 확인ㅇ해보자
+                          // item.uid === user.uid
+                          //   ? user?.photoURL
+                          //   : item?.attachmentUrl
+                          userInfo.image
                         }
                         alt="profile"
                       />
                     </s.MapPicture>
                     <s.Info>
                       <div className="info">
-                        <s.MapName>{item.displayName}</s.MapName>
-                        <s.MapTime>
-                          <FormatDate date={item.createdAt} />
-                        </s.MapTime>
+                        <s.MapName>{item.username}</s.MapName>
+                        <s.MapTime>{item.createdAt}</s.MapTime>
                       </div>
                       <div className="Like">
-                        {user && item.uid === user.uid ? (
+                        {Token && item.creator === userId ? (
                           <s.InfoBtn
                             aria-label="trash_button"
                             border={`${theme.colors.main}`}
@@ -161,26 +135,268 @@ const Main = ({ user, nweets }) => {
                       <p className="content">{item.content}</p>
                       <span className="span">Read more...</span>
                       <s.MapUl>
-                        {item.tags.length === 0
-                          ? ""
-                          : item.tags
-                              .split(",")
-                              .map((tag, index) => <li key={index}>{tag}</li>)}
+                        {item.tags.split(",").map((tag, index) => (
+                          <li key={index}>{tag}</li>
+                        ))}
                       </s.MapUl>
                     </s.MapTitle>
                   </s.MapContent>
                 </s.MainBorder>
               </s.MainMap>
-            ) : (
-              ""
-            )
+            ))
+            .reverse()
+        : ""}
+      {Token ? "" : <s.Loading>로그인을 해주세요...</s.Loading>}
+
+      {menu === 1
+        ? myPlace
+            .map((item, key) => (
+              <s.MainMap key={key}>
+                <s.MainBorder>
+                  <s.MapInfo>
+                    <s.MapPicture>
+                      <s.Img
+                        key={item.id}
+                        src={
+                          // item.uid === user.uid
+                          //   ? user?.photoURL
+                          //   : item?.attachmentUrl
+                          userInfo.image
+                        }
+                        alt="profile"
+                      />
+                    </s.MapPicture>
+                    <s.Info>
+                      <div className="info">
+                        <s.MapName>{item.username}</s.MapName>
+
+                        <s.MapTime>{item.createdAt}</s.MapTime>
+                      </div>
+                      <div className="Like">
+                        {item.creator === userId ? (
+                          <s.InfoBtn
+                            aria-label="trash_button"
+                            border={`${theme.colors.main}`}
+                            color={`${theme.colors.main}`}
+                            hover={`${theme.colors.main_hover}`}
+                            hover_color="white"
+                            onClick={() => onDeletePage(item.id)}
+                          >
+                            <RiDeleteBinLine />
+                          </s.InfoBtn>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </s.Info>
+                  </s.MapInfo>
+                  <s.MapContent>
+                    <s.MapTitle href={`/detail/${item.id}`}>
+                      <h1 className="title">{item.title}</h1>
+                      <p className="content">{item.content}</p>
+                      <span className="span">Read more...</span>
+                      <s.MapUl>
+                        {item.tags.split(",").map((tag, index) => (
+                          <li key={index}>{tag}</li>
+                        ))}
+                      </s.MapUl>
+                    </s.MapTitle>
+                  </s.MapContent>
+                </s.MainBorder>
+              </s.MainMap>
+            ))
+            .reverse()
+        : ""}
+
+      
+      {/* <s.MainMap key={key}>
+        <s.MainBorder>
+          <s.MapInfo>
+            <s.MapPicture>
+              <s.Img
+                key={item.id}
+                src={
+                  // item.uid === user.uid
+                  //   ? user?.photoURL
+                  //   : item?.attachmentUrl
+                  userInfo.image
+                }
+                alt="profile"
+              />
+            </s.MapPicture>
+            <s.Info>
+              <div className="info">
+                <s.MapName>{item.username}</s.MapName>
+
+                <s.MapTime>{item.createdAt}</s.MapTime>
+              </div>
+              <div className="Like">
+                {item.creator === userId ? (
+                  <s.InfoBtn
+                    aria-label="trash_button"
+                    border={`${theme.colors.main}`}
+                    color={`${theme.colors.main}`}
+                    hover={`${theme.colors.main_hover}`}
+                    hover_color="white"
+                    onClick={() => onDeletePage(item.id)}
+                  >
+                    <RiDeleteBinLine />
+                  </s.InfoBtn>
+                ) : (
+                  ""
+                )}
+              </div>
+            </s.Info>
+          </s.MapInfo>
+          <s.MapContent>
+            <s.MapTitle href={`/detail/${item.id}`}>
+              <h1 className="title">{item.title}</h1>
+              <p className="content">{item.content}</p>
+              <span className="span">Read more...</span>
+              <s.MapUl>
+                {item.tags.split(",").map((tag, index) => (
+                  <li key={index}>{tag}</li>
+                ))}
+              </s.MapUl>
+            </s.MapTitle>
+          </s.MapContent>
+        </s.MainBorder>
+      </s.MainMap> */}
+
+      {/* //   (
+        //     Token ? (Articles ? "아티클" : "작성한글이 없다") : "로그인 해주세요"
+        // ) */}
+
+      {/* // userPlace
+        // .map((item, key) =>
+        //   menu === 0 ?
+            // ( */}
+      {/* <s.MainMap key={key}>
+              <s.MainBorder>
+                <s.MapInfo>
+                  <s.MapPicture>
+                    <s.Img
+                      key={item.id}
+                      src={ */}
+      {/* // 이미지 부분은 뭐 ecss머시기 있잖아 그거 확인해보자 메인 프젝한거 확인ㅇ해보자
+                        // item.uid === user.uid
+                        //   ? user?.photoURL
+                        //   : item?.attachmentUrl
+                        userInfo.image
+                      }
+                      alt="profile"
+                    />
+                  </s.MapPicture>
+                  <s.Info>
+                    <div className="info">
+                      <s.MapName>{item.username}</s.MapName>
+                      <s.MapTime>
+                        {item.createdAt}
+               
+                      </s.MapTime>
+                    </div>
+                    <div className="Like">
+                      {Token && item.creator === userId ? (
+                        <s.InfoBtn
+                          aria-label="trash_button"
+                          border={`${theme.colors.main}`}
+                          color={`${theme.colors.main}`}
+                          hover={`${theme.colors.main_hover}`}
+                          hover_color="white"
+                          onClick={() => onDeletePage(item.id)}
+                        >
+                          <RiDeleteBinLine />
+                        </s.InfoBtn>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </s.Info>
+                </s.MapInfo>
+                <s.MapContent>
+                  <s.MapTitle href={`/detail/${item.id}`}>
+                    <h1 className="title">{item.title}</h1>
+                    <p className="content">{item.content}</p>
+                    <span className="span">Read more...</span>
+                    <s.MapUl>
+                      {item.tags.split(",").map((tag, index) => (
+                        <li key={index}>{tag}</li>
+                      ))}
+                    </s.MapUl>
+                  </s.MapTitle>
+                </s.MapContent>
+              </s.MainBorder>
+            </s.MainMap>
+          ) : (
+            ""
+          )
+        )
+      .reverse()
+        } */}
+      {/* My Articles 부분 */}
+      {/* {userPlace.map((item, key) =>
+        item.creator === userId && menu === 1 ? (
+          Token ? (
+            <s.MainMap key={key}>
+              <s.MainBorder>
+                <s.MapInfo>
+                  <s.MapPicture>
+                    <s.Img
+                      key={item.id}
+                      src={
+                        // item.uid === user.uid
+                        //   ? user?.photoURL
+                        //   : item?.attachmentUrl
+                        userInfo.image
+                      }
+                      alt="profile"
+                    />
+                  </s.MapPicture>
+                  <s.Info>
+                    <div className="info">
+                      <s.MapName>{item.username}</s.MapName>
+
+                      <s.MapTime>{item.createdAt}</s.MapTime>
+                    </div>
+                    <div className="Like">
+                      {item.creator === userId ? (
+                        <s.InfoBtn
+                          aria-label="trash_button"
+                          border={`${theme.colors.main}`}
+                          color={`${theme.colors.main}`}
+                          hover={`${theme.colors.main_hover}`}
+                          hover_color="white"
+                          onClick={() => onDeletePage(item.id)}
+                        >
+                          <RiDeleteBinLine />
+                        </s.InfoBtn>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </s.Info>
+                </s.MapInfo>
+                <s.MapContent>
+                  <s.MapTitle href={`/detail/${item.id}`}>
+                    <h1 className="title">{item.title}</h1>
+                    <p className="content">{item.content}</p>
+                    <span className="span">Read more...</span>
+                    <s.MapUl>
+                      {item.tags.split(",").map((tag, index) => (
+                        <li key={index}>{tag}</li>
+                      ))}
+                    </s.MapUl>
+                  </s.MapTitle>
+                </s.MapContent>
+              </s.MainBorder>
+            </s.MainMap>
+          ) : (
+            <s.Loading>로그인을 해주세요...</s.Loading>
           )
         ) : (
           <s.Loading>작성한 글이 없습니다...</s.Loading>
         )
-      ) : (
-        <s.Loading>로그인을 해주세요...</s.Loading>
-      )}
+      )} */}
     </s.MainContainer>
   );
 };

@@ -289,7 +289,6 @@ export const LogOut = styled.div`
   margin-right: 3rem;
 `;
 export const LogOutBtn = styled.button`
-  cursor: pointer;
   padding: 0.25em;
   color: white;
   border: 1px solid white;
@@ -309,6 +308,7 @@ export const LogOutBtn = styled.button`
 export const InfoBtn = styled.button`
   display: flex;
   height: 3vh;
+  cursor: pointer;
   align-items: center;
   border-radius: 5px;
   margin-left: 0.125rem;

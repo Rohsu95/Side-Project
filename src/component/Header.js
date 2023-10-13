@@ -5,6 +5,7 @@ import theme from "../styles/Theme";
 import { BiEdit } from "react-icons/bi";
 import { AiOutlineSetting } from "react-icons/ai";
 import { Cookies } from "react-cookie";
+
 const Headers = styled.header`
   width: 100%;
   height: 4rem;
@@ -63,12 +64,17 @@ const HeaderUl = styled.ul`
     font-size: 0.8rem;
   }
 `;
-const Header = ({ user }) => {
+const Header = ({ userInfo }) => {
   const cookies = new Cookies();
   const token = cookies.get("token");
+  const userId = cookies.get("userId");
+
   const [head, setHead] = useState(0);
   const navigate = useNavigate();
   const [headTest, setHeadTest] = useState(false);
+
+  const user = userInfo?.find((el) => el.id === userId);
+
   const headerMenu = [
     { name: "Home" },
     { name: "Sign in" },
@@ -78,8 +84,9 @@ const Header = ({ user }) => {
     { name: "Home" },
     { name: "New Post" },
     { name: "setting" },
-    { name: user?.displayName },
+    { name: user?.username },
   ];
+  // console.log(user)
   const headCurrent = (index) => {
     setHead(index);
     if (index === 0) {

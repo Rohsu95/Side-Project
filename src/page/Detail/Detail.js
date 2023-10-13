@@ -3,64 +3,69 @@ import { CiEdit } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
 import * as s from "./style";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  Timestamp,
-} from "firebase/firestore";
-import { dbService } from "fBase";
 import { Cookies } from "react-cookie";
 import FormatDate from "component/Date";
+import axios from "axios";
+import { getCookie } from "cookies";
+import { deleteComment, getComment } from "api/writingAPI";
 
-const Detail = ({ user }) => {
+const Detail = ({ userInfo, userPlace }) => {
+  // 쿠키
   const cookie = new Cookies();
+  // 쿠키에 담긴 토큰, 네임, 아이디값
   const Token = cookie.get("token");
+  const username = cookie.get("username");
+  const userId = cookie.get("userId");
+
   // 페이지 정보
   const [commentInput, setCommentInput] = useState("");
   // 댓글
   const [comment, setComment] = useState([]);
-  // 특정 게시물 불러오기
-  const [data, setData] = useState(null);
 
   const navigate = useNavigate();
-  const { ids } = useParams();
+  const { id } = useParams();
 
-  // 특정 게시물 페이지 불러오기 id
-  useEffect(() => {
-    const fetchData = async () => {
-      const docRef = doc(dbService, "editor", ids);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setData(docSnap.data());
-      } else {
-      }
-    };
-    fetchData();
-  }, [ids]);
+  // 게시글의 id와 주소의 id값이 같은 것을 찾는다 그것이 특정 게시물의 정보이다.
+  const MyPlace = userPlace.find((user) => user.id === id);
 
-  // console.log("댓글", comment);
-
+  console.log(MyPlace);
   // read 댓글 정보 보여주기
   useEffect(() => {
-    const q = query(
-      collection(dbService, "comment"),
-      orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (snapshot) => {
-      const nweetArrs = snapshot.docs.map((document) => ({
-        id: document.id,
-        ...document.data(),
-      }));
-
-      setComment(nweetArrs);
-    });
+    const getPlaceInfo = async () => {
+      const res = await getComment();
+      setComment(res.data.comment);
+    };
+    getPlaceInfo();
   }, []);
+  console.log("댓글 정보", comment);
+
+  // 생성
+  const onComment = async () => {
+    try {
+      const now = new Date(Date.now());
+
+      const res = await axios.post(
+        "http://localhost:8000/api/places/comment",
+        {
+          comment: commentInput,
+          createdAt: now,
+          creator: userId,
+          username: username,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
+      console.log("댓글 생성 성공", res);
+      window.location.reload();
+    } catch (error) {
+      alert(error.response.data.message);
+      console.log(error);
+    }
+  };
 
   const onCommentChange = (e) => {
     setCommentInput(e.target.value);
@@ -68,62 +73,46 @@ const Detail = ({ user }) => {
 
   // 댓글 삭제
   const onDeleteComment = async (id) => {
-    const ok = window.confirm("댓글을 삭제 하시겠습니까?");
-    if (ok) {
-      const commentRef = doc(dbService, "comment", id);
-      try {
-        await deleteDoc(commentRef);
-        // console.log("삭제 완료");
-      } catch (error) {
-        // console.log(error);
-      }
-    }
-  };
-
-  const CommentonClick = async () => {
-    const now = new Date(Date.now());
-
     try {
-      const sweetObj = {
-        displayName: user.displayName,
-        comment: commentInput,
-        createdAt: Timestamp.fromDate(now),
-        uid: user.uid,
-        attachmentUrl: user.photoURL,
-        ids,
-      };
-      await addDoc(collection(dbService, "comment"), sweetObj);
-      setCommentInput("");
-    } catch (error) {
-      // console.log(error);
+      if (!window.confirm("삭제 하시겠습니까?")) {
+        alert("취소하였습니다.");
+      } else {
+        await deleteComment(Token, id);
+        alert("삭제하였습니다.");
+        window.location.reload();
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
   return (
     <s.Container>
-      {data && (
+      {MyPlace && (
         <div>
           <s.DetailContainer>
             <div className="info">
-              <h1>{data.title}</h1>
+              <h1>{MyPlace.title}</h1>
               <s.DetailInfo>
                 <div className="detailLine">
-                  {data.attachmentUrl !== "" ? (
+                  {MyPlace.attachmentUrl !== "" ? (
                     <s.DetailA to="/mypage">
-                      <s.DetailImg src={data?.attachmentUrl} alt="이미지" />
+                      이미지
+                      {/* <s.DetailImg src={MyPlace?.attachmentUrl} alt="이미지" /> */}
                     </s.DetailA>
                   ) : (
                     ""
                   )}
                   <div className="name">
                     <s.DetailName href="/mypage">
-                      {data.displayName}
+                      {MyPlace.username}
                     </s.DetailName>
                     <s.DetailDate>
-                      <FormatDate date={data.createdAt}></FormatDate>
+                      {MyPlace.createdAt}
+                      {/* <FormatDate date={MyPlace.createdAt}></FormatDate> */}
                     </s.DetailDate>
                   </div>
-                  {Token && data.uid === user.uid ? (
+                  {Token && MyPlace.creator === userId ? (
                     <s.InfoBtn
                       aria-label="edit_button"
                       border="#ccc"
@@ -131,7 +120,7 @@ const Detail = ({ user }) => {
                       hover="#282A3A"
                       hover_color="white"
                       margin="0.5rem"
-                      onClick={() => navigate("/edit")}
+                      onClick={() => navigate(`/edit/${MyPlace.id}`)}
                     >
                       <CiEdit />
                       Edit Article
@@ -144,12 +133,12 @@ const Detail = ({ user }) => {
             </div>
           </s.DetailContainer>
           <s.DetailContent>
-            <div>{data.content}</div>
+            <div>{MyPlace.content}</div>
             <s.DetailTag>
-              <li>{data.tags}</li>
+              <li>{MyPlace.tags}</li>
             </s.DetailTag>
           </s.DetailContent>
-          {/* 댓글 창 */}
+          {/* 댓글 작성하는 창 */}
           <s.CommentContainer>
             {Token ? (
               <s.CommentText>
@@ -164,18 +153,15 @@ const Detail = ({ user }) => {
                 <s.CommentPost>
                   <div className="commentName">
                     <s.DetailImg
-                      src={user?.photoURL}
+                      src={userInfo?.image}
                       alt="이미지"
                       margin="1.25rem"
                       width_hover="28px"
                       height_hover="28px"
                     />
-                    <span>{user?.displayName}</span>
+                    <span>{username}</span>
                   </div>
-                  <s.CommentBtn
-                    aria-label="comment_button"
-                    onClick={CommentonClick}
-                  >
+                  <s.CommentBtn aria-label="comment_button" onClick={onComment}>
                     Comment
                   </s.CommentBtn>
                 </s.CommentPost>
@@ -187,9 +173,8 @@ const Detail = ({ user }) => {
           {/* 댓글 내용 */}
           <s.CcommentContainer>
             <div>
-              {comment.map((item, key) =>
-                ids === item?.ids ? (
-                  // filter ? (
+              {comment
+                .map((item, key) => (
                   <s.CcommentTitle key={key}>
                     <s.CcommentDiv>
                       <p>{item.comment}</p>
@@ -197,7 +182,7 @@ const Detail = ({ user }) => {
                     <s.CommentPost>
                       <div className="commentName">
                         <s.DetailImg
-                          src={item?.attachmentUrl}
+                          src={userInfo?.image}
                           alt="이미지"
                           margin="1.25rem"
                           width="24px"
@@ -205,12 +190,12 @@ const Detail = ({ user }) => {
                           width_hover="28px"
                           height_hover="28px"
                         />
-                        <span>{item.displayName}</span>
+                        <span>{item.username}</span>
                       </div>
-                      {item.uid === user.uid ? (
+                      {item.creator === userId ? (
                         <s.CcommentDelete
                           aria-label="delete_button"
-                          onClick={() => onDeleteComment(item?.id)}
+                          onClick={() => onDeleteComment(item.id)}
                         >
                           <RiDeleteBinLine />
                         </s.CcommentDelete>
@@ -219,10 +204,8 @@ const Detail = ({ user }) => {
                       )}
                     </s.CommentPost>
                   </s.CcommentTitle>
-                ) : (
-                  ""
-                )
-              )}
+                ))
+                .reverse()}
             </div>
           </s.CcommentContainer>
         </div>

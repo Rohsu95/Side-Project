@@ -8,24 +8,31 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as s from "./style";
+import { Cookies } from "react-cookie";
+import axios from "axios";
 
-const Edit = ({ user }) => {
+const Edit = ({ userPlace }) => {
+  const cookie = new Cookies();
+  const Token = cookie.get("token");
+
   // 수정 할 정보 불러오기
-  const [nweets, setNweets] = useState([]);
+  const { id } = useParams();
   // 태그
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
+  // 해당 게시글 정보
+  // const Modify = userPlace.find((el) => el.id === id);
+
+  const navigate = useNavigate();
   // 인풋 내용
   const [input, setInput] = useState({
     title: "",
     content: "",
-    article: "",
+    tags: "",
   });
-
-  const navigate = useNavigate();
-  const { title, content, article } = input;
+  const { title, content } = input;
 
   const onTotal = (e) => {
     const { name, value } = e.target;
@@ -34,27 +41,7 @@ const Edit = ({ user }) => {
       [name]: value,
     });
   };
-  // 수정 부분
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "editor"),
-      orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (snapshot) => {
-      const nweetArr = snapshot.docs.map((document) => ({
-        id: document.id,
-        ...document.data(),
-      }));
-      setNweets(nweetArr);
-      setInput({
-        title: nweetArr[0]?.title,
-        content: nweetArr[0]?.content,
-        article: nweetArr[0]?.article,
-      });
-      setTags(nweetArr[0]?.tags);
-      // console.log(nweetArr);
-    });
-  }, []);
+  // console.log(Modify);
 
   // Enter 누를 시 태그 생성
   const onKeyPress = (e) => {
@@ -74,24 +61,32 @@ const Edit = ({ user }) => {
   const onDelete = (id) => {
     setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
+
+  // 수정 버튼
   const onClick = async (id) => {
     let tagsitem = String(tagsList);
-
-    try {
-      const editor = {
-        title: title,
-        content: content,
-        article: article,
-        tags: tagsitem,
-        displayName: user.displayName,
-        uid: user.uid,
-      };
-      const pageRef = doc(dbService, "editor", `${nweets[0].id}`);
-      await updateDoc(pageRef, editor);
-      navigate("/");
-    } catch (error) {
-      // console.log(error);
-    }
+    await axios
+      .patch(
+        `http://localhost:8000/api/places/${id}`,
+        {
+          title: title,
+          content: content,
+          tags: tagsitem,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        navigate("/");
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+        console.log(error);
+      });
   };
 
   return (
@@ -132,7 +127,7 @@ const Edit = ({ user }) => {
             </s.TagSpan>
           ))}
         </s.TagDiv>
-        <s.EditorBtn aria-label="modify_button" onClick={onClick}>
+        <s.EditorBtn aria-label="modify_button" onClick={() => onClick(id)}>
           Article Modify
         </s.EditorBtn>
       </div>
