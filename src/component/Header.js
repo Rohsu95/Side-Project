@@ -86,7 +86,7 @@ const Header = ({ userInfo }) => {
     { name: "setting" },
     { name: user?.username },
   ];
-  // console.log(user)
+
   const headCurrent = (index) => {
     setHead(index);
     if (index === 0) {
@@ -97,6 +97,7 @@ const Header = ({ userInfo }) => {
       navigate("/signup");
     }
   };
+  // onClick={() => navigate(`/edit/${MyPlace.id}`)}
   const headsCurrent = (index) => {
     setHead(index);
     if (index === 0) {
@@ -104,7 +105,7 @@ const Header = ({ userInfo }) => {
     } else if (index === 1) {
       navigate("/editor");
     } else if (index === 2) {
-      navigate("/setting");
+      navigate(`/setting/${user.id}`);
     } else if (index === 3) {
       navigate("/mypage");
     }

@@ -2,28 +2,51 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import imageCompression from "browser-image-compression";
 
 const Signup = () => {
+  const [file, setFile] = useState(null);
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
+  // const fileReader = new FileReader();
+  // console.log(fileReader);
+
+  const handleUpload = async () => {
     try {
-      axios
-        .post("http://localhost:8000/api/users/signup", data, {
-          headers: { "Content-Type": "application/json" },
-        })
-        .then((res) => console.log("회원 가입쪽?", res));
-      navigate("/login");
+      const formData = new FormData();
+      formData.append("avatar", file);
+      formData.append("email", watch("email"));
+      formData.append("password", watch("password"));
+      formData.append("username", watch("username"));
+
+      const res = await axios.post(
+        "http://localhost:8000/api/users/signup",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("회원 가입 성공", res);
+      console.log("formData 성공", formData);
     } catch (err) {
       console.log(err);
     }
   };
-
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+  console.log("file 정보", file);
+  // 회원 가입 하면 회원 가입 정보에 이미지가 박힌다.
   return (
     <s.Container>
       <s.Sign>
@@ -33,7 +56,27 @@ const Signup = () => {
         </s.SignupLink>
       </s.Sign>
       <s.FormContainer>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          action="/upload"
+          encType="multipart/form-data"
+          onSubmit={handleSubmit(handleUpload)}
+        >
+          <s.ImgDiv>
+            <img className="EditImg" src={file?.name} alt="기본 이미지" />
+          </s.ImgDiv>
+
+          <label htmlFor="input-file" className="label-file">
+            프로필 이미지 추가
+          </label>
+          <input
+            type="file"
+            id="input-file"
+            accept="image/*"
+            name="avatar"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
+
           <input
             type="text"
             className="Input"
@@ -92,3 +135,16 @@ const Signup = () => {
   );
 };
 export default Signup;
+
+// const onSubmit = async (data) => {
+// try {
+//   axios
+//     .post("http://localhost:8000/api/users/signup", data, {
+//       headers: { "Content-Type": "application/json" },
+//     })
+//     .then((res) => console.log("회원 가입쪽?", res));
+//   // navigate("/login");
+// } catch (err) {
+//   console.log(err);
+// }
+// };

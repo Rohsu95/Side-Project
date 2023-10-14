@@ -25,9 +25,11 @@ const Login = () => {
         const userId = res?.data?.userId;
         const token = res?.data?.token;
         const username = res?.data?.username;
+        const image = res?.data?.image;
         cookie.set("token", token);
         cookie.set("userId", userId);
         cookie.set("username", username);
+        cookie.set("image", image);
         navigate("/");
 
         console.log("로그인 쪽", res);

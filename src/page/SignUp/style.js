@@ -51,4 +51,20 @@ export const FormContainer = styled.div`
     color: ${theme.colors.white};
     background-color: ${theme.colors.main};
   }
+  .label-file {
+    margin: 5px 0 20px 0;
+    font-weight: bold;
+    font-size: 13px;
+    color: #0095f6;
+    display: inline-block;
+    cursor: pointer;
+  }
+`;
+export const ImgDiv = styled.div`
+  height: 80px;
+  .EditImg {
+    width: 90px;
+    height: 90px;
+    border-radius: 50px;
+  }
 `;

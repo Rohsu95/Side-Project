@@ -14,6 +14,7 @@ const Main = () => {
   const Token = cookie.get("token");
   // 쿠키에 담긴 userId
   const userId = cookie.get("userId");
+  const userName = cookie.get("username");
 
   // 2가지 menu
   const [menu, setMenu] = useState(0);
@@ -26,12 +27,11 @@ const Main = () => {
 
   // 이동
   const navigate = useNavigate();
-  // 내가 작성한 글이 없는 경우
-  // userId가 find로 찾은 place에 없다면
-  const myPlace = userPlace.filter((el) => el.creator === userId);
-  console.log("myPlace", myPlace);
 
+  const myPlace = userPlace?.filter((el) => el.creator === userId);
+  const myName = userInfo?.map((el) => el.username);
 
+  // console.log("myPlace", myName);
 
   const mainCurrent = (index) => {
     setMenu(index);
@@ -50,21 +50,25 @@ const Main = () => {
   useEffect(() => {
     const getUserInfo = async () => {
       const res = await getUser();
-      setUserInfo(res.data.users);
+      setUserInfo(res?.data?.users);
     };
     getUserInfo();
   }, []);
-  // console.log("userInfo", userInfo);
+  console.log("userInfo이다", userInfo);
 
   useEffect(() => {
     const getPlaceInfo = async () => {
       const res = await getPlaces();
-      setUserPlace(res.data.places);
+      setUserPlace(res?.data?.places);
     };
     getPlaceInfo();
   }, []);
   // console.log("userPlace", userPlace);
 
+  // 저녁에 댓글 부분 댓글이 모든 게시물마다 나온다 해당 게시물에만 나올 수 있게 해보자 그것만 하고
+  // 그것만 하고 나머지 기능들 정상작동 하는지 확인해보고 인강 들을거 있는지 보고
+  // 그 담에 갑자기 특정 경우에 안되는 경우도 있으니 로그인 후 확인 로그인 전 확인 로그인 하고 껏을 경우
+  // 로그이ㅣㄴ 하고 껐을 경우 확인 해보고 다 확인 되면 불필요한 코드 정리 하자
   return (
     <s.MainContainer>
       <s.MainImg>
@@ -87,28 +91,24 @@ const Main = () => {
           })}
         </s.MainUl>
       </div>
-      {menu === 0
+      {menu === 0 || myPlace === undefined
         ? userPlace
-            .map((item, key) => (
+            ?.map((item, key) => (
               <s.MainMap key={key}>
                 <s.MainBorder>
                   <s.MapInfo>
                     <s.MapPicture>
                       <s.Img
                         key={item.id}
-                        src={
-                          // 이미지 부분은 뭐 ecss머시기 있잖아 그거 확인해보자 메인 프젝한거 확인ㅇ해보자
-                          // item.uid === user.uid
-                          //   ? user?.photoURL
-                          //   : item?.attachmentUrl
-                          userInfo.image
-                        }
+                        src={`http://localhost:8000/${item?.image}`}
                         alt="profile"
                       />
                     </s.MapPicture>
                     <s.Info>
                       <div className="info">
-                        <s.MapName>{item.username}</s.MapName>
+                        <s.MapName>
+                          {item.creator === userId ? userName : item.username}
+                        </s.MapName>
                         <s.MapTime>{item.createdAt}</s.MapTime>
                       </div>
                       <div className="Like">
@@ -148,9 +148,9 @@ const Main = () => {
         : ""}
       {Token ? "" : <s.Loading>로그인을 해주세요...</s.Loading>}
 
-      {menu === 1
+      {menu === 1 || myPlace === undefined
         ? myPlace
-            .map((item, key) => (
+            ?.map((item, key) => (
               <s.MainMap key={key}>
                 <s.MainBorder>
                   <s.MapInfo>
@@ -161,14 +161,15 @@ const Main = () => {
                           // item.uid === user.uid
                           //   ? user?.photoURL
                           //   : item?.attachmentUrl
-                          userInfo.image
+                          `http://localhost:8000/${item?.image}`
+                          // item.image
                         }
                         alt="profile"
                       />
                     </s.MapPicture>
                     <s.Info>
                       <div className="info">
-                        <s.MapName>{item.username}</s.MapName>
+                        <s.MapName>{userName}</s.MapName>
 
                         <s.MapTime>{item.createdAt}</s.MapTime>
                       </div>
@@ -207,196 +208,6 @@ const Main = () => {
             ))
             .reverse()
         : ""}
-
-      
-      {/* <s.MainMap key={key}>
-        <s.MainBorder>
-          <s.MapInfo>
-            <s.MapPicture>
-              <s.Img
-                key={item.id}
-                src={
-                  // item.uid === user.uid
-                  //   ? user?.photoURL
-                  //   : item?.attachmentUrl
-                  userInfo.image
-                }
-                alt="profile"
-              />
-            </s.MapPicture>
-            <s.Info>
-              <div className="info">
-                <s.MapName>{item.username}</s.MapName>
-
-                <s.MapTime>{item.createdAt}</s.MapTime>
-              </div>
-              <div className="Like">
-                {item.creator === userId ? (
-                  <s.InfoBtn
-                    aria-label="trash_button"
-                    border={`${theme.colors.main}`}
-                    color={`${theme.colors.main}`}
-                    hover={`${theme.colors.main_hover}`}
-                    hover_color="white"
-                    onClick={() => onDeletePage(item.id)}
-                  >
-                    <RiDeleteBinLine />
-                  </s.InfoBtn>
-                ) : (
-                  ""
-                )}
-              </div>
-            </s.Info>
-          </s.MapInfo>
-          <s.MapContent>
-            <s.MapTitle href={`/detail/${item.id}`}>
-              <h1 className="title">{item.title}</h1>
-              <p className="content">{item.content}</p>
-              <span className="span">Read more...</span>
-              <s.MapUl>
-                {item.tags.split(",").map((tag, index) => (
-                  <li key={index}>{tag}</li>
-                ))}
-              </s.MapUl>
-            </s.MapTitle>
-          </s.MapContent>
-        </s.MainBorder>
-      </s.MainMap> */}
-
-      {/* //   (
-        //     Token ? (Articles ? "아티클" : "작성한글이 없다") : "로그인 해주세요"
-        // ) */}
-
-      {/* // userPlace
-        // .map((item, key) =>
-        //   menu === 0 ?
-            // ( */}
-      {/* <s.MainMap key={key}>
-              <s.MainBorder>
-                <s.MapInfo>
-                  <s.MapPicture>
-                    <s.Img
-                      key={item.id}
-                      src={ */}
-      {/* // 이미지 부분은 뭐 ecss머시기 있잖아 그거 확인해보자 메인 프젝한거 확인ㅇ해보자
-                        // item.uid === user.uid
-                        //   ? user?.photoURL
-                        //   : item?.attachmentUrl
-                        userInfo.image
-                      }
-                      alt="profile"
-                    />
-                  </s.MapPicture>
-                  <s.Info>
-                    <div className="info">
-                      <s.MapName>{item.username}</s.MapName>
-                      <s.MapTime>
-                        {item.createdAt}
-               
-                      </s.MapTime>
-                    </div>
-                    <div className="Like">
-                      {Token && item.creator === userId ? (
-                        <s.InfoBtn
-                          aria-label="trash_button"
-                          border={`${theme.colors.main}`}
-                          color={`${theme.colors.main}`}
-                          hover={`${theme.colors.main_hover}`}
-                          hover_color="white"
-                          onClick={() => onDeletePage(item.id)}
-                        >
-                          <RiDeleteBinLine />
-                        </s.InfoBtn>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </s.Info>
-                </s.MapInfo>
-                <s.MapContent>
-                  <s.MapTitle href={`/detail/${item.id}`}>
-                    <h1 className="title">{item.title}</h1>
-                    <p className="content">{item.content}</p>
-                    <span className="span">Read more...</span>
-                    <s.MapUl>
-                      {item.tags.split(",").map((tag, index) => (
-                        <li key={index}>{tag}</li>
-                      ))}
-                    </s.MapUl>
-                  </s.MapTitle>
-                </s.MapContent>
-              </s.MainBorder>
-            </s.MainMap>
-          ) : (
-            ""
-          )
-        )
-      .reverse()
-        } */}
-      {/* My Articles 부분 */}
-      {/* {userPlace.map((item, key) =>
-        item.creator === userId && menu === 1 ? (
-          Token ? (
-            <s.MainMap key={key}>
-              <s.MainBorder>
-                <s.MapInfo>
-                  <s.MapPicture>
-                    <s.Img
-                      key={item.id}
-                      src={
-                        // item.uid === user.uid
-                        //   ? user?.photoURL
-                        //   : item?.attachmentUrl
-                        userInfo.image
-                      }
-                      alt="profile"
-                    />
-                  </s.MapPicture>
-                  <s.Info>
-                    <div className="info">
-                      <s.MapName>{item.username}</s.MapName>
-
-                      <s.MapTime>{item.createdAt}</s.MapTime>
-                    </div>
-                    <div className="Like">
-                      {item.creator === userId ? (
-                        <s.InfoBtn
-                          aria-label="trash_button"
-                          border={`${theme.colors.main}`}
-                          color={`${theme.colors.main}`}
-                          hover={`${theme.colors.main_hover}`}
-                          hover_color="white"
-                          onClick={() => onDeletePage(item.id)}
-                        >
-                          <RiDeleteBinLine />
-                        </s.InfoBtn>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </s.Info>
-                </s.MapInfo>
-                <s.MapContent>
-                  <s.MapTitle href={`/detail/${item.id}`}>
-                    <h1 className="title">{item.title}</h1>
-                    <p className="content">{item.content}</p>
-                    <span className="span">Read more...</span>
-                    <s.MapUl>
-                      {item.tags.split(",").map((tag, index) => (
-                        <li key={index}>{tag}</li>
-                      ))}
-                    </s.MapUl>
-                  </s.MapTitle>
-                </s.MapContent>
-              </s.MainBorder>
-            </s.MainMap>
-          ) : (
-            <s.Loading>로그인을 해주세요...</s.Loading>
-          )
-        ) : (
-          <s.Loading>작성한 글이 없습니다...</s.Loading>
-        )
-      )} */}
     </s.MainContainer>
   );
 };

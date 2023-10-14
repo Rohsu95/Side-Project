@@ -33,16 +33,16 @@ function App() {
   useEffect(() => {
     const getUserInfo = async () => {
       const res = await getUser();
-      setUserInfo(res.data.users);
+      setUserInfo(res?.data?.users);
     };
     getUserInfo();
   }, []);
-
+  console.log("app에서의 ", userInfo);
   // 게시글
   useEffect(() => {
     const getPlaceInfo = async () => {
       const res = await getPlaces();
-      setUserPlace(res.data.places);
+      setUserPlace(res?.data?.places);
     };
     getPlaceInfo();
   }, []);
@@ -85,7 +85,7 @@ function App() {
               <Route path="/" element={<Main />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/editor" element={<Editor />} />
+              <Route path="/editor" element={<Editor userInfo={userInfo} />} />
               <Route
                 path="/edit/:id"
                 element={<Edit userPlace={userPlace} />}

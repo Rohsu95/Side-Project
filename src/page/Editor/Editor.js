@@ -1,5 +1,3 @@
-import { dbService } from "fBase";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
@@ -8,10 +6,11 @@ import { getCookie } from "cookies";
 import FormatDate from "component/Date";
 import { Cookies } from "react-cookie";
 
-const Editor = () => {
+const Editor = ({ userInfo }) => {
   const cookie = new Cookies();
   const userId = cookie.get("userId");
   const username = cookie.get("username");
+  const image = cookie.get("image");
 
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
@@ -63,6 +62,7 @@ const Editor = () => {
           createdAt: now,
           creator: userId,
           username: username,
+          image: image,
         },
         {
           headers: {
