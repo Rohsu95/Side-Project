@@ -29,9 +29,6 @@ const Main = () => {
   const navigate = useNavigate();
 
   const myPlace = userPlace?.filter((el) => el.creator === userId);
-  const myName = userInfo?.map((el) => el.username);
-
-  // console.log("myPlace", myName);
 
   const mainCurrent = (index) => {
     setMenu(index);
@@ -65,10 +62,6 @@ const Main = () => {
   }, []);
   // console.log("userPlace", userPlace);
 
-  // 저녁에 댓글 부분 댓글이 모든 게시물마다 나온다 해당 게시물에만 나올 수 있게 해보자 그것만 하고
-  // 그것만 하고 나머지 기능들 정상작동 하는지 확인해보고 인강 들을거 있는지 보고
-  // 그 담에 갑자기 특정 경우에 안되는 경우도 있으니 로그인 후 확인 로그인 전 확인 로그인 하고 껏을 경우
-  // 로그이ㅣㄴ 하고 껐을 경우 확인 해보고 다 확인 되면 불필요한 코드 정리 하자
   return (
     <s.MainContainer>
       <s.MainImg>

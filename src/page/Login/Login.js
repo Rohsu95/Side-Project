@@ -47,7 +47,7 @@ const Login = () => {
       <s.Sign>
         <h1>Sign In</h1>
         <s.SignupLink to="/signup">
-          <p className="signup">Need an account?</p>
+          <p className="login">Need an account?</p>
         </s.SignupLink>
       </s.Sign>
       <s.FormContainer>

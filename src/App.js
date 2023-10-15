@@ -20,9 +20,6 @@ const Detail = lazy(() => import("./page/Detail/Detail"));
 const Setting = lazy(() => import("./page/Setting/Setting"));
 
 function App() {
-  const [user, setUser] = useState();
-  const [nweets, setNweets] = useState([]);
-
   // 유저 정보
   const [userInfo, setUserInfo] = useState([]);
 
@@ -45,33 +42,6 @@ function App() {
       setUserPlace(res?.data?.places);
     };
     getPlaceInfo();
-  }, []);
-
-  // displayName 불러오기
-  useEffect(() => {
-    const unsubscribe = authService.onAuthStateChanged(async (user) => {
-      if (user) {
-        setUser(user);
-      }
-    });
-
-    return unsubscribe;
-  }, []);
-
-  // 작성한 글 보여주기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "editor"),
-      orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (snapshot) => {
-      const nweetArr = snapshot.docs.map((document) => ({
-        id: document.id,
-        ...document.data(),
-      }));
-      // 하나는 전체 글 보기용, 하나는 내가 작성한 글 보기용
-      setNweets(nweetArr);
-    });
   }, []);
 
   return (
@@ -98,7 +68,7 @@ function App() {
                 path="/detail/:id"
                 element={<Detail userPlace={userPlace} userInfo={userInfo} />}
               />
-              <Route path="/setting/:id" element={<Setting user={user} />} />
+              <Route path="/setting/:id" element={<Setting />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

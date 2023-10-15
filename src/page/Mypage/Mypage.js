@@ -10,7 +10,6 @@ import FormatDate from "component/Date";
 import imageCompression from "browser-image-compression";
 import { Cookies } from "react-cookie";
 import { deletePlaces } from "api/writingAPI";
-import axios from "axios";
 
 const Mypage = ({ userPlace, userInfo }) => {
   const cookie = new Cookies();
@@ -40,7 +39,8 @@ const Mypage = ({ userPlace, userInfo }) => {
       window.location.reload();
     }
   };
-
+  //  로그아웃 하면 헤드가 안바뀐다 테스트 해보자 그래서
+  // 새로 고침 후 메인으로 넘어가게 위치를 위 아래로 바꾸었다. 테스트 해보자
   // 로그아웃
   const logoutBtn = () => {
     removeCookie("token");
@@ -48,6 +48,7 @@ const Mypage = ({ userPlace, userInfo }) => {
     removeCookie("username");
     removeCookie("image");
     alert("로그아웃 되었습니다.");
+    window.location.reload();
     navigate("/");
   };
 

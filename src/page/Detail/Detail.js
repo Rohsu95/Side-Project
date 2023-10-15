@@ -25,10 +25,19 @@ const Detail = ({ userInfo, userPlace }) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const user = userInfo?.find((el) => el.id === userId);
+
+  // 현재 작성한 사람의 이름이 777로 보인데 이유는 내가 쿠키에 저장된 유저 네임을 썻기 때문이다
+  // 해결하기 위해서 아마 내가 쿠키에 저장된 유저네임이 아닌 MyPlace의 네임을 써야한다 그럼면 수정하게 되면
+  // 못바꾸게 되니 삼항연산자로 게시글의 아이디와 현재 쿠키에 저장된 아이디가 같으면 내가 로그인을 한것이니
+  // 그땐 쿠키에 저장된 유저네임을 쓰고 아닐 때엔 그냥 MyPlace.username을 쓰자
+  // 그리고 이미지도 이 게시물에 작성된 이미지로 된다 유저의 이미지가 아니고
+  // 해결 하기 위해 위에 해결한것과 비슷하게 filter나 find로 로그인 한 유저를 찾고 그 유저의 이미지를 가져오자
+
   // 게시글의 id와 주소의 id값이 같은 것을 찾는다 그것이 특정 게시물의 정보이다.
   const MyPlace = userPlace.find((user) => user.id === id);
 
-  console.log(MyPlace);
+  console.log("MyPlace", MyPlace);
   // read 댓글 정보 보여주기
   useEffect(() => {
     const getPlaceInfo = async () => {
@@ -51,6 +60,8 @@ const Detail = ({ userInfo, userPlace }) => {
           createdAt: now,
           creator: userId,
           username: username,
+          image: user.image,
+          commentId: id,
         },
         {
           headers: {
@@ -85,7 +96,7 @@ const Detail = ({ userInfo, userPlace }) => {
       console.log(err);
     }
   };
-
+  // 로그인 안했을 때 댓글이 보인다 토큰 없으면 댓글안보이게 하자
   return (
     <s.Container>
       {MyPlace && (
@@ -95,22 +106,17 @@ const Detail = ({ userInfo, userPlace }) => {
               <h1>{MyPlace.title}</h1>
               <s.DetailInfo>
                 <div className="detailLine">
-                  {MyPlace.attachmentUrl !== "" ? (
-                    <s.DetailA to="/mypage">
-                      이미지
-                      {/* <s.DetailImg src={MyPlace?.attachmentUrl} alt="이미지" /> */}
-                    </s.DetailA>
-                  ) : (
-                    ""
-                  )}
+                  <s.DetailA to="/mypage">
+                    <s.DetailImg
+                      src={`http://localhost:8000/${MyPlace?.image}`}
+                      alt="이미지"
+                    />
+                  </s.DetailA>
                   <div className="name">
                     <s.DetailName href="/mypage">
-                      {MyPlace.username}
+                      {MyPlace.creator === userId ? username : MyPlace.username}
                     </s.DetailName>
-                    <s.DetailDate>
-                      {MyPlace.createdAt}
-                      {/* <FormatDate date={MyPlace.createdAt}></FormatDate> */}
-                    </s.DetailDate>
+                    <s.DetailDate>{MyPlace.createdAt}</s.DetailDate>
                   </div>
                   {Token && MyPlace.creator === userId ? (
                     <s.InfoBtn
@@ -138,6 +144,7 @@ const Detail = ({ userInfo, userPlace }) => {
               <li>{MyPlace.tags}</li>
             </s.DetailTag>
           </s.DetailContent>
+
           {/* 댓글 작성하는 창 */}
           <s.CommentContainer>
             {Token ? (
@@ -150,10 +157,11 @@ const Detail = ({ userInfo, userPlace }) => {
                   name="commentInput"
                   placeholder="Write a comment..."
                 />
+
                 <s.CommentPost>
                   <div className="commentName">
                     <s.DetailImg
-                      src={userInfo?.image}
+                      src={`http://localhost:8000/${user?.image}`}
                       alt="이미지"
                       margin="1.25rem"
                       width_hover="28px"
@@ -170,41 +178,46 @@ const Detail = ({ userInfo, userPlace }) => {
               <div>로그인 하신 후에 댓글을 사용하실 수 있습니다.</div>
             )}
           </s.CommentContainer>
+
           {/* 댓글 내용 */}
           <s.CcommentContainer>
             <div>
               {comment
-                .map((item, key) => (
-                  <s.CcommentTitle key={key}>
-                    <s.CcommentDiv>
-                      <p>{item.comment}</p>
-                    </s.CcommentDiv>
-                    <s.CommentPost>
-                      <div className="commentName">
-                        <s.DetailImg
-                          src={userInfo?.image}
-                          alt="이미지"
-                          margin="1.25rem"
-                          width="24px"
-                          height="24px"
-                          width_hover="28px"
-                          height_hover="28px"
-                        />
-                        <span>{item.username}</span>
-                      </div>
-                      {item.creator === userId ? (
-                        <s.CcommentDelete
-                          aria-label="delete_button"
-                          onClick={() => onDeleteComment(item.id)}
-                        >
-                          <RiDeleteBinLine />
-                        </s.CcommentDelete>
-                      ) : (
-                        ""
-                      )}
-                    </s.CommentPost>
-                  </s.CcommentTitle>
-                ))
+                .map((item, key) =>
+                  item.commentId === id ? (
+                    <s.CcommentTitle key={key}>
+                      <s.CcommentDiv>
+                        <p>{item.comment}</p>
+                      </s.CcommentDiv>
+                      <s.CommentPost>
+                        <div className="commentName">
+                          <s.DetailImg
+                            src={`http://localhost:8000/${item?.image}`}
+                            alt="이미지"
+                            margin="1.25rem"
+                            width="24px"
+                            height="24px"
+                            width_hover="28px"
+                            height_hover="28px"
+                          />
+                          <span>{item.username}</span>
+                        </div>
+                        {item.creator === userId ? (
+                          <s.CcommentDelete
+                            aria-label="delete_button"
+                            onClick={() => onDeleteComment(item.id)}
+                          >
+                            <RiDeleteBinLine />
+                          </s.CcommentDelete>
+                        ) : (
+                          ""
+                        )}
+                      </s.CommentPost>
+                    </s.CcommentTitle>
+                  ) : (
+                    ""
+                  )
+                )
                 .reverse()}
             </div>
           </s.CcommentContainer>

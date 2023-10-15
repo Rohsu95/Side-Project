@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import imageCompression from "browser-image-compression";
 
 const Signup = () => {
@@ -16,12 +16,10 @@ const Signup = () => {
   } = useForm();
   const navigate = useNavigate();
 
-  // const fileReader = new FileReader();
-  // console.log(fileReader);
-
   const handleUpload = async () => {
     try {
       const formData = new FormData();
+
       formData.append("avatar", file);
       formData.append("email", watch("email"));
       formData.append("password", watch("password"));
@@ -38,6 +36,7 @@ const Signup = () => {
       );
       console.log("회원 가입 성공", res);
       console.log("formData 성공", formData);
+      navigate("/login");
     } catch (err) {
       console.log(err);
     }
@@ -45,8 +44,13 @@ const Signup = () => {
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
+
+  const handleDeletePreview = () => {
+    setFile(null);
+  };
   console.log("file 정보", file);
   // 회원 가입 하면 회원 가입 정보에 이미지가 박힌다.
+  // 회원 가입 로그인 버튼 호버 시 클자색은 바뀌는데 배경이 안바귄다 한번 찾아보자
   return (
     <s.Container>
       <s.Sign>
@@ -61,8 +65,19 @@ const Signup = () => {
           encType="multipart/form-data"
           onSubmit={handleSubmit(handleUpload)}
         >
-          <s.ImgDiv>
-            <img className="EditImg" src={file?.name} alt="기본 이미지" />
+          <s.ImgDiv className={file ? "" : "imgLine"}>
+            {file && (
+              <>
+                <img
+                  className="EditImg"
+                  src={URL.createObjectURL(file)}
+                  alt="이미지 사진"
+                />
+                <button className="DeleteBtn" onClick={handleDeletePreview}>
+                  X
+                </button>
+              </>
+            )}
           </s.ImgDiv>
 
           <label htmlFor="input-file" className="label-file">
@@ -128,23 +143,11 @@ const Signup = () => {
             })}
           />
           <span>{errors?.password?.message}</span>
-          <button>Sign up</button>
+          <button className="SignBtn">Sign up</button>
+          {/* </div> */}
         </form>
       </s.FormContainer>
     </s.Container>
   );
 };
 export default Signup;
-
-// const onSubmit = async (data) => {
-// try {
-//   axios
-//     .post("http://localhost:8000/api/users/signup", data, {
-//       headers: { "Content-Type": "application/json" },
-//     })
-//     .then((res) => console.log("회원 가입쪽?", res));
-//   // navigate("/login");
-// } catch (err) {
-//   console.log(err);
-// }
-// };

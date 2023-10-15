@@ -8,8 +8,12 @@ export const Container = styled.div`
 export const Sign = styled.div`
   text-align: center;
   margin-bottom: 2rem;
-  .signup {
+  .login {
     display: inline;
+
+    &:hover {
+      color: ${theme.colors.main_hover};
+    }
   }
   h1 {
     margin-bottom: 1rem;
@@ -51,5 +55,9 @@ export const FormContainer = styled.div`
     font-size: ${theme.fontSizes.fs1};
     color: ${theme.colors.white};
     background-color: ${theme.colors.main};
+
+    &:hover {
+      color: ${theme.colors.main_hover};
+    }
   }
 `;
