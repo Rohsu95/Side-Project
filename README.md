@@ -21,8 +21,7 @@
 
    
 ### 특정 게시물 조회, 댓글 작성, 삭제
-![댓글 생성 삭제](https://github.com/Rohsu95/Side-Project/assets/97446711/05feae6a-94a5-4cd9-ba2b-de85b4469a2f.gif)
-
+![댓글 생성 삭제](https://github.com/Rohsu95/Side-Project/assets/97446711/5f7aaada-736f-44b8-9293-819e8c4dedf0.gif)
 
 
 ### 마이 페이지 (회원 수정, 로그 아웃, 프로필 이미지 설정)
