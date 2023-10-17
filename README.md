@@ -6,9 +6,8 @@
 # react, styled-component, firebase, real-world
 
 
-
 ### 회원 가입, 로그인
-![회원 가입 로그인](https://github.com/Rohsu95/Side-Project/assets/97446711/934f8e88-0aff-4b58-8a0a-5a21ef82f52e)
+![회원 가입 로그인](https://github.com/Rohsu95/Side-Project/assets/97446711/934f8e88-0aff-4b58-8a0a-5a21ef82f52e.gif)
  * fire base 사용
  * 유효성 검사 후 아이디, 닉네임, 비밀번호로 회원 가입 가능
  * 회원 가입 후 회원 가입 완료 후 로그인 페이지로 이동 
