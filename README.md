@@ -14,9 +14,15 @@
 
 ### 게시글 작성
 
-![게시글 작성, 좋아요, 삭제 ](https://user-images.githubusercontent.com/97446711/234174181-a3b8b376-cd80-40ae-88f6-7e57a0ff30a8.gif)
+![게시글 작성](https://github.com/Rohsu95/Side-Project/assets/97446711/a0e27b7c-bd30-4f8b-9313-9aad40d1a810.gif)
+
  * 게시글 작성 (제목, 소제목, 내용, 태그)
- * 게시글 삭제 기능 
+ * 게시글 삭제 기능
+
+   
+### 특정 게시물 조회, 게시글 수정
+![댓글 작성 삭제](https://github.com/Rohsu95/Side-Project/assets/97446711/09395fbb-2289-45d6-99e2-9f724d1f729a.gif)
+
 
 ### 마이 페이지 (회원 수정, 로그 아웃, 프로필 이미지 설정)
 
