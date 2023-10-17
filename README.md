@@ -8,8 +8,7 @@
 
 
 ### 회원 가입, 로그인
-
-![회원가입,로그인](https://user-images.githubusercontent.com/97446711/234043720-8fcba876-9cd4-4851-8d22-2cc8cb0c2151.gif)
+![회원 가입 로그인](https://github.com/Rohsu95/Side-Project/assets/97446711/934f8e88-0aff-4b58-8a0a-5a21ef82f52e)
  * fire base 사용
  * 유효성 검사 후 아이디, 닉네임, 비밀번호로 회원 가입 가능
  * 회원 가입 후 회원 가입 완료 후 로그인 페이지로 이동 
