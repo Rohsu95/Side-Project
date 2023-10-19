@@ -35,7 +35,6 @@ const Setting = () => {
         }
       )
       .then((res) => {
-        console.log(res);
         const username = res?.data?.user?.username;
         cookie.set("username", username);
         navigate("/mypage");

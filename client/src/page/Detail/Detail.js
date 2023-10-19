@@ -83,9 +83,7 @@ const Detail = ({ userInfo, userPlace }) => {
         alert("삭제하였습니다.");
         window.location.reload();
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   return (
