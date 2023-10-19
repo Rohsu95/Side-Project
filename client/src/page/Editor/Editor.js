@@ -1,23 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
-import axios from "axios";
-import { getCookie } from "cookies";
-import { Cookies } from "react-cookie";
 
-const Editor = ({ userInfo }) => {
-  const cookie = new Cookies();
-  const userId = cookie.get("userId");
-  const username = cookie.get("username");
-  const image = cookie.get("image");
-
+const Editor = ({ user }) => {
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
   const [input, setInput] = useState({
     title: "",
     content: "",
   });
-
+  const [like, setLike] = useState(0);
   const navigate = useNavigate();
   const { title, content } = input;
 
@@ -45,36 +37,31 @@ const Editor = ({ userInfo }) => {
   const onDelete = (id) => {
     setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
-
   // 생성
-  const onWriting = async () => {
+  const onClick = async () => {
+    let tagsItem = String(tagsList);
+    const now = new Date(Date.now());
+
     try {
-      let tagsItem = String(tagsList);
-      const now = new Date(Date.now());
-
-      const res = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/places/editor`,
-        {
-          title: title,
-          content: content,
-          tags: tagsItem,
-          createdAt: now,
-          creator: userId,
-          username: username,
-          image: image,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getCookie("token")}`,
-          },
-        }
-      );
-
-      navigate("/");
-      window.location.reload();
+      const editor = {
+        title: title,
+        content: content,
+        tags: tagsItem,
+        createdAt: Timestamp.fromDate(now),
+        displayName: user.displayName,
+        uid: user.uid,
+        attachmentUrl: user.photoURL,
+      };
+      if (editor.title.length === 0) {
+        alert("Title을 작성해 주세요");
+      } else if (editor.content.length === 0) {
+        alert("Content를 작성해 주세요");
+      } else {
+        await addDoc(collection(dbService, "editor"), editor);
+        navigate("/");
+      }
     } catch (error) {
-      alert(error.response.data.message);
+      console.log(error);
     }
   };
 
@@ -116,7 +103,7 @@ const Editor = ({ userInfo }) => {
             </s.TagSpan>
           ))}
         </s.TagDiv>
-        <s.EditorBtn onClick={onWriting}>Publish Article</s.EditorBtn>
+        <s.EditorBtn onClick={onClick}>Publish Article</s.EditorBtn>
       </div>
     </s.EditorContainer>
   );
