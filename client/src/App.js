@@ -19,7 +19,7 @@ const Setting = lazy(() => import("./page/Setting/Setting"));
 function App() {
   // 유저 정보
   const [userInfo, setUserInfo] = useState([]);
-  //  깃에 푸쉬하고 할까?
+
   // place(게시글) 정보
   const [userPlace, setUserPlace] = useState([]);
 
