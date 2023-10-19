@@ -1,0 +1,8 @@
+{
+  "env": {
+    "DB_USER": "add",
+    "DB_PASSWORD": "zxasqw12",
+    "DB_NAME": "side",
+    "JWT_KEY": "secret_key"
+  }
+}
