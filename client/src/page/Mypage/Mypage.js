@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
-import { FcLikePlaceholder } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 import theme from "styles/Theme";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { removeCookie } from "cookies";
-import imageCompression from "browser-image-compression";
 import { Cookies } from "react-cookie";
 import { deletePlaces } from "api/writingAPI";
+import { Daj } from "component/Date";
 
 const Mypage = ({ userPlace, userInfo }) => {
   const cookie = new Cookies();
@@ -20,12 +19,8 @@ const Mypage = ({ userPlace, userInfo }) => {
   const MypageMenu = [{ name: "My Articles" }];
   const navigate = useNavigate();
 
+  // 현재 로그인 한 유저 정보
   const Myuser = userInfo?.find((user) => user.id === userId);
-  console.log(Myuser);
-  const BisicImg = Myuser?.image;
-
-  const a =
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
   // 메뉴
   const mypageCurrent = (index) => {
@@ -63,13 +58,7 @@ const Mypage = ({ userPlace, userInfo }) => {
         <s.ImgDiv>
           <img
             className="EditImg"
-            src={`http://localhost:8000/${Myuser?.image}`}
-            // src={ 원래 이거 였고 위에건 주석이었따 테스트 해보자
-            //   a === BisicImg
-            //     ? BisicImg   shtngur0@naver.com
-            //     : `http://localhost:8000/${Myuser?.image}`
-            // }
-            // src={Myuser?.image}
+            src={`${process.env.REACT_APP_BACKEND_URL}/${Myuser?.image}`}
             alt="기본 이미지"
           />
         </s.ImgDiv>
@@ -106,7 +95,7 @@ const Mypage = ({ userPlace, userInfo }) => {
                   <s.MapPicture>
                     <s.Img
                       className="EditImg"
-                      src={`http://localhost:8000/${item?.image}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL}/${item?.image}`}
                       alt="수정 이미지"
                     />
                   </s.MapPicture>
@@ -114,8 +103,7 @@ const Mypage = ({ userPlace, userInfo }) => {
                     <div className="info">
                       <s.MapName href="/mypage">{Myuser.username}</s.MapName>
                       <s.MapTime>
-                        {item.createdAt}
-                        {/* <FormatDate date={item.createdAt}></FormatDate> */}
+                        <Daj createdAt={item.createdAt} />
                       </s.MapTime>
                     </div>
                     <div className="Like">

@@ -1,12 +1,9 @@
 import React from "react";
-
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
-
 import axios from "axios";
 import { Cookies } from "react-cookie";
-import { removeCookie } from "cookies";
 
 const Setting = () => {
   const cookie = new Cookies();
@@ -21,12 +18,11 @@ const Setting = () => {
     watch,
     formState: { errors },
   } = useForm();
-  const { username, email, password } = watch();
 
   const onSetting = async (id) => {
     await axios
       .patch(
-        `http://localhost:8000/api/users/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/users/${id}`,
         {
           username: watch("username"),
           email: watch("email"),
@@ -46,8 +42,7 @@ const Setting = () => {
         window.location.reload();
       })
       .catch((error) => {
-        alert(error.response.data.message);
-        console.log(error);
+        alert(error?.response?.data?.message);
       });
   };
   return (

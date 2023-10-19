@@ -23,7 +23,7 @@ const HeaderConduit = styled.a`
     color: ${theme.colors.main_hover};
   }
   @media ${theme.media.height} {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 `;
 const HeaderUl = styled.ul`
@@ -46,6 +46,7 @@ const HeaderUl = styled.ul`
     }
     @media ${theme.media.height} {
       white-space: nowrap;
+      margin-right: 0.7rem;
       font-size: 0.7rem;
 
       svg {
@@ -97,7 +98,7 @@ const Header = ({ userInfo }) => {
       navigate("/signup");
     }
   };
-  // onClick={() => navigate(`/edit/${MyPlace.id}`)}
+
   const headsCurrent = (index) => {
     setHead(index);
     if (index === 0) {

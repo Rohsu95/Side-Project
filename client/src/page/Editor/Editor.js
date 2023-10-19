@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 import axios from "axios";
 import { getCookie } from "cookies";
-import FormatDate from "component/Date";
 import { Cookies } from "react-cookie";
 
 const Editor = ({ userInfo }) => {
@@ -54,7 +53,7 @@ const Editor = ({ userInfo }) => {
       const now = new Date(Date.now());
 
       const res = await axios.post(
-        "http://localhost:8000/api/places/editor",
+        `${process.env.REACT_APP_BACKEND_URL}/api/places/editor`,
         {
           title: title,
           content: content,
@@ -72,12 +71,10 @@ const Editor = ({ userInfo }) => {
         }
       );
 
-      console.log("게시글 생성 성공", res);
       navigate("/");
       window.location.reload();
     } catch (error) {
       alert(error.response.data.message);
-      console.log(error);
     }
   };
 

@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import "./App.css";
 import Header from "./component/Header";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/Theme";
@@ -17,14 +16,10 @@ const Mypage = lazy(() => import("./page/Mypage/Mypage"));
 const Detail = lazy(() => import("./page/Detail/Detail"));
 const Setting = lazy(() => import("./page/Setting/Setting"));
 
-// 로그인 안한 상태에선 더 건들이건 없는거 같다.
-// 회원 가입 이미지를 이미지가 없어도 통신이 될 수 있게 하자 그러면 빈 문자열일 경우 basic을 주면 되니까
-// 헤더에 작아졌을 때 상태의 세팅 아이콘 위치 조절
-
 function App() {
   // 유저 정보
   const [userInfo, setUserInfo] = useState([]);
-
+  //  깃에 푸쉬하고 할까?
   // place(게시글) 정보
   const [userPlace, setUserPlace] = useState([]);
 
@@ -36,7 +31,7 @@ function App() {
     };
     getUserInfo();
   }, []);
-  // console.log("app에서의 ", userInfo);
+
   // 게시글
   useEffect(() => {
     const getPlaceInfo = async () => {
@@ -54,7 +49,10 @@ function App() {
           <Header userInfo={userInfo} />
           <Suspense fallback={<h1>Loading...</h1>}>
             <Routes>
-              <Route path="/" element={<Main />} />
+              <Route
+                path="/"
+                element={<Main userInfo={userInfo} userPlace={userPlace} />}
+              />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/editor" element={<Editor userInfo={userInfo} />} />

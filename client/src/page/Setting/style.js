@@ -33,7 +33,7 @@ export const FormContainer = styled.div`
     display: block;
     margin-bottom: 1rem;
     @media ${theme.media.height} {
-      font-size: ${theme.fontSizes.fs02};
+      font-size: ${theme.fontSizes.fs06};
     }
   }
 `;

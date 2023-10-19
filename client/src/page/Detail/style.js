@@ -179,10 +179,15 @@ export const CommentPost = styled.div`
 
     @media ${theme.media.height} {
       white-space: nowrap;
-      font-size: ${theme.fontSizes.fs02};
+      font-size: ${theme.fontSizes.fs07};
     }
-    span {
+    .commentUser {
       margin-bottom: 0.5rem;
+
+      @media ${theme.media.phone} {
+        white-space: nowrap;
+        font-size: ${theme.fontSizes.fs0};
+      }
     }
   }
 
@@ -200,7 +205,7 @@ export const CommentBtn = styled.button`
   background-color: ${theme.colors.main};
   cursor: pointer;
   @media ${theme.media.phone} {
-    font-size: 0.125rem;
+    font-size: ${theme.fontSizes.fs0};
     margin-left: 0.5rem;
   }
 `;

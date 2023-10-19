@@ -14,7 +14,6 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  // user 정보
 
   const onSubmit = async (data) => {
     try {
@@ -31,7 +30,6 @@ const Login = () => {
         cookie.set("username", username);
         cookie.set("image", image);
         navigate("/");
-        console.log("로그인 쪽", res);
         window.location.reload();
       }
     } catch (err) {

@@ -52,17 +52,26 @@ export const TagDiv = styled.div`
 `;
 export const TagSpan = styled.span`
   color: ${theme.colors.white};
-  font-size: ${theme.fontSizes.fs0};
-  padding: 0.2rem 0.3rem 0.2rem 0.1rem;
-  border-radius: 8px;
+  font-size: ${theme.fontSizes.fs06};
+  padding: 0.375rem 0.6rem 0.375rem 0.375rem;
+  border-radius: 15px;
   margin-right: 0.5rem;
   background-color: ${theme.colors.tag};
+
+  @media ${theme.media.phone} {
+    font-size: ${theme.fontSizes.fs0};
+  }
 `;
 export const TagDelete = styled.button`
   border: none;
   color: white;
   background-color: ${theme.colors.tag};
-  font-size: 0.1rem;
+  margin-right: 0.25rem;
+  font-size: ${theme.fontSizes.fs06};
   cursor: pointer;
   margin: 0 0.25rem;
+
+  @media ${theme.media.phone} {
+    font-size: ${theme.fontSizes.fs0};
+  }
 `;

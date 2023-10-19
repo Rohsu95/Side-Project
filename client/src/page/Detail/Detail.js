@@ -28,10 +28,9 @@ const Detail = ({ userInfo, userPlace }) => {
   // 유저 정보들 중 현재 로그인 한 나의 정보
   const user = userInfo?.find((el) => el.id === userId);
 
-  // 게시글의 id와 주소의 id값이 같은 것을 찾는다 그것이 특정 게시물의 정보이다.
+  // 특정 게시물의 정보. 게시글의 id와 주소의 id값이 같은 것을 찾는다
   const MyPlace = userPlace.find((user) => user.id === id);
 
-  console.log("현재 페이지 작성 정보", MyPlace);
   // read 댓글 정보 보여주기
   useEffect(() => {
     const getPlaceInfo = async () => {
@@ -47,7 +46,7 @@ const Detail = ({ userInfo, userPlace }) => {
       const now = new Date(Date.now());
 
       const res = await axios.post(
-        "http://localhost:8000/api/places/comment",
+        `${process.env.REACT_APP_BACKEND_URL}/api/places/comment`,
         {
           comment: commentInput,
           createdAt: now,
@@ -63,11 +62,10 @@ const Detail = ({ userInfo, userPlace }) => {
           },
         }
       );
-      console.log("댓글 생성 성공", res);
+
       window.location.reload();
     } catch (error) {
       alert(error?.response?.data?.message);
-      console.log(error);
     }
   };
 
@@ -101,15 +99,15 @@ const Detail = ({ userInfo, userPlace }) => {
                 <div className="detailLine">
                   <s.DetailA to={Token ? "/mypage" : ""}>
                     <s.DetailImg
-                      src={`http://localhost:8000/${MyPlace?.image}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL}/${MyPlace?.image}`}
                       alt="이미지"
                     />
                   </s.DetailA>
                   <div className="name">
                     <s.DetailName href="/mypage">
-                      {MyPlace.creator === userId
-                        ? user.username
-                        : MyPlace.username}
+                      {MyPlace?.creator === userId
+                        ? user?.username
+                        : MyPlace?.username}
                     </s.DetailName>
                     <s.DetailDate>
                       <DetailDaj createdAt={MyPlace.createdAt} />
@@ -138,7 +136,9 @@ const Detail = ({ userInfo, userPlace }) => {
           <s.DetailContent>
             <div>{MyPlace.content}</div>
             <s.DetailTag>
-              <li>{MyPlace.tags}</li>
+              {MyPlace.tags.split(",").map((tag, index) => (
+                <li key={index}>{tag}</li>
+              ))}
             </s.DetailTag>
           </s.DetailContent>
 
@@ -158,13 +158,13 @@ const Detail = ({ userInfo, userPlace }) => {
                 <s.CommentPost>
                   <div className="commentName">
                     <s.DetailImg
-                      src={`http://localhost:8000/${user?.image}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL}/${user?.image}`}
                       alt="이미지"
                       margin="1.25rem"
-                      width_hover="28px"
-                      height_hover="28px"
+                      width_hover="20px"
+                      height_hover="20px"
                     />
-                    <span>{user?.username}</span>
+                    <span className="commentUser">{user?.username}</span>
                   </div>
                   <s.CommentBtn aria-label="comment_button" onClick={onComment}>
                     Comment
@@ -191,15 +191,15 @@ const Detail = ({ userInfo, userPlace }) => {
                       <s.CommentPost>
                         <div className="commentName">
                           <s.DetailImg
-                            src={`http://localhost:8000/${item?.image}`}
+                            src={`${process.env.REACT_APP_BACKEND_URL}/${item?.image}`}
                             alt="이미지"
                             margin="1.25rem"
                             width="24px"
                             height="24px"
-                            width_hover="28px"
-                            height_hover="28px"
+                            width_hover="20px"
+                            height_hover="20px"
                           />
-                          <span>
+                          <span className="commentUser">
                             {item.creator === userId
                               ? user?.username
                               : item.username}

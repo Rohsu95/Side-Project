@@ -39,6 +39,8 @@ export const MainImg = styled.div`
     margin-right: 2rem;
   }
   .EditA {
+    display: flex;
+    align-items: center;
     padding: 0.25rem 0.5rem;
     border-radius: 5px;
     text-decoration: none;
@@ -49,7 +51,7 @@ export const MainImg = styled.div`
       border: 2px solid ${theme.colors.main_hover};
     }
     @media ${theme.media.height} {
-      font-size: ${theme.fontSizes.fs0};
+      font-size: ${theme.fontSizes.fs06};
     }
     svg {
       @media ${theme.media.height} {
@@ -297,7 +299,8 @@ export const LogOut = styled.div`
   }
 `;
 export const LogOutBtn = styled.button`
-  /* width: 3.125rem; */
+  display: flex;
+  align-items: center;
   padding: 0 0.5rem 0 0.5rem;
   height: 1.75rem;
   color: white;
@@ -310,7 +313,7 @@ export const LogOutBtn = styled.button`
     color: ${theme.colors.main_hover};
   }
   @media ${theme.media.height} {
-    font-size: ${theme.fontSizes.fs0};
+    font-size: ${theme.fontSizes.fs06};
     padding: 0.5em;
   }
 `;

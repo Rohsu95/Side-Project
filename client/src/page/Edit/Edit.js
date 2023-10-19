@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as s from "./style";
 import { Cookies } from "react-cookie";
@@ -13,8 +13,6 @@ const Edit = ({ userPlace }) => {
   // 태그
   const [tags, setTags] = useState("");
   const [tagsList, setTagsList] = useState([]);
-  // 해당 게시글 정보
-  // const Modify = userPlace.find((el) => el.id === id);
 
   const navigate = useNavigate();
   // 인풋 내용
@@ -32,7 +30,6 @@ const Edit = ({ userPlace }) => {
       [name]: value,
     });
   };
-  // console.log(Modify);
 
   // Enter 누를 시 태그 생성
   const onKeyPress = (e) => {
@@ -58,7 +55,7 @@ const Edit = ({ userPlace }) => {
     let tagsitem = String(tagsList);
     await axios
       .patch(
-        `http://localhost:8000/api/places/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/places/${id}`,
         {
           title: title,
           content: content,
@@ -71,12 +68,11 @@ const Edit = ({ userPlace }) => {
         }
       )
       .then((res) => {
-        console.log(res);
         navigate("/");
+        window.location.reload();
       })
       .catch((error) => {
         alert(error.response.data.message);
-        console.log(error);
       });
   };
 
