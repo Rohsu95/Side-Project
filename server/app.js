@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
   if (req?.file) {
     fs?.unlink(req?.file?.path, (err) => {
-      console.log("unlink 부분", err);
+      // console.log("unlink 부분", err);
     });
   }
   if (res.headerSent) {
