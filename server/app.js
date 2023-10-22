@@ -11,7 +11,11 @@ const userRouter = require("./routes/user-router");
 
 const HttpError = require("./models/error");
 
+const dotenv = require("dotenv");
+
 const app = express();
+
+dotenv.config();
 
 app.use(bodyParser.json());
 
@@ -50,11 +54,10 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.gj7liwp.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
-  )
+  .connect(process.env.MONGO_URL)
+
   .then(() => {
-    app.listen(8000);
+    app.listen(process.env.PORT || 8000);
     console.log("몽구스 연결 성공");
   })
   .catch((err) => {
