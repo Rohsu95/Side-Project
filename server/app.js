@@ -64,3 +64,7 @@ mongoose
   .catch((err) => {
     console.log("몽구스 연결 에러", err);
   });
+
+//   REACT_APP_BACKEND_URL=https://side-402809.du.r.appspot.com
+
+// # REACT_APP_BACKEND_URL=http://localhost:8000
