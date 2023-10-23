@@ -55,7 +55,8 @@ const Edit = ({ userPlace }) => {
     let tagsitem = String(tagsList);
     await axios
       .patch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/places/${id}`,
+        // `${process.env.REACT_APP_BACKEND_URL}/api/places/${id}`,
+        `https://side-402809.du.r.appspot.com/api/places/${id}`,
         {
           title: title,
           content: content,

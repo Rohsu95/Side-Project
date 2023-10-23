@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_BACKEND_URL;
+// const url = process.env.REACT_APP_BACKEND_URL;
+const url = "https://side-402809.du.r.appspot.com";
 
 export const getUser = async (token) => {
   try {
