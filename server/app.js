@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 
 app.use("/images", express.static(path.join("images")));
 
-app.use(express.static(path.join("public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -37,6 +37,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
+// 애가 없어야 로컬이 돌아감
 
 app.use("/api/places", placesRouter);
 app.use("/api/users", userRouter);
