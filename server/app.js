@@ -21,6 +21,8 @@ app.use(bodyParser.json());
 
 app.use("/images", express.static(path.join("images")));
 
+app.use(express.static(path.join("public")));
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -32,17 +34,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.sendFile(path.resolve(__dirname, "public", "index.html"));
+});
+
 app.use("/api/places", placesRouter);
 app.use("/api/users", userRouter);
 
-app.use((req, res, next) => {
-  const error = new HttpError("app.js 에러.", 404);
-  throw error;
-});
-
 app.use((error, req, res, next) => {
-  if (req?.file) {
-    fs?.unlink(req?.file?.path, (err) => {
+  if (req && req.file) {
+    fs.unlink(req.file.path, (err) => {
       // console.log("unlink 부분", err);
     });
   }
