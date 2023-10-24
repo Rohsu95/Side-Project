@@ -21,8 +21,6 @@ app.use(bodyParser.json());
 
 app.use("/images", express.static(path.join("images")));
 
-app.use(express.static(path.join(__dirname, "public")));
-
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -33,6 +31,8 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
