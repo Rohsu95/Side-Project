@@ -15,7 +15,10 @@ const getUser = async (req, res, next) => {
   try {
     users = await User.find({}, "-password");
   } catch (err) {
-    const error = new HttpError("유저 겟 정보 실패", 500);
+    const error = new HttpError(
+      "사용자를 불러오지 못했습니다. 잠시 후 다시 시도주세요.",
+      500
+    );
     return next(error);
   }
   res.json({ users: users.map((user) => user.toObject({ getters: true })) });
@@ -26,7 +29,7 @@ const signup = async (req, res, next) => {
   const errors = validationResult(req);
   // 정보가 잘못 전달 되었을 떄
   if (!errors.isEmpty()) {
-    return next(new HttpError("잠시 후  다시 회원 가입을 해주세요", 422));
+    return next(new HttpError("잠시 후 다시 시도 해주세요", 422));
   }
 
   const { username, email, password } = req.body;
@@ -40,11 +43,14 @@ const signup = async (req, res, next) => {
   try {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
-    const error = new HttpError("이메일 에러.", 500);
+    const error = new HttpError(
+      "회원 가입에 실패하였습니다. 잠시 후 다시 시도해 주세요",
+      500
+    );
     return next(error);
   }
   if (existingUser) {
-    const error = new HttpError("이메일이 중복.", 422);
+    const error = new HttpError("이메일이 중복입니다.", 422);
     return next(error);
   }
   // 패스워드 암호화
@@ -53,7 +59,7 @@ const signup = async (req, res, next) => {
   try {
     hashedPassword = await bcrypt.hash(password, 12);
   } catch (err) {
-    const error = new HttpError("패스워드 보안 에러", 500);
+    const error = new HttpError("잠시 후 다시 시도 해주세요.", 500);
     return next(error);
   }
 
@@ -68,10 +74,7 @@ const signup = async (req, res, next) => {
   try {
     await createdUser.save();
   } catch (err) {
-    const error = new HttpError(
-      "회원 가입 실패 잠시 후 다시 시도 해주세요.",
-      500
-    );
+    const error = new HttpError("잠시 후 다시 시도 해주세요.", 500);
     return next(error);
   }
 
@@ -80,10 +83,10 @@ const signup = async (req, res, next) => {
     token = jwt.sign(
       { userId: createdUser.id, email: createdUser.email },
       process.env.JWT_KEY,
-      { expiresIn: "4h" }
+      { expiresIn: "240h" }
     );
   } catch (err) {
-    const error = new HttpError("회원 가입 token 쪽 에러", 500);
+    const error = new HttpError("잠시 후 다시 시도 해주세요.", 500);
     return next(error);
   }
 
@@ -112,7 +115,7 @@ const login = async (req, res, next) => {
   }
 
   if (!existingUser) {
-    const error = new HttpError("패스워드 또는 이메일이 일치 하지 않다.", 401);
+    const error = new HttpError("해당 이메일이 없습니다.", 401);
     return next(error);
   }
   // 패스워드 검사
@@ -120,11 +123,11 @@ const login = async (req, res, next) => {
   try {
     isValidPassword = await bcrypt.compare(password, existingUser.password);
   } catch (err) {
-    const error = new HttpError("패스워드 같지 않다????", 500);
+    const error = new HttpError("잠시 후 다시 시도 해주세요.", 500);
     return next(error);
   }
   if (!isValidPassword) {
-    const error = new HttpError("패스워드가 일치 하지 않다.", 401);
+    const error = new HttpError("패스워드가 일치 하지 않습니다.", 401);
     return next(error);
   }
 
@@ -133,10 +136,13 @@ const login = async (req, res, next) => {
     token = jwt.sign(
       { userId: existingUser.id, email: existingUser.email },
       process.env.JWT_KEY,
-      { expiresIn: "4h" }
+      { expiresIn: "240h" }
     );
   } catch (err) {
-    const error = new HttpError("로그인 token 쪽 에러", 500);
+    const error = new HttpError(
+      "로그인에 실패 하였습니다 잠시 후 다시 시도 해주세요.",
+      500
+    );
     return next(error);
   }
 
@@ -155,7 +161,7 @@ const updateUser = async (req, res, next) => {
   const errors = validationResult(req);
   // 유효성 검사에 벗어나는지 확인한다. 오류가 있다면 errors 객체를 반환한다.
   if (!errors.isEmpty()) {
-    next(new HttpError("업데이트 에러를 확인 해주세요.", 422));
+    next(new HttpError("수정 하실 내용을 다시 확인 해주세요.", 422));
   }
   const userId = req.params.id;
 
@@ -165,7 +171,7 @@ const updateUser = async (req, res, next) => {
   try {
     user = await User.findById(userId);
   } catch (err) {
-    const error = new HttpError("수정 실패", 500);
+    const error = new HttpError("수정에 실패 하였습니다.", 500);
     return next(error);
   }
 
@@ -178,7 +184,7 @@ const updateUser = async (req, res, next) => {
     try {
       hashedPassword = await bcrypt.hash(password, 12);
     } catch (err) {
-      const error = new HttpError("패스워드 보안 에러", 500);
+      const error = new HttpError("잠시 후에 다시 시도해 주세요. ", 500);
       return next(error);
     }
     user.password = hashedPassword;
@@ -187,7 +193,7 @@ const updateUser = async (req, res, next) => {
   try {
     await user.save();
   } catch (err) {
-    const error = new HttpError("유저 수정 db에 저장 실패", 500);
+    const error = new HttpError("유저 정보 수정에 실패 하였습니다.", 500);
     return next(error);
   }
   res.status(200).json({ user: user.toObject({ getters: true }) });
