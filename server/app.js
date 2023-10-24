@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 
   next();
 });
-
+// 배포 코드
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
