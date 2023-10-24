@@ -53,8 +53,7 @@ const Editor = ({ userInfo }) => {
       const now = new Date(Date.now());
 
       const res = await axios.post(
-        // `${process.env.REACT_APP_BACKEND_URL}/api/places/editor`,
-        `https://side-402809.du.r.appspot.com/api/places/editor`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/places/editor`,
         {
           title: title,
           content: content,

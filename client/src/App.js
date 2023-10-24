@@ -6,6 +6,7 @@ import theme from "./styles/Theme";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { getUser } from "api/userAPI";
 import { getPlaces } from "api/writingAPI";
+import NotFound from "component/NotFound";
 
 const Main = lazy(() => import("./page/Main/Main"));
 const Login = lazy(() => import("./page/Login/Login"));
@@ -69,6 +70,7 @@ function App() {
                 element={<Detail userPlace={userPlace} userInfo={userInfo} />}
               />
               <Route path="/setting/:id" element={<Setting />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

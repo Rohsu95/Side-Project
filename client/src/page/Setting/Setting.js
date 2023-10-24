@@ -23,7 +23,6 @@ const Setting = () => {
     await axios
       .patch(
         `${process.env.REACT_APP_BACKEND_URL}/api/users/${id}`,
-        `https://side-402809.du.r.appspot.com/api/users/${id}`,
         {
           username: watch("username"),
           email: watch("email"),
@@ -36,6 +35,7 @@ const Setting = () => {
         }
       )
       .then((res) => {
+        alert("정보 수정에 성공하였습니다.");
         const username = res?.data?.user?.username;
         cookie.set("username", username);
         navigate("/mypage");
