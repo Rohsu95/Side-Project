@@ -55,8 +55,7 @@ const Edit = ({ userPlace }) => {
     let tagsitem = String(tagsList);
     await axios
       .patch(
-        // `${process.env.REACT_APP_BACKEND_URL}/api/places/${id}`,
-        `https://side-402809.du.r.appspot.com/api/places/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/places/${id}`,
         {
           title: title,
           content: content,
@@ -73,7 +72,8 @@ const Edit = ({ userPlace }) => {
         window.location.reload();
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        // console.log(error);
+        alert(error?.response?.data?.message);
       });
   };
 

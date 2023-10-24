@@ -31,13 +31,13 @@ app.use((req, res, next) => {
 
   next();
 });
-// 배포 코드
-app.use(express.static(path.join(__dirname, "public")));
 
-app.use((req, res, next) => {
-  res.sendFile(path.resolve(__dirname, "public", "index.html"));
+// 배포 코드
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.sendFile("index.html", { root: path.join(__dirname, "public") });
 });
-// 애가 없어야 로컬이 돌아감
 
 app.use("/api/places", placesRouter);
 app.use("/api/users", userRouter);
