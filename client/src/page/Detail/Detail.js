@@ -30,8 +30,8 @@ const Detail = ({ userInfo, userPlace }) => {
 
   // 특정 게시물의 정보. 게시글의 id와 주소의 id값이 같은 것을 찾는다
   const MyPlace = userPlace?.find((user) => user.id === id);
-  console.log(id);
-  console.log(MyPlace);
+
+  // console.log(MyPlace);
   // read 댓글 정보 보여주기
   useEffect(() => {
     const getPlaceInfo = async () => {
@@ -40,7 +40,7 @@ const Detail = ({ userInfo, userPlace }) => {
     };
     getPlaceInfo();
   }, []);
-  console.log(comment);
+
   // 생성
   const onComment = async () => {
     try {

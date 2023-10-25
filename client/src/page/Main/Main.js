@@ -58,6 +58,7 @@ const Main = ({ userInfo, userPlace }) => {
           })}
         </s.MainUl>
       </div>
+
       {menu === 0 || myPlace === undefined
         ? userPlace
             ?.map((item, key) => (
@@ -103,6 +104,7 @@ const Main = ({ userInfo, userPlace }) => {
                   <s.MapContent>
                     <s.MapTitle href={`/detail/${item.id}`}>
                       <h1 className="title">{item.title}</h1>
+
                       <p className="content">{item.content}</p>
                       <span className="span">Read more...</span>
                       <s.MapUl>
