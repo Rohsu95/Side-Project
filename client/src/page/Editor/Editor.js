@@ -74,8 +74,11 @@ const Editor = ({ userInfo }) => {
       navigate("/");
       window.location.reload();
     } catch (error) {
+
       console.log(error);
-      alert(error.response.data.message);
+     
+
+      alert(error?.response?.data?.message);
     }
   };
 
