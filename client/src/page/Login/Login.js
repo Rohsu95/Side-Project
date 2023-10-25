@@ -29,8 +29,8 @@ const Login = () => {
         cookie.set("userId", userId);
         cookie.set("username", username);
         cookie.set("image", image);
-        // navigate("/");
-        // window.location.reload();
+        navigate("/");
+        window.location.reload();
       }
     } catch (err) {
       // console.log(err);

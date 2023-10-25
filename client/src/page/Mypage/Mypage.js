@@ -101,7 +101,7 @@ const Mypage = ({ userPlace, userInfo }) => {
                   </s.MapPicture>
                   <s.Info>
                     <div className="info">
-                      <s.MapName href="/mypage">{Myuser.username}</s.MapName>
+                      <s.MapName href="/mypage">{Myuser?.username}</s.MapName>
                       <s.MapTime>
                         <Daj createdAt={item.createdAt} />
                       </s.MapTime>
