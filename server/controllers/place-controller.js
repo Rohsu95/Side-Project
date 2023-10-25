@@ -39,7 +39,7 @@ const createPlace = async (req, res, next) => {
 const getPlacesByUserId = async (req, res, next) => {
   let places;
   try {
-    places = await Place.find({});
+    places = await Place.find({}, "");
   } catch (err) {
     const error = new HttpError("게시글을 불러오기에 실패 하였습니다. ", 500);
     return next(error);

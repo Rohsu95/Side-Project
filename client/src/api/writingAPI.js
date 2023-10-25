@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_BACKEND_URL;
+// const url = process.env.REACT_APP_BACKEND_URL;
+const url = "https://side-402809.du.r.appspot.com";
 
 export const getPlaces = async (Token) => {
   try {
@@ -23,7 +24,9 @@ export const deletePlaces = async (Token, id) => {
     });
 
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getComment = async (Token) => {
@@ -34,7 +37,9 @@ export const getComment = async (Token) => {
       headers: { Authorization: `Bearer ${Token}` },
     });
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const deleteComment = async (Token, id) => {
@@ -46,5 +51,7 @@ export const deleteComment = async (Token, id) => {
     });
 
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
