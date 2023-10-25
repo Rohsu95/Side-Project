@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_BACKEND_URL;
+// const url = process.env.REACT_APP_BACKEND_URL;
+const url = `https://side-402809.du.r.appspot.com`;
 
 export const getUser = async (token) => {
   try {
@@ -13,7 +14,6 @@ export const getUser = async (token) => {
     return res;
   } catch (err) {}
 };
-
 export const login = async (data) => {
   try {
     const res = await axios({
@@ -23,9 +23,11 @@ export const login = async (data) => {
       url: `${url}/api/users/login`,
     });
 
+    console.log(url);
     return res;
   } catch (e) {
-    // console.log(e);
+    console.log(url);
+    console.log(e);
     alert(e?.response?.data?.message);
     return e;
   }
