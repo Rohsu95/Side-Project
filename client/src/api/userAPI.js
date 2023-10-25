@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const url = process.env.REACT_APP_BACKEND_URL;
-const url = "https://side-402809.du.r.appspot.com";
+const url = "http://localhost:8000";
 
 export const getUser = async (token) => {
   try {
