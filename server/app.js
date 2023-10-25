@@ -36,9 +36,10 @@ app.use((req, res, next) => {
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: path.join(__dirname, "public") });
+  res.sendFile("index.html", {
+    root: path.join(__dirname, "public", "index.html"),
+  });
 });
-app.use(express.static("public"));
 
 app.use("/api/places", placesRouter);
 app.use("/api/users", userRouter);

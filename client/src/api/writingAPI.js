@@ -23,7 +23,9 @@ export const deletePlaces = async (Token, id) => {
     });
 
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getComment = async (Token) => {
@@ -34,7 +36,9 @@ export const getComment = async (Token) => {
       headers: { Authorization: `Bearer ${Token}` },
     });
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const deleteComment = async (Token, id) => {
@@ -46,5 +50,7 @@ export const deleteComment = async (Token, id) => {
     });
 
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
