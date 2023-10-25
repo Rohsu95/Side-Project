@@ -38,6 +38,7 @@ app.use(express.static("public"));
 app.get("/", (req, res) => {
   res.sendFile("index.html", { root: path.join(__dirname, "public") });
 });
+app.use(express.static("public"));
 
 app.use("/api/places", placesRouter);
 app.use("/api/users", userRouter);
