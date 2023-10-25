@@ -196,6 +196,7 @@ const updateUser = async (req, res, next) => {
     const error = new HttpError("유저 정보 수정에 실패 하였습니다.", 500);
     return next(error);
   }
+
   res.status(200).json({ user: user.toObject({ getters: true }) });
 };
 

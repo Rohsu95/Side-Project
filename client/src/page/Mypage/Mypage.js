@@ -58,7 +58,7 @@ const Mypage = ({ userPlace, userInfo }) => {
         <s.ImgDiv>
           <img
             className="EditImg"
-            src={`${process.env.REACT_APP_BACKEND_URL}/${Myuser?.image}`}
+            src={`https://side-402809.du.r.appspot.com/${Myuser?.image}`}
             alt="기본 이미지"
           />
         </s.ImgDiv>
@@ -95,7 +95,7 @@ const Mypage = ({ userPlace, userInfo }) => {
                   <s.MapPicture>
                     <s.Img
                       className="EditImg"
-                      src={`${process.env.REACT_APP_BACKEND_URL}/${item?.image}`}
+                      src={`https://side-402809.du.r.appspot.com/${item?.image}`}
                       alt="수정 이미지"
                     />
                   </s.MapPicture>
