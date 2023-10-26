@@ -25,8 +25,7 @@ const Signup = () => {
       formData.append("username", watch("username"));
 
       const res = await axios.post(
-        "https://side-402809.du.r.appspot.com/api/users/signup",
-
+        process.env.REACT_APP_BACKEND_URL + "/api/users/signup",
         formData,
         {
           headers: {

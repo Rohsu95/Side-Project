@@ -68,7 +68,7 @@ const Main = ({ userInfo, userPlace }) => {
                     <s.MapPicture>
                       <s.Img
                         key={item.id}
-                        src={`https://side-402809.du.r.appspot.com/${item?.image}`}
+                        src={`${process.env.REACT_APP_BACKEND_URL}/${item?.image}`}
                         alt="profile"
                       />
                     </s.MapPicture>
@@ -130,7 +130,7 @@ const Main = ({ userInfo, userPlace }) => {
                     <s.MapPicture>
                       <s.Img
                         key={item.id}
-                        src={`https://side-402809.du.r.appspot.com/${Myuser?.image}`}
+                        src={`${process.env.REACT_APP_BACKEND_URL}/${Myuser?.image}`}
                         alt="profile"
                       />
                     </s.MapPicture>

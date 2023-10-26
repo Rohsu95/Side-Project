@@ -22,7 +22,7 @@ const Setting = () => {
   const onSetting = async (id) => {
     await axios
       .patch(
-        `https://side-402809.du.r.appspot.com/api/users/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/users/${id}`,
         {
           username: watch("username"),
           email: watch("email"),
