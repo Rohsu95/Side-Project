@@ -32,8 +32,6 @@ const Detail = ({ userInfo, userPlace }) => {
   // 특정 게시물의 정보. 게시글의 id와 주소의 id값이 같은 것을 찾는다
   const MyPlace = userPlace?.find((user) => user.id === id);
 
-  // console.log("내 정보", user);
-  // console.log("현재 글 쓴 사람", MyPlace);
   // read 댓글 정보 보여주기
   useEffect(() => {
     const getPlaceInfo = async () => {
@@ -49,7 +47,7 @@ const Detail = ({ userInfo, userPlace }) => {
       const now = new Date(Date.now());
 
       const res = await axios.post(
-        `https://side-402809.du.r.appspot.com/api/places/comment`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/places/comment`,
         {
           comment: commentInput,
           createdAt: now,
@@ -100,7 +98,7 @@ const Detail = ({ userInfo, userPlace }) => {
                 <div className="detailLine">
                   <s.DetailA to={Token ? "/mypage" : ""}>
                     <s.DetailImg
-                      src={`https://side-402809.du.r.appspot.com/${MyPlace?.image}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL}/${MyPlace?.image}`}
                       alt="이미지"
                     />
                   </s.DetailA>
@@ -159,7 +157,7 @@ const Detail = ({ userInfo, userPlace }) => {
                 <s.CommentPost>
                   <div className="commentName">
                     <s.DetailImg
-                      src={`https://side-402809.du.r.appspot.com/${user?.image}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL}/${user?.image}`}
                       alt="이미지"
                       margin="1.25rem"
                       width_hover="20px"
@@ -192,7 +190,7 @@ const Detail = ({ userInfo, userPlace }) => {
                       <s.CommentPost>
                         <div className="commentName">
                           <s.DetailImg
-                            src={`https://side-402809.du.r.appspot.com/${item?.image}`}
+                            src={`${process.env.REACT_APP_BACKEND_URL}/${item?.image}`}
                             alt="이미지"
                             margin="1.25rem"
                             width="24px"
