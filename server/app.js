@@ -20,6 +20,7 @@ dotenv.config();
 app.use(bodyParser.json());
 
 app.use("/images", express.static(path.join("images")));
+// app.use("/images", express.static("images"));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -46,9 +47,9 @@ app.use("/api/users", userRouter);
 
 app.use((error, req, res, next) => {
   if (req && req.file) {
-    fs.unlink(req.file.path, (err) => {
-      // console.log("unlink 부분", err);
-    });
+    // fs.unlink(req.file.path, (err) => {
+    // console.log("unlink 부분", req?.file?.path);
+    // });
   }
   if (res.headerSent) {
     return next(error);
@@ -57,6 +58,9 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message });
 });
 
+// console.log(process.env.PORT);
+console.log(process.env.MONGO_URL);
+console.log(require("dotenv").config());
 mongoose
   .connect(process.env.MONGO_URL)
 

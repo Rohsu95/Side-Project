@@ -1,43 +1,42 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
-import axios from "axios";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SignupUser } from "api/userAPI";
 
 const Signup = () => {
   const [file, setFile] = useState();
-
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
+
   const navigate = useNavigate();
 
-  const handleUpload = async () => {
-    try {
-      const formData = new FormData();
-
-      formData.append("avatar", file);
-      formData.append("email", watch("email"));
-      formData.append("password", watch("password"));
-      formData.append("username", watch("username"));
-
-      const res = await axios.post(
-        process.env.REACT_APP_BACKEND_URL + "/api/users/signup",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  const { mutate } = useMutation({
+    mutationKey: "SIGN_UP",
+    mutationFn: SignupUser,
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.invalidateQueries();
       navigate("/login");
-    } catch (err) {
-      alert(err?.response?.data?.message);
-    }
+    },
+  });
+  const handleUpload = () => {
+    const formData = new FormData();
+
+    formData.append("avatar", file);
+    formData.append("email", watch("email"));
+    formData.append("password", watch("password"));
+    formData.append("username", watch("username"));
+
+    mutate(formData);
   };
+
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };

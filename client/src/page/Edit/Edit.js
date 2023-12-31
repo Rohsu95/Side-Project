@@ -3,11 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as s from "./style";
 import { Cookies } from "react-cookie";
 import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { patchPlaces } from "api/placesAPI";
 
-const Edit = ({ userPlace }) => {
+const Edit = () => {
   const cookie = new Cookies();
   const Token = cookie.get("token");
 
+  const queryClient = useQueryClient();
   // 수정 할 정보 불러오기
   const { id } = useParams();
   // 태그
@@ -50,31 +53,32 @@ const Edit = ({ userPlace }) => {
     setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
 
-  // 수정 버튼
-  const onClick = async (id) => {
-    let tagsitem = String(tagsList);
-    await axios
-      .patch(
+  // 수정 기능
+  const { mutate } = useMutation({
+    mutationKey: ["PATCH_KEY"],
+    mutationFn: async (data) =>
+      await axios.patch(
         `${process.env.REACT_APP_BACKEND_URL}/api/places/${id}`,
-        {
-          title: title,
-          content: content,
-          tags: tagsitem,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        }
-      )
-      .then((res) => {
-        navigate("/");
-        window.location.reload();
-      })
-      .catch((error) => {
-        // console.log(error);
-        alert(error?.response?.data?.message);
-      });
+        data
+      ),
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.invalidateQueries();
+      navigate("/");
+    },
+    onError: (e) => {
+      alert(e?.response?.data?.message);
+    },
+  });
+
+  const onClick = () => {
+    let tagsitem = String(tagsList);
+
+    mutate({
+      title: title,
+      content: content,
+      tags: tagsitem,
+    });
   };
 
   return (
@@ -116,6 +120,7 @@ const Edit = ({ userPlace }) => {
           ))}
         </s.TagDiv>
         <s.EditorBtn aria-label="modify_button" onClick={() => onClick(id)}>
+          {/* <s.EditorBtn aria-label="modify_button" onClick={onClick}> */}
           Article Modify
         </s.EditorBtn>
       </div>
