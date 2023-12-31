@@ -31,12 +31,14 @@ const signup = async (req, res, next) => {
   if (!errors.isEmpty()) {
     return next(new HttpError("잠시 후 다시 시도 해주세요", 422));
   }
-
   const { username, email, password } = req.body;
   let image = "../images/basic.png";
-  if (req.file && req.file.path) {
+
+  if (req?.file && req?.file?.path) {
     image = req.file.path;
   }
+  console.log(req?.file);
+  console.log(req?.file?.path);
 
   // 이메일로 중복 확인
   let existingUser;
@@ -67,7 +69,7 @@ const signup = async (req, res, next) => {
     username,
     email,
     image: image,
-    // image: req.file.path,
+    // image: req?.file,
     password: hashedPassword,
   });
 
@@ -83,7 +85,7 @@ const signup = async (req, res, next) => {
     token = jwt.sign(
       { userId: createdUser.id, email: createdUser.email },
       process.env.JWT_KEY,
-      { expiresIn: "240h" }
+      { expiresIn: "24000h" }
     );
   } catch (err) {
     const error = new HttpError("잠시 후 다시 시도 해주세요.", 500);
@@ -136,7 +138,7 @@ const login = async (req, res, next) => {
     token = jwt.sign(
       { userId: existingUser.id, email: existingUser.email },
       process.env.JWT_KEY,
-      { expiresIn: "240h" }
+      { expiresIn: "24000h" }
     );
   } catch (err) {
     const error = new HttpError(

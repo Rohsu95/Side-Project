@@ -3,7 +3,6 @@ const { check } = require("express-validator");
 
 const usersController = require("../controllers/user-controllers");
 
-const multer = require("multer");
 const upload = require("../middleware/file-upload");
 
 const router = express.Router();

@@ -4,6 +4,8 @@ import * as s from "./style";
 import axios from "axios";
 import { getCookie } from "cookies";
 import { Cookies } from "react-cookie";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { postPlaces } from "api/placesAPI";
 
 const Editor = ({ userInfo }) => {
   const cookie = new Cookies();
@@ -19,6 +21,19 @@ const Editor = ({ userInfo }) => {
   });
 
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: "PLACES_KEY",
+    mutationFn: postPlaces,
+    onSuccess: (data) => {
+      navigate("/");
+      queryClient.invalidateQueries();
+      // window.location.reload();
+    },
+  });
+
   const { title, content } = input;
 
   const onTotal = (e) => {
@@ -28,12 +43,14 @@ const Editor = ({ userInfo }) => {
       [name]: value,
     });
   };
+
   // 엔터 누를 시 실행
   const onKeyPress = (e) => {
     if (e.target.value.length !== 0 && e.key === "Enter") {
       onItem();
     }
   };
+
   // 태그
   const onItem = () => {
     let updataed = [...tagsList];
@@ -47,37 +64,19 @@ const Editor = ({ userInfo }) => {
   };
 
   // 생성
-  const onWriting = async () => {
-    try {
-      let tagsItem = String(tagsList);
-      const now = new Date(Date.now());
+  const onWriting = () => {
+    let tagsItem = String(tagsList);
+    const now = new Date(Date.now());
 
-      const res = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/places/editor`,
-
-        {
-          title: title,
-          content: content,
-          tags: tagsItem,
-          createdAt: now,
-          creator: userId,
-          username: username,
-          image: image,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getCookie("token")}`,
-          },
-        }
-      );
-
-      navigate("/");
-      window.location.reload();
-    } catch (error) {
-      // console.log(error);
-      alert(error?.response?.data?.message);
-    }
+    mutate({
+      title: title,
+      content: content,
+      tags: tagsItem,
+      createdAt: now,
+      creator: userId,
+      username: username,
+      image: image,
+    });
   };
 
   return (

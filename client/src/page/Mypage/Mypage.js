@@ -6,7 +6,7 @@ import theme from "styles/Theme";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { removeCookie } from "cookies";
 import { Cookies } from "react-cookie";
-import { deletePlaces } from "api/writingAPI";
+import { deletePlaces } from "api/placesAPI";
 import { Daj } from "component/Date";
 
 const Mypage = ({ userPlace, userInfo }) => {

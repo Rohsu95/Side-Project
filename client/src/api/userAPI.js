@@ -11,9 +11,14 @@ export const getUser = async (token) => {
     });
 
     return res;
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    // throw err;
+  }
 };
-export const login = async (data) => {
+
+// 로그인
+export const loginUser = async (data) => {
   try {
     const res = await axios({
       method: "post",
@@ -22,10 +27,28 @@ export const login = async (data) => {
       url: `${url}/api/users/login`,
     });
 
-    return res;
+    return res.data;
   } catch (e) {
-    // console.log(e);
+    console.log(e);
     alert(e?.response?.data?.message);
-    return e;
+    // return e;
+  }
+};
+
+// 회원 가입
+export const SignupUser = async (data) => {
+  try {
+    const res = await axios({
+      method: "post",
+      data,
+      headers: { "Content-Type": "multipart/form-data" },
+      url: `${url}/api/users/signup`,
+    });
+
+    return res.data;
+  } catch (e) {
+    console.log(e);
+    alert(e?.response?.data?.message);
+    // return e;
   }
 };

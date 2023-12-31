@@ -3,7 +3,7 @@ import { Cookies } from "react-cookie";
 import * as s from "./style";
 import { RiDeleteBinLine } from "react-icons/ri";
 import theme from "styles/Theme";
-import { deletePlaces } from "api/writingAPI";
+import { deletePlaces } from "api/placesAPI";
 import { Daj } from "component/Date";
 
 const Main = ({ userInfo, userPlace }) => {
@@ -35,6 +35,8 @@ const Main = ({ userInfo, userPlace }) => {
       window.location.reload();
     }
   };
+
+  console.log(userPlace);
 
   return (
     <s.MainContainer>

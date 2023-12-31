@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
 import * as s from "./style";
 import { useNavigate, useParams } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import { DetailDaj } from "component/Date";
-import axios from "axios";
-import { getCookie } from "cookies";
-import { deleteComment, getComment } from "api/writingAPI";
-import Mypage from "page/Mypage/Mypage";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteComment, getComment, postComment } from "api/commentAPI";
 
 const Detail = ({ userInfo, userPlace }) => {
   // 쿠키
@@ -18,13 +17,22 @@ const Detail = ({ userInfo, userPlace }) => {
   const username = cookie.get("username");
   const userId = cookie.get("userId");
 
+  const queryClient = useQueryClient();
+
   // 페이지 정보
   const [commentInput, setCommentInput] = useState("");
-  // 댓글
-  const [comment, setComment] = useState([]);
 
   const navigate = useNavigate();
   const { id } = useParams();
+
+  // read 댓글 정보 보여주기
+  const { data: CommentData } = useQuery({
+    queryKey: ["CommentInfo"],
+    queryFn: getComment,
+  });
+
+  // 댓글 정보
+  const comment = CommentData?.comment;
 
   // 유저 정보들 중 현재 로그인 한 나의 정보
   const user = userInfo?.find((el) => el.id === userId);
@@ -32,59 +40,34 @@ const Detail = ({ userInfo, userPlace }) => {
   // 특정 게시물의 정보. 게시글의 id와 주소의 id값이 같은 것을 찾는다
   const MyPlace = userPlace?.find((user) => user.id === id);
 
-  // read 댓글 정보 보여주기
-  useEffect(() => {
-    const getPlaceInfo = async () => {
-      const res = await getComment();
-      setComment(res?.data?.comment);
-    };
-    getPlaceInfo();
-  }, []);
-
   // 생성
-  const onComment = async () => {
-    try {
-      const now = new Date(Date.now());
+  const { mutate: CommentMutation } = useMutation({
+    mutationKey: ["COMMENT_KEY"],
+    mutationFn: postComment,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries();
+      // window.location.reload();
+      console.log(data);
+      setCommentInput("");
+    },
+  });
 
-      const res = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/places/comment`,
-        {
-          comment: commentInput,
-          createdAt: now,
-          creator: userId,
-          username: username,
-          image: user.image,
-          commentId: id,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getCookie("token")}`,
-          },
-        }
-      );
+  // 댓글 생성
+  const onComment = () => {
+    const now = new Date(Date.now());
 
-      window.location.reload();
-    } catch (error) {
-      alert(error?.response?.data?.message);
-    }
+    CommentMutation({
+      comment: commentInput,
+      createdAt: now,
+      creator: userId,
+      username: username,
+      image: user.image,
+      commentId: id,
+    });
   };
 
   const onCommentChange = (e) => {
     setCommentInput(e.target.value);
-  };
-
-  // 댓글 삭제
-  const onDeleteComment = async (id) => {
-    try {
-      if (!window.confirm("삭제 하시겠습니까?")) {
-        alert("취소하였습니다.");
-      } else {
-        await deleteComment(Token, id);
-        alert("삭제하였습니다.");
-        window.location.reload();
-      }
-    } catch (err) {}
   };
 
   return (
@@ -204,10 +187,11 @@ const Detail = ({ userInfo, userPlace }) => {
                               : item.username}
                           </span>
                         </div>
+                        {/* 삭제 */}
                         {item.creator === userId ? (
                           <s.CcommentDelete
                             aria-label="delete_button"
-                            onClick={() => onDeleteComment(item.id)}
+                            onClick={() => deleteComment(Token, item.id)}
                           >
                             <RiDeleteBinLine />
                           </s.CcommentDelete>

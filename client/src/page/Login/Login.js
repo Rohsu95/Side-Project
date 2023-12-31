@@ -3,39 +3,43 @@ import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
-import { login } from "api/userAPI";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { loginUser } from "api/userAPI";
 
 const Login = () => {
   const navigate = useNavigate();
   const cookie = new Cookies();
 
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
-    try {
-      const res = await login(data);
-      if (res?.response?.data?.status) {
-        alert("가입된 정보가 없습니다.");
-      } else if (res?.status === 200) {
-        const userId = res?.data?.userId;
-        const token = res?.data?.token;
-        const username = res?.data?.username;
-        const image = res?.data?.image;
-        cookie.set("token", token);
-        cookie.set("userId", userId);
-        cookie.set("username", username);
-        cookie.set("image", image);
-        navigate("/");
-        window.location.reload();
-      }
-    } catch (err) {
-      // console.log(err);
-      alert(err?.response?.data?.message);
-    }
+  const { mutate } = useMutation({
+    mutationKey: "LOGIN_KEY",
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      const { userId, token, username, image } = data;
+      cookie.set("token", token);
+      cookie.set("userId", userId);
+      cookie.set("username", username);
+      cookie.set("image", image);
+      navigate("/");
+      queryClient.invalidateQueries();
+      window.location.reload();
+      // console.log("데이터들", data);
+    },
+  });
+
+  const onSubmit = () => {
+    mutate({
+      email: watch("email"),
+      password: watch("password"),
+    });
   };
 
   return (

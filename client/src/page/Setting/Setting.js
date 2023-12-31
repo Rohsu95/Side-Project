@@ -4,11 +4,15 @@ import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 import axios from "axios";
 import { Cookies } from "react-cookie";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { removeCookie } from "cookies";
 
 const Setting = () => {
   const cookie = new Cookies();
   const Token = cookie.get("token");
   const userId = cookie.get("userId");
+
+  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
 
@@ -19,7 +23,37 @@ const Setting = () => {
     formState: { errors },
   } = useForm();
 
-  const onSetting = async (id) => {
+  // 수정 기능
+  const { mutate } = useMutation({
+    mutationKey: "PATCH",
+    // mutationFn: patchPlaces,
+    mutationFn: async (data) =>
+      await axios.patch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/users/${userId}`,
+        data
+      ),
+    onSuccess: (data) => {
+      alert("정보 수정에 성공하였습니다.");
+      const username = data?.data?.user?.username;
+      removeCookie("username");
+      cookie.set("username", username);
+      queryClient.invalidateQueries();
+      navigate("/mypage");
+    },
+    onError: (e) => {
+      alert(e?.response?.data?.message);
+    },
+  });
+
+  const onSetting = () => {
+    mutate({
+      username: watch("username"),
+      email: watch("email"),
+      password: watch("password"),
+    });
+  };
+
+  const onSettings = async (id) => {
     await axios
       .patch(
         `${process.env.REACT_APP_BACKEND_URL}/api/users/${id}`,
