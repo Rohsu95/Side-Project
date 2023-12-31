@@ -34,13 +34,13 @@ app.use((req, res, next) => {
 });
 
 // 배포 코드
-app.use(express.static("public"));
+// app.use(express.static("public"));
 
-app.get("/", (req, res) => {
-  res.sendFile("index.html", {
-    root: path.join(__dirname, "public", "index.html"),
-  });
-});
+// app.get("/", (req, res) => {
+//   res.sendFile("index.html", {
+//     root: path.join(__dirname, "public", "index.html"),
+//   });
+// });
 
 app.use("/api/places", placesRouter);
 app.use("/api/users", userRouter);
@@ -59,8 +59,8 @@ app.use((error, req, res, next) => {
 });
 
 // console.log(process.env.PORT);
-console.log(process.env.MONGO_URL);
-console.log(require("dotenv").config());
+// console.log(process.env.MONGO_URL);
+// console.log(require("dotenv").config());
 mongoose
   .connect(process.env.MONGO_URL)
 
