@@ -12,7 +12,7 @@ export const getPlaces = async (Token) => {
     });
     return res;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     // throw err;
   }
 };
@@ -29,7 +29,7 @@ export const postPlaces = async (data) => {
 
     return res.data;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     alert(e?.response?.data?.message);
     // return e;
   }

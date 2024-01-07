@@ -62,7 +62,6 @@ const Edit = () => {
         data
       ),
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries();
       navigate("/");
     },

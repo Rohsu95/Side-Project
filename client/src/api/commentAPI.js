@@ -12,7 +12,7 @@ export const getComment = async (Token) => {
     });
     return res.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -28,7 +28,7 @@ export const postComment = async (data) => {
 
     return res.data;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     alert(e?.response?.data?.message);
     // return e;
   }

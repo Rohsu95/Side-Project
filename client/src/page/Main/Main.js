@@ -36,8 +36,6 @@ const Main = ({ userInfo, userPlace }) => {
     }
   };
 
-  console.log(userPlace);
-
   return (
     <s.MainContainer>
       <s.MainImg>

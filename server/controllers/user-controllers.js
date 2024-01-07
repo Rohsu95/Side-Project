@@ -37,8 +37,6 @@ const signup = async (req, res, next) => {
   if (req?.file && req?.file?.path) {
     image = req.file.path;
   }
-  console.log(req?.file);
-  console.log(req?.file?.path);
 
   // 이메일로 중복 확인
   let existingUser;
