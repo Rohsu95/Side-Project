@@ -12,7 +12,7 @@ export const getUser = async (token) => {
 
     return res;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     // throw err;
   }
 };
@@ -29,7 +29,7 @@ export const loginUser = async (data) => {
 
     return res.data;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     alert(e?.response?.data?.message);
     // return e;
   }
@@ -47,7 +47,7 @@ export const SignupUser = async (data) => {
 
     return res.data;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     alert(e?.response?.data?.message);
     // return e;
   }

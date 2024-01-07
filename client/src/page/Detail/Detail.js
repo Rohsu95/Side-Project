@@ -47,7 +47,7 @@ const Detail = ({ userInfo, userPlace }) => {
     onSuccess: (data) => {
       queryClient.invalidateQueries();
       // window.location.reload();
-      console.log(data);
+
       setCommentInput("");
     },
   });

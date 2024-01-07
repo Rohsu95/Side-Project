@@ -31,7 +31,6 @@ const Login = () => {
       navigate("/");
       queryClient.invalidateQueries();
       window.location.reload();
-      // console.log("데이터들", data);
     },
   });
 

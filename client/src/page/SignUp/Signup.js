@@ -21,7 +21,6 @@ const Signup = () => {
     mutationKey: "SIGN_UP",
     mutationFn: SignupUser,
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries();
       navigate("/login");
     },
