@@ -22,9 +22,12 @@ const Signup = () => {
     mutationFn: SignupUser,
     onSuccess: (data) => {
       queryClient.invalidateQueries();
-      navigate("/login");
+      if (data !== undefined) {
+        navigate("/login");
+      }
     },
   });
+
   const handleUpload = () => {
     const formData = new FormData();
 
