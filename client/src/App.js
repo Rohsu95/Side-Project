@@ -1,10 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./component/Header";
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy } from "react";
 import { getUser } from "api/userAPI";
 import { getPlaces } from "api/placesAPI";
 import NotFound from "component/NotFound";
 import { useQuery } from "@tanstack/react-query";
+import Loading from "component/Loading";
 
 const Main = lazy(() => import("./page/Main/Main"));
 const Login = lazy(() => import("./page/Login/Login"));
@@ -29,10 +30,12 @@ function App() {
   const userInfo = userData?.data?.users;
   const userPlace = placesData?.data?.places;
 
+  console.log();
+
   return (
     <BrowserRouter>
       <Header userInfo={userInfo} />
-      <Suspense fallback={<h1>Loading...</h1>}>
+      <Suspense fallback={<Loading />}>
         <Routes>
           <Route
             path="/"
