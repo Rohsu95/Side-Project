@@ -147,6 +147,7 @@ const login = async (req, res, next) => {
   }
 
   // getters 하는 이유는 id에 밑줄(_)을 제거하기 위해 사용한다.
+
   res.json({
     userId: existingUser.id,
     email: existingUser.email,
