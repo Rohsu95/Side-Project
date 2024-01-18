@@ -2,7 +2,7 @@ import axios from "axios";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
-// 게시글 정보 토큰 없어도 될거 같긴 하다 나중에 확인 하기
+// 게시글 정보
 export const getPlaces = async (Token) => {
   try {
     const res = await axios({
