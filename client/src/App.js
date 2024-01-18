@@ -30,8 +30,6 @@ function App() {
   const userInfo = userData?.data?.users;
   const userPlace = placesData?.data?.places;
 
-  console.log();
-
   return (
     <BrowserRouter>
       <Header userInfo={userInfo} />
