@@ -20,7 +20,7 @@
     "react-router-dom": "^6.21.3",
     "react-scripts": "^5.0.1",
     "styled-components": "^5.3.11",
-    "typescript": "^5.3.3",
+    "typescript": "^4.5.0",
     "uid": "^2.0.2",
     "web-vitals": "^2.1.4"
   },
