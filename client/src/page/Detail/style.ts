@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { detailStyle } from "../../types/propsStyle";
 import theme from "../../styles/Theme";
 
 export const Container = styled.div`
@@ -62,7 +63,7 @@ export const DetailA = styled(Link)`
   align-items: center;
   text-decoration: none;
 `;
-export const DetailImg = styled.img`
+export const DetailImg = styled.img<detailStyle>`
   width: ${(props) => props.width || "36px"};
   height: ${(props) => props.height || "36px"};
   border-radius: 25px;
@@ -94,7 +95,7 @@ export const DetailDate = styled.span`
     white-space: nowrap;
   }
 `;
-export const InfoBtn = styled.button`
+export const InfoBtn = styled.button<detailStyle>`
   display: flex;
   height: 3vh;
   align-items: center;
@@ -163,7 +164,7 @@ export const CommentContainer = styled.div`
 `;
 
 export const CommentText = styled.div``;
-export const CommentPost = styled.div`
+export const CommentPost = styled.div<detailStyle>`
   display: flex;
   height: 6vh;
   align-items: center;

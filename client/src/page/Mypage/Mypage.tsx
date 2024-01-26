@@ -2,14 +2,16 @@ import { useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
-import theme from "styles/Theme";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { removeCookie } from "cookies";
 import { Cookies } from "react-cookie";
-import { deletePlaces } from "api/placesAPI";
-import { Daj } from "component/Date";
+import { propsType } from "../../types/app";
+import { deletePlaces } from "../../api/placesAPI";
+import { removeCookie } from "../../cookies";
 
-const Mypage = ({ userPlace, userInfo }) => {
+import { Daj } from "../../component/Date";
+import theme from "../../styles/Theme";
+
+const Mypage = ({ userPlace, userInfo }: propsType) => {
   const cookie = new Cookies();
   const Token = cookie.get("token");
   const userId = cookie.get("userId");
@@ -23,12 +25,12 @@ const Mypage = ({ userPlace, userInfo }) => {
   const Myuser = userInfo?.find((user) => user.id === userId);
 
   // 메뉴
-  const mypageCurrent = (index) => {
+  const mypageCurrent = (index: number) => {
     setMenu(index);
   };
 
   // 작성한 글 삭제
-  const onDeletePage = async (id) => {
+  const onDeletePage = async (id: string) => {
     if (!window.confirm("삭제 하시겠습니까?")) {
       alert("취소하였습니다.");
     } else {
@@ -64,7 +66,7 @@ const Mypage = ({ userPlace, userInfo }) => {
         </s.ImgDiv>
         <p className="Spans">{Myuser?.username}</p>
         <div className="EditDiv">
-          <a className="EditA" href={`/setting/${Myuser?.id}`} alt="setting">
+          <a className="EditA" href={`/setting/${Myuser?.id}`} title="setting">
             <AiOutlineSetting /> Edit Profile
           </a>
         </div>

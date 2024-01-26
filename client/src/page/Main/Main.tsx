@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Cookies } from "react-cookie";
 import * as s from "./style";
 import { RiDeleteBinLine } from "react-icons/ri";
-import theme from "styles/Theme";
-import { deletePlaces } from "api/placesAPI";
-import { Daj } from "component/Date";
+import { deletePlaces } from "../../api/placesAPI";
+import { Daj } from "../../component/Date";
+import { propsType } from "../../types/app";
+import theme from "../../styles/Theme";
 
-const Main = ({ userInfo, userPlace }) => {
+const Main = ({ userInfo, userPlace }: propsType) => {
   // 쿠키에 담긴 정보
   const cookie = new Cookies();
   const Token = cookie.get("token");
@@ -22,12 +23,12 @@ const Main = ({ userInfo, userPlace }) => {
   // 현재 로그인 한 유저 정보
   const Myuser = userInfo?.find((user) => user.id === userId);
 
-  const mainCurrent = (index) => {
+  const mainCurrent = (index: number) => {
     setMenu(index);
   };
 
   // 작성한 글 삭제
-  const onDeletePage = async (id) => {
+  const onDeletePage = async (id: string) => {
     if (!window.confirm("삭제 하시겠습니까?")) {
       alert("취소하였습니다.");
     } else {
@@ -136,7 +137,7 @@ const Main = ({ userInfo, userPlace }) => {
                     </s.MapPicture>
                     <s.Info>
                       <div className="info">
-                        <s.MapName>{Myuser.username}</s.MapName>
+                        <s.MapName>{Myuser?.username}</s.MapName>
 
                         <s.MapTime>
                           <Daj createdAt={item.createdAt} />

@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
-import axios from "axios";
-import { getCookie } from "cookies";
 import { Cookies } from "react-cookie";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postPlaces } from "api/placesAPI";
+import { postPlaces } from "../../api/placesAPI";
 
-const Editor = ({ userInfo }) => {
+const Editor = () => {
   const cookie = new Cookies();
   const userId = cookie.get("userId");
   const username = cookie.get("username");
   const image = cookie.get("image");
 
   const [tags, setTags] = useState("");
-  const [tagsList, setTagsList] = useState([]);
+  const [tagsList, setTagsList] = useState<string[]>([]);
   const [input, setInput] = useState({
     title: "",
     content: "",
@@ -25,30 +23,26 @@ const Editor = ({ userInfo }) => {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationKey: "PLACES_KEY",
+    mutationKey: ["PLACES_KEY"],
     mutationFn: postPlaces,
     onSuccess: (data) => {
-      navigate("/");
       queryClient.invalidateQueries();
-      // window.location.reload();
+      if (data !== undefined) {
+        navigate("/");
+      }
     },
   });
 
   const { title, content } = input;
 
-  const onTotal = (e) => {
+  const onTotal = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setInput({
       ...input,
       [name]: value,
     });
-  };
-
-  // 엔터 누를 시 실행
-  const onKeyPress = (e) => {
-    if (e.target.value.length !== 0 && e.key === "Enter") {
-      onItem();
-    }
   };
 
   // 태그
@@ -58,8 +52,18 @@ const Editor = ({ userInfo }) => {
     setTagsList(updataed);
     setTags("");
   };
+
+  // 엔터 누를 시 실행
+  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // const target = e.target as HTMLInputElement;
+    // if (target.value.length !== 0 && e.key === "Enter") {
+    if (e.currentTarget.value.length !== 0 && e.key === "Enter") {
+      onItem();
+    }
+  };
+
   // 삭제
-  const onDelete = (id) => {
+  const onDelete = (id: number) => {
     setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
 
@@ -72,7 +76,7 @@ const Editor = ({ userInfo }) => {
       title: title,
       content: content,
       tags: tagsItem,
-      createdAt: now,
+      createdAt: now.toISOString(),
       creator: userId,
       username: username,
       image: image,
@@ -90,7 +94,6 @@ const Editor = ({ userInfo }) => {
           placeholder="Article Title"
         />
         <s.ContentArea
-          type="text"
           name="content"
           value={content}
           onChange={onTotal}

@@ -3,25 +3,27 @@ import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SignupUser } from "api/userAPI";
+import { ISignUp } from "../../types/auth";
+import { SignupUser } from "../../api/userAPI";
 
 const Signup = () => {
-  const [file, setFile] = useState();
+  const [file, setFile] = useState<File>();
+
   const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm<ISignUp>();
 
   const navigate = useNavigate();
 
   const { mutate } = useMutation({
-    mutationKey: "SIGN_UP",
+    mutationKey: ["SIGN_UP"],
     mutationFn: SignupUser,
     onSuccess: (data) => {
-      // console.log(data);
       queryClient.invalidateQueries();
       if (data !== undefined) {
         navigate("/login");
@@ -32,7 +34,9 @@ const Signup = () => {
   const handleUpload = () => {
     const formData = new FormData();
 
-    formData.append("avatar", file);
+    if (file) {
+      formData.append("avatar", file);
+    }
     formData.append("email", watch("email"));
     formData.append("password", watch("password"));
     formData.append("username", watch("username"));
@@ -40,12 +44,14 @@ const Signup = () => {
     mutate(formData);
   };
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.currentTarget;
+    const files = (target.files as FileList)[0];
+    setFile(files);
   };
 
   const handleDeletePreview = () => {
-    setFile(null);
+    setFile(undefined);
   };
 
   return (

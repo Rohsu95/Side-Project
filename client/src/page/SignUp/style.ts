@@ -1,14 +1,18 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import theme from "../../styles/Theme";
+
 export const Container = styled.div`
   margin-top: 2rem;
 `;
-
+export const SignupLink = styled(Link)`
+  text-decoration: none;
+  color: ${theme.colors.main};
+`;
 export const Sign = styled.div`
   text-align: center;
-  margin-bottom: 2rem;
-  .login {
+  margin-bottom: 1rem;
+  .signup {
     display: inline;
 
     &:hover {
@@ -18,10 +22,6 @@ export const Sign = styled.div`
   h1 {
     margin-bottom: 1rem;
   }
-`;
-export const SignupLink = styled(Link)`
-  text-decoration: none;
-  color: ${theme.colors.main};
 `;
 export const FormContainer = styled.div`
   display: flex;
@@ -45,7 +45,7 @@ export const FormContainer = styled.div`
       width: 20rem;
     }
   }
-  button {
+  .SignBtn {
     border: 0;
     width: 6rem;
     float: right;
@@ -60,4 +60,44 @@ export const FormContainer = styled.div`
       background-color: ${theme.colors.main_hover};
     }
   }
+  .label-file {
+    margin: 5px 0 20px 0;
+    font-weight: bold;
+    font-size: 13px;
+    color: ${theme.colors.main};
+    display: inline-block;
+    cursor: pointer;
+
+    &:hover {
+      color: ${theme.colors.main_hover};
+    }
+  }
 `;
+export const ImgDiv = styled.div`
+  height: 80px;
+
+  margin-bottom: 2.25rem;
+  &.imgLine {
+    display: none;
+  }
+  /* have an account 패딩이 있는거 같다 없애자 */
+  .EditImg {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+  }
+  .DeleteBtn {
+    cursor: pointer;
+    color: ${theme.colors.main};
+    background-color: ${theme.colors.white};
+    border: none;
+    font-size: 1rem;
+
+    &:hover {
+      color: ${theme.colors.main_hover};
+    }
+  }
+`;
+// export const ImgContainer = styled.div`
+//   border: 2px solid red;
+// `;
