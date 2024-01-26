@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as s from "./style";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { loginUser } from "api/userAPI";
+import { loginUser } from "../../api/userAPI";
+import { ILogin, ILoginProps } from "../../types/auth";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,12 +18,12 @@ const Login = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm<ILogin>();
 
   const { mutate } = useMutation({
-    mutationKey: "LOGIN_KEY",
+    mutationKey: ["LOGIN_KEY"],
     mutationFn: loginUser,
-    onSuccess: (data) => {
+    onSuccess: (data: ILoginProps) => {
       const { userId, token, username, image } = data;
       cookie.set("token", token);
       cookie.set("userId", userId);

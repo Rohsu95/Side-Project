@@ -4,12 +4,14 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import * as s from "./style";
 import { useNavigate, useParams } from "react-router-dom";
 import { Cookies } from "react-cookie";
-import { DetailDaj } from "component/Date";
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteComment, getComment, postComment } from "api/commentAPI";
+import { deleteComment, getComment, postComment } from "../../api/commentAPI";
+import { propsType } from "../../types/app";
+import { DetailDaj } from "../../component/Date";
+import { RouteParams } from "../../types/params";
+import { IComment } from "../../types/comment";
 
-const Detail = ({ userInfo, userPlace }) => {
+const Detail = ({ userInfo, userPlace }: propsType) => {
   // 쿠키
   const cookie = new Cookies();
   // 쿠키에 담긴 토큰, 네임, 아이디값
@@ -23,7 +25,7 @@ const Detail = ({ userInfo, userPlace }) => {
   const [commentInput, setCommentInput] = useState("");
 
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams() as RouteParams;
 
   // read 댓글 정보 보여주기
   const { data: CommentData } = useQuery({
@@ -32,7 +34,7 @@ const Detail = ({ userInfo, userPlace }) => {
   });
 
   // 댓글 정보
-  const comment = CommentData?.comment;
+  const comment = CommentData?.comment as IComment[];
 
   // 유저 정보들 중 현재 로그인 한 나의 정보
   const user = userInfo?.find((el) => el.id === userId);
@@ -46,7 +48,6 @@ const Detail = ({ userInfo, userPlace }) => {
     mutationFn: postComment,
     onSuccess: (data) => {
       queryClient.invalidateQueries();
-      // window.location.reload();
 
       setCommentInput("");
     },
@@ -58,15 +59,16 @@ const Detail = ({ userInfo, userPlace }) => {
 
     CommentMutation({
       comment: commentInput,
+      commentId: id,
       createdAt: now,
       creator: userId,
       username: username,
-      image: user.image,
-      commentId: id,
+      image: user?.image,
+      id,
     });
   };
 
-  const onCommentChange = (e) => {
+  const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentInput(e.target.value);
   };
 
@@ -86,7 +88,7 @@ const Detail = ({ userInfo, userPlace }) => {
                     />
                   </s.DetailA>
                   <div className="name">
-                    <s.DetailName href="/mypage">
+                    <s.DetailName onClick={() => navigate("/mypage")}>
                       {MyPlace?.creator === userId
                         ? user?.username
                         : MyPlace?.username}
@@ -132,7 +134,6 @@ const Detail = ({ userInfo, userPlace }) => {
                   value={commentInput}
                   onChange={onCommentChange}
                   className="textArea"
-                  type="text"
                   name="commentInput"
                   placeholder="Write a comment..."
                 />
@@ -191,7 +192,7 @@ const Detail = ({ userInfo, userPlace }) => {
                         {item.creator === userId ? (
                           <s.CcommentDelete
                             aria-label="delete_button"
-                            onClick={() => deleteComment(Token, item.id)}
+                            onClick={() => deleteComment(Token, item?.id)}
                           >
                             <RiDeleteBinLine />
                           </s.CcommentDelete>

@@ -1,21 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as s from "./style";
-import { Cookies } from "react-cookie";
-import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { patchPlaces } from "api/placesAPI";
+import { patchPlaces } from "../../api/placesAPI";
+import { RouteParams } from "../../types/params";
+import { IEdit } from "../../types/places";
 
 const Edit = () => {
-  const cookie = new Cookies();
-  const Token = cookie.get("token");
-
   const queryClient = useQueryClient();
   // 수정 할 정보 불러오기
-  const { id } = useParams();
+  const { id } = useParams() as RouteParams;
   // 태그
   const [tags, setTags] = useState("");
-  const [tagsList, setTagsList] = useState([]);
+  const [tagsList, setTagsList] = useState<string[]>([]);
 
   const navigate = useNavigate();
   // 인풋 내용
@@ -26,7 +23,9 @@ const Edit = () => {
   });
   const { title, content } = input;
 
-  const onTotal = (e) => {
+  const onTotal = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setInput({
       ...input,
@@ -35,8 +34,8 @@ const Edit = () => {
   };
 
   // Enter 누를 시 태그 생성
-  const onKeyPress = (e) => {
-    if (e.target.value.length !== 0 && e.key === "Enter") {
+  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.currentTarget.value.length !== 0 && e.key === "Enter") {
       onItem();
     }
   };
@@ -49,24 +48,20 @@ const Edit = () => {
   };
 
   // 태그 삭제
-  const onDelete = (id) => {
+  const onDelete = (id: number) => {
     setTagsList((tagsList) => tagsList.filter((_, el) => el !== id));
   };
 
   // 수정 기능
   const { mutate } = useMutation({
     mutationKey: ["PATCH_KEY"],
-    mutationFn: async (data) =>
-      await axios.patch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/places/${id}`,
-        data
-      ),
+
+    mutationFn: (data: IEdit) => patchPlaces(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries();
-      navigate("/");
-    },
-    onError: (e) => {
-      alert(e?.response?.data?.message);
+      if (data !== undefined) {
+        navigate("/");
+      }
     },
   });
 
@@ -91,7 +86,6 @@ const Edit = () => {
           placeholder="Article Title"
         />
         <s.ContentArea
-          type="text"
           name="content"
           value={content}
           onChange={onTotal}
@@ -118,8 +112,7 @@ const Edit = () => {
             </s.TagSpan>
           ))}
         </s.TagDiv>
-        <s.EditorBtn aria-label="modify_button" onClick={() => onClick(id)}>
-          {/* <s.EditorBtn aria-label="modify_button" onClick={onClick}> */}
+        <s.EditorBtn aria-label="modify_button" onClick={onClick}>
           Article Modify
         </s.EditorBtn>
       </div>

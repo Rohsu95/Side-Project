@@ -1,4 +1,11 @@
-const colors = {
+import {
+  ColorTheme,
+  SizeTheme,
+  FontSizeTheme,
+  MediaTheme,
+} from "styled-components";
+
+const colors: ColorTheme = {
   white: "#FFFFFF",
   container: "#EEEEEE",
   gray_01: "#DDDDDD",
@@ -14,7 +21,8 @@ const colors = {
   title: "#373A3C",
   tag: "#818A91",
 };
-const sizes = {
+
+const sizes: SizeTheme = {
   desktop: "1440px",
   laptop: "1280px",
   tablet: "1024px",
@@ -23,7 +31,7 @@ const sizes = {
   phone: "480px",
   small: "360px",
 };
-const fontSizes = {
+const fontSizes: FontSizeTheme = {
   fs02: "0.25rem",
   fs0: "0.5rem",
   fs06: "0.625rem",
@@ -36,7 +44,7 @@ const fontSizes = {
   fs35: "3.5rem",
   fs4: "4rem",
 };
-const media = {
+const media: MediaTheme = {
   desktop: `screen and (max-width: ${sizes.desktop})`,
   laptop: `screen and (max-width : ${sizes.laptop})`,
   tablet: `screen and (max-width : ${sizes.tablet})`,

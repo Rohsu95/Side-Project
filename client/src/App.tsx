@@ -1,11 +1,10 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { getUser } from "./api/userAPI";
+import { getPlaces } from "./api/placesAPI";
+import NotFound from "./component/NotFound";
 import Header from "./component/Header";
 import { Suspense, lazy } from "react";
-import { getUser } from "api/userAPI";
-import { getPlaces } from "api/placesAPI";
-import NotFound from "component/NotFound";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "component/Loading";
 
 const Main = lazy(() => import("./page/Main/Main"));
 const Login = lazy(() => import("./page/Login/Login"));
@@ -27,13 +26,13 @@ function App() {
     queryFn: getPlaces,
   });
 
-  const userInfo = userData?.data?.users;
-  const userPlace = placesData?.data?.places;
+  const userInfo = userData?.users;
+  const userPlace = placesData?.places;
 
   return (
     <BrowserRouter>
       <Header userInfo={userInfo} />
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<h1>Loading...</h1>}>
         <Routes>
           <Route
             path="/"
@@ -41,8 +40,8 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/editor" element={<Editor userInfo={userInfo} />} />
-          <Route path="/edit/:id" element={<Edit userPlace={userPlace} />} />
+          <Route path="/editor" element={<Editor />} />
+          <Route path="/edit/:id" element={<Edit />} />
           <Route
             path="/mypage"
             element={<Mypage userInfo={userInfo} userPlace={userPlace} />}

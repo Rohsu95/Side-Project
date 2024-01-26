@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import theme from "../styles/Theme";
+
 import { BiEdit } from "react-icons/bi";
 import { AiOutlineSetting } from "react-icons/ai";
 import { Cookies } from "react-cookie";
+import { propsType } from "../types/app";
+import theme from "../styles/Theme";
 
 const Headers = styled.header`
   width: 100%;
@@ -65,7 +67,7 @@ const HeaderUl = styled.ul`
     font-size: 0.8rem;
   }
 `;
-const Header = ({ userInfo }) => {
+const Header = ({ userInfo }: propsType) => {
   const cookies = new Cookies();
   const token = cookies.get("token");
   const userId = cookies.get("userId");
@@ -88,7 +90,7 @@ const Header = ({ userInfo }) => {
     { name: user?.username },
   ];
 
-  const headCurrent = (index) => {
+  const headCurrent = (index: number) => {
     setHead(index);
     if (index === 0) {
       navigate("/");
@@ -99,14 +101,14 @@ const Header = ({ userInfo }) => {
     }
   };
 
-  const headsCurrent = (index) => {
+  const headsCurrent = (index: number) => {
     setHead(index);
     if (index === 0) {
       navigate("/");
     } else if (index === 1) {
       navigate("/editor");
     } else if (index === 2) {
-      navigate(`/setting/${user.id}`);
+      navigate(`/setting/${user?.id}`);
     } else if (index === 3) {
       navigate("/mypage");
     }
