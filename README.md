@@ -13,7 +13,7 @@
 
 
 # 🛠 기술 스택
-## react,    node.js,    express,    MongoDb,    styled-component,    axios
+## react,  TypeScript  ,node.js,    express,    MongoDb,    styled-component,    axios
 
 <br/><br/>
 
